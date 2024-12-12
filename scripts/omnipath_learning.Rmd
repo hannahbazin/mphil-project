@@ -1,6 +1,6 @@
 ---
 title: "Learning OmnipathR"
-author: "Alberto Valdeolivas, Attila Gabor, Denes Turei, Julio Saez-Rodriguez"
+author: "Alberto Valdeolivas, Attila Gabor, Denes Turei, Julio Saez-Rodriguez, modified by Hannah Bazin"
 output: html_document
 date: "2024-12-04"
 ---
