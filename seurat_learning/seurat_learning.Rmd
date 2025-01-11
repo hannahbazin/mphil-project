@@ -1,0 +1,314 @@
+---
+title: "Learning Seurat for single-cell transcriptomics"
+author: "Satija Lab, modified by Hannah Bazin"
+output: html_document
+date: "2024-12-04"
+---
+
+I am practicing using Seurat for single-cell transcriptomics.
+
+# Set up
+
+```{r loadLibraries}
+library(dplyr)
+library(Seurat)
+library(patchwork)
+library(ggplot2)
+```
+
+# Set up Seurat Object
+
+The data comes from the sequencing of 2'700 Peripheral Blood Mononuclear Cells (PBMC), and can be found [here](https://cf.10xgenomics.com/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz).
+
+-   Seurat object: contains the data (count matrix) and the analysis (PCA or clustering etc.)
+
+```{r loadData}
+
+# Load the PBMC dataset
+pbmc.data <- Read10X(data.dir = "data/filtered_gene_bc_matrices/hg19/")
+
+# Initialize the Seurat object with the raw (non-normalized data)
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+pbmc
+
+# Examine the count matrix
+pbmc.data[c("CD3D", "TCL1A", "MS4A1"), 1:30]
+
+# View size of the count matrix
+dense.size <- object.size(as.matrix(pbmc.data))
+dense.size
+
+sparse.size <- object.size(pbmc.data)
+sparse.size
+
+dense.size/sparse.size
+```
+
+# Pre-processing workflow
+
+Visualise the meta-data
+
+```{r}
+head(pbmc@meta.data, 5)
+```
+
+Pre-processing the data involves "the selection and filtration of cells based on QC metrics, data normalization and scaling, and the detection of highly variable features." The [[ operator can add columns to object metadata. This is a great place to stash QC stats.
+
+```{r}
+# Calculate percentage of mitochondrial genes
+pbmc[["percent.mt"]] <- PercentageFeatureSet(pbmc, pattern = "^MT-")
+
+# Visualise QC metrics as a violin plot
+VlnPlot(pbmc, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+```
+
+FeatureScatter is typically used to visualize feature-feature relationships, but can be used for anything calculated by the object, i.e. columns in object metadata, PC scores etc.
+
+```{r}
+plot1 <- FeatureScatter(pbmc, feature1 = "nCount_RNA", feature2 = "percent.mt")
+plot2 <- FeatureScatter(pbmc, feature1 = "nCount_RNA", feature2 = "nFeature_RNA")
+plot1 + plot2
+```
+
+Filter the data to keep only relevant data.
+
+```{r}
+pbmc <- subset(pbmc, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & percent.mt < 5)
+```
+
+# Normalising data
+
+Method: LogNormalize --> "normalizes the feature expression measurements for each cell by the total expression, multiplies this by a scale factor (10,000 by default), and log-transforms the result".
+
+Assumption: each cell contains the same number of RNA molecules originally
+
+```{r}
+pbmc <- NormalizeData(pbmc, normalization.method = "LogNormalize", scale.factor = 10000)
+
+# This is the same as
+# pbmc <- NormalizeData(pbmc)
+```
+
+# Feature selection
+
+Select features that show high cell-to-cell variation. By default, this returns 2'000 features per dataset.
+
+```{r}
+pbmc <- FindVariableFeatures(pbmc, selection.method = "vst", nfeatures = 2000)
+
+# Identify the 10 most highly variable genes
+top10 <- head(VariableFeatures(pbmc), 10)
+
+# Plot variable features with and without labels
+plot1 <- VariableFeaturePlot(pbmc)
+plot2 <- LabelPoints(plot = plot1, points = top10, repel = TRUE)
+plot1 + plot2
+```
+
+# Scaling data
+
+This is done so that highly-expressed genes do not dominate the analysis. By default, the function only scales variable features, but you can specify.
+
+```{r}
+all.genes <- rownames(pbmc)
+pbmc <- ScaleData(pbmc, features = all.genes)
+```
+
+# Dimensionality reduction
+
+## PCA
+
+To interpret the output: in PC_1, cells expressing high levels of genes in "Positive" express low levels of genes in "Negative", meaning they are likely from different cell types or populations.
+
+```{r}
+pbmc <- RunPCA(pbmc, features = VariableFeatures(object = pbmc))
+```
+
+View top 5 genes for top 5 PCs.
+
+```{r}
+print(pbmc[["pca"]], dims = 1:5, nfeatures = 5)
+```
+Visualise PCA results in a few different ways.
+
+Dimensional loadings are the contributions of a gene to a PC. If a gene has a high absolute value of dimensional loading, it means that it contributes highly to the given PC.
+
+```{r}
+VizDimLoadings(pbmc, dims = 1:2, reduction = "pca")
+```
+
+```{r}
+DimPlot(pbmc, reduction = "pca") + NoLegend()
+```
+
+To decide which PCs to include in the further analysis, use a heatmap. Each row is a gene, and each column is a cell. Yellow is high expression, while purple is low expression. The "balanced = TRUE" ensures that an equal number of positive and negative loading genes are displayed on the heat map. Genes are ranked in absolute value of loading: the top is negative loading and the bottom is positive loading.
+
+```{r}
+DimHeatmap(pbmc, dims = 1, cells = 500, balanced = TRUE)
+```
+
+View more PCs.
+
+```{r}
+DimHeatmap(pbmc, dims = 1:15, cells = 500, balanced = TRUE)
+```
+
+## Determining dimensionality of dataset
+
+Choosing how many PCs to include, using the Elbow plot. This shows that most of the variance in the data is explained by the first 10 PCs. If unsure, choose the higher number. Having more PCs does not affect the result much, but having less does.
+
+```{r}
+ElbowPlot(pbmc)
+```
+
+## Cluster the cells
+
+The dims parameter takes the number of PCs you decided were necessary. The resolution parameter influences the number of resulting clusters: for datasets of around 3k cells, good results come with resolution = 0.4-1.2.
+
+```{r}
+pbmc <- FindNeighbors(pbmc, dims = 1:10)
+pbmc <- FindClusters(pbmc, resolution = 0.5)
+```
+
+The Idents() function shows the cluster IDs. The number of clusters is not the same as the number of PCs chosen. The number of clusters depends on the clustering algorithm resolution. Here we have 10 PCs and end up with 9 clusters.
+
+```{r}
+# Look at cluster IDs of the first 5 cells
+head(Idents(pbmc), 5)
+```
+
+## tSNE and UMAP
+
+These are non-linear dimensional reduction techniques, as opposed to PCA. Cells with very similar gene expression will end up close on these graphs, but these plots only do not tell the full story.
+
+```{r}
+pbmc <- RunUMAP(pbmc, dims = 1:10)
+```
+```{r}
+# note that you can set `label = TRUE` or use the LabelClusters function to help label
+# individual clusters
+DimPlot(pbmc, reduction = "umap", label = TRUE)
+```
+
+Save the file.
+
+```{r}
+saveRDS(pbmc, file = "results/pbmc_tutorial.rds")
+```
+
+
+# Finding cluster biomarkers
+
+You can find markers defined by differential expression for specific clusters with the argument ident.1 = n_cluster. You can also use FindAllMarkers() to find markers for all clusters.
+
+You can find markers distinguishing one cluster from all the others.
+
+```{r}
+# Find all markers of cluster 2
+cluster2.markers <- FindMarkers(pbmc, ident.1 = 2)
+head(cluster2.markers, n = 5)
+```
+You can also find markers distinguishing a number of given clusters.
+
+```{r}
+# Find all markers distinguishing cluster 5 from clusters 0 and 3
+cluster5.markers <- FindMarkers(pbmc, ident.1 = 5, ident.2 = c(0, 3))
+head(cluster5.markers, n = 5)
+```
+
+You can also find markers for every cluster distinguishing from all other cells, and report only the positive ones. This gives the genes that are more highly expressed in the cluster of interest (positive log2 fold change).
+
+```{r}
+# Find markers for every cluster compared to all remaining cells, report only the positive ones
+pbmc.markers <- FindAllMarkers(pbmc, only.pos = TRUE)
+
+pbmc.markers %>%
+    group_by(cluster) %>%
+    # Keep only genes expressed at least 2x more in the given cluster
+    dplyr::filter(avg_log2FC > 1)
+```
+
+The ROC test returns the "classification power" of a marker: 0 meaning random and 1 meaning perfect.
+
+```{r}
+cluster0.markers <- FindMarkers(pbmc,
+                                ident.1 = 0,
+                                logfc.threshold = 0.25,
+                                test.use = "roc",
+                                only.pos = TRUE)
+```
+
+
+Additional ways to view the data.
+
+```{r}
+VlnPlot(pbmc, features = c("MS4A1", "CD79A"))
+```
+
+
+```{r}
+# you can plot raw counts as well
+VlnPlot(pbmc, features = c("NKG7", "PF4"), slot = "counts", log = TRUE)
+```
+```{r}
+FeaturePlot(pbmc, features = c("MS4A1", "GNLY", "CD3E", "CD14", "FCER1A", "FCGR3A", "LYZ", "PPBP", "CD8A"))
+```
+
+Plot the top 10 markers (or all if less than 10) for each cluster.
+
+```{r}
+top10 <- pbmc.markers %>%
+    group_by(cluster) %>%
+    dplyr::filter(avg_log2FC > 1) %>%
+    slice_head(n = 10) %>%
+    ungroup()
+
+DoHeatmap(pbmc, features = top10$gene) + NoLegend()
+```
+
+# Assigning cell type identity to clusters
+
+Use canonical markers to match the unbiased clustering to known cell types. You look at the markers resulting from the FindMarkers function, and using your knowledge assign those to cell types.
+
+```{r}
+new.cluster.ids <- c("Naive CD4 T", "CD14+ Mono", "Memory CD4 T", "B", "CD8 T", "FCGR3A+ Mono", "NK", "DC", "Platelet")
+
+names(new.cluster.ids) <- levels(pbmc)
+
+pbmc <- RenameIdents(pbmc, new.cluster.ids)
+
+DimPlot(pbmc, reduction = "umap", label = TRUE, pt.size = 0.5) + NoLegend()
+```
+
+Saving the plot.
+
+```{r}
+plot <- DimPlot(pbmc, reduction = "umap", label = TRUE, label.size = 4.5) +
+  xlab("UMAP 1") +
+  ylab("UMAP 2") +
+  theme(axis.title = element_text(size = 18), legend.text = element_text(size = 18)) +
+  guides(colour = guide_legend(override.aes = list(size = 10)))
+
+ggsave(filename = "results/pbmc3k_umap.jpg", height = 7, width = 12, plot = plot, quality = 50)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
