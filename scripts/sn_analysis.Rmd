@@ -1,5 +1,5 @@
 ---
-title: "Single nucleus sequencing analysis for BAT"
+title: "SnRNA-sequencing analysis of human perivascular adipose tissue (PVAT)"
 author: "Hannah Bazin"
 output: html_document
 date: "2025-01-08"
@@ -11,15 +11,155 @@ date: "2025-01-08"
 
 ```{r}
 library(GEOquery)
-library(ArrayExpress)
+library(Seurat)
+library(dplyr)
+library(patchwork)
+library(ggplot2)
+library(tidyverse)
 ```
+
+## Set working directory
+
+The working directory can be set by running the following command in the terminal: setwd("\~/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project")
 
 ## Load data
 
+The data stems from single-nucleus RNA sequencing experiments of human perivascular adipose tissue from three different healthy donors, sequenced with Illumina NovaSeq 6000. The raw data can be found [here](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE164528). It was first published by Angueira et al. on 12 April 2021 in Nature Metabolism in the paper titled "Defining the lineage of thermogenic perivascular adipose tissue" ([link](https://pubmed.ncbi.nlm.nih.gov/33846639/)).
+
+We read in the data using the `Read10X()` function which takes in three files (barcodes.tsv, genes.tsv, and matrix.mtx) and returns a UMI sparse count matrix representing the gene expression data.
+
 ```{r}
-gse <- getGEO("GSE164528")
-e_mtab <- getAE("E-MTAB-8564")
+human1_data <- Read10X(data.dir = "data/GSE164528_RAW/GSM5068996_hPVAT1/")
+human2_data <- Read10X(data.dir = "data/GSE164528_RAW/GSM5068997_hPVAT2/")
+human3_data <- Read10X(data.dir = "data/GSE164528_RAW/GSM5068998_hPVAT3/")
 ```
+
+Next, we create Seurat objects from the raw data using `CreateSeuratObject()`. These objects contain both the data (e.g. counts matrix) and the analysis (e.g. clustering results). The parameters `min.cell` and `min.features` allow for initial filtering: we remove genes expressed in less than three cells (sparse expression), as well as cells with fewer than 200 detected genes.
+
+```{r}
+human1 <- CreateSeuratObject(counts = human1_data, project = "GSE164528", min.cells = 3, min.features = 200)
+human2 <- CreateSeuratObject(counts = human2_data, project = "GSE164528", min.cells = 3, min.features = 200)
+human3 <- CreateSeuratObject(counts = human3_data, project = "GSE164528", min.cells = 3, min.features = 200)
+```
+
+# Pre-processing workflow
+
+## Merge the three Seurat objects
+
+We can merge the three Seurat objects into one, as they all come from healthy human tissues.
+
+```{r}
+human_merged <- merge(human1, y = c(human2, human3), add.cell.ids = c("human1", "human2", "human3"), project = "GSE164528")
+
+# Show object
+human_merged
+
+# Verify the column names
+head(colnames(human_merged))
+tail(colnames(human_merged))
+```
+
+Since we have single-nucleus data, and not single-cell, we expect no mitochondrial gene expression in the samples. If there is, this indicates that mitochondria may have attached to the nucleus during isolation, a sign of bad quality. Therefore, we use the presence of mitochondrial genes as quality control.
+
+-   `nFeature_RNA`: number of non-zero expressed genes in one cell, thus indicates the diversity of gene expression within a cell. A low number may indicate a low-quality cell or an empty droplet. An aberrantly high number may indicate a cell doublet or multiplet.
+-   `percent.mt`: percentage of mitochondrial genes in one cell. A high number may indicate a low-quality sample where the mitochondria attached to the nucleus during isolation.
+
+The `[[` operator can add columns to object metadata. First, we store the mitochondrial QC stat here. The `^` character ensures it matches only the start of a string.
+
+```{r}
+human_merged[["percent.mt"]] <- PercentageFeatureSet(human_merged, pattern = "^MT-")
+
+# Show QC metrics for the first 5 cells
+head(human_merged@meta.data, 5)
+```
+## Visualise QC metrics and filter cells
+
+```{r}
+VlnPlot(human_merged, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+
+human <- subset(human_merged, subset = nFeature_RNA > 200 & nFeature_RNA < 5000 & percent.mt < 15)
+
+VlnPlot(human, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+
+plot1 <- FeatureScatter(human, feature1 = "nCount_RNA", feature2 = "percent.mt")
+plot2 <- FeatureScatter(human, feature1 = "nCount_RNA", feature2 = "nFeature_RNA")
+plot1 + plot2
+```
+
+# Normalise the data
+
+After filtering the cells, we can now normalise the data using a global-scaling method called "LogNormalize". This process normalizes the expression levels for each cell by dividing by the total expression, scales the values using a default factor of 10'000, and then applies a log transformation to the results.
+
+```{r}
+human <- NormalizeData(human, normalization.method = "LogNormalize", scale.factor = 10000)
+VlnPlot(human, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+```
+
+
+# Feature selection
+
+We identify features that have high cell-to-cell variation, these are likely to have the most biological significance. The function returns 2'000 features per dataset, by default.
+
+```{r}
+human <- FindVariableFeatures(human, selection.method = "vst", nfeatures = 2000)
+
+# Identify the 10 most highly variable genes
+top10 <- head(VariableFeatures(human), 10)
+top10
+
+# Plot variable features with labels
+plot1 <- VariableFeaturePlot(human)
+plot2 <- LabelPoints(plot = plot1, points = top10, repel = TRUE)
+plot2
+```
+# Scale the data
+
+We scale the data so that highly expressed genes do not dominate in the downstream analyses. The `ScaleData()` function ensures the mean expression across cells becomes 0, and the variance becomes 1. The results are stored in `human[["RNA"]]$scale.data`.
+
+For clustering, we can scale only variable genes, however the heatmap requires all genes to be scaled.
+
+```{r}
+all_genes <- rownames(human)
+human <- ScaleData(human, features = all_genes)
+```
+
+# Linear dimensionality reduction
+
+We now perform PCA on the scaled data with the variable features as input.
+
+## Run PCA on the scaled data
+
+```{r}
+human <- RunPCA(human, features = VariableFeatures(object = human))
+```
+
+## Visualise PCA results
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
