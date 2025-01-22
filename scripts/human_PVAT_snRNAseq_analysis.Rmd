@@ -328,14 +328,14 @@ libs_combined <- RunUMAP(libs_combined, reduction = "pca", dims = 1:20)
 p1 <- DimPlot(libs_combined,
               reduction = "umap",
               group.by = "sampleType") +
-  ggtitle("tSNE coloured by sample origin")
+  ggtitle("UMAP coloured by sample origin")
 
 p2 <- DimPlot(libs_combined,
               reduction = "umap",
               split.by = "sampleType",
               group.by = "sampleType",
               ncol = 3) +
-  ggtitle("tSNE of all samples")
+  ggtitle("UMAP of all samples")
 
 # Save plots as PDFs
 if (!dir.exists("results/humanPVATsn")) dir.create("results/humanPVATsn")
@@ -371,24 +371,159 @@ mito_plot
 
 # Find neighbors and clusters
 
+I adapted the resolution to create an approximate number of clusters I am expecting based on the paper of reference (Angueira et al., 2021).
+
 ```{r}
 
 libs_combined <- FindNeighbors(libs_combined, reduction = "pca", dims = 1:10)
 
-libs_combined <- FindClusters(libs_combined, resolution = 0.5, random.seed = 1996)
+libs_combined <- FindClusters(libs_combined, resolution = 0.35, random.seed = 1996)
 
 # Look at cluster IDs of the first 5 cells
 head(Idents(libs_combined), 5)
 
 ```
 
+## Visualise clusters on UMAP
+
+We visualise the clusters based on cluster number.
+
 ```{r}
-DimPlot(libs_combined,
-        reduction = "umap") +
-  ggtitle("tSNE")
+
+# Plot UMAP with cluster numbers
+umap_with_numbers <- DimPlot(libs_combined,
+                            reduction = "umap",
+                            label = TRUE) +
+  ggtitle("UMAP with Cluster Numbers")
+
+# Save plot
+pdf("results/humanPVATsn/UMAP_with_cluster_numbers.pdf", width = 12, height = 6)
+print(umap_with_numbers)
+invisible(dev.off())
+
+# Show plot
+umap_with_numbers
+
 ```
 
-*Before differential gene expression, rejoin the layers, but you can always split them again: obj \<- JoinLayers(obj)*
+```{r}
+# Plot UMAP with cluster numbers, split by sample
+umap_with_numbers_by_sample <- DimPlot(libs_combined,
+                            reduction = "umap",
+                            split.by = "sampleType",
+                            label = TRUE) +
+  ggtitle("UMAP with Cluster Numbers Split by Sample")
+
+# Save plot
+pdf("results/humanPVATsn/UMAP_with_cluster_numbers_by_sample.pdf", width = 12, height = 6)
+print(umap_with_numbers_by_sample)
+invisible(dev.off())
+
+# Show plot
+umap_with_numbers_by_sample
+```
+
+
+
+# Find markers
+
+Before differential gene expression analysis, we return to the RNA assay instead of the integrated one. The function `FindAllMarkers()` finds markers (differentially expressed genes) for each of the clusters in a dataset. By default, it uses a Wilcoxon Rank Sum test to identify differentially expressed genes between two groups. The parameters are set as follows:
+
+- only.pos = T only returns positive markers
+- min.pct = 0.3 only tests genes detected in 30% of either of the two populations being compared. This speeds up the function and allows us to focus on more biologically relevant genes. 
+- logfc.threshold = 0.3 limits testing to genes that show at least 0.3-fold difference (log-scale) between the two groups (removes weaker signals)
+
+```{r}
+
+# Return to RNA assay as default for DGEA
+DefaultAssay(libs_combined) <- "RNA"
+
+# Find markers
+  # This is a time-consuming step, save the object
+if(file.exists("data/analysis/cluster_markers.RData")){
+  
+  load(file = "data/analysis/cluster_markers.RData")
+
+  }else{
+    
+    markers <- FindAllMarkers(libs_combined, only.pos = T, min.pct = 0.3, logfc.threshold = 0.3)
+    
+    save(markers, file = "data/analysis/cluster_markers.RData")
+
+  }
+
+# Show the top ten markers in each cluster
+top8 <- markers %>% group_by(cluster) %>% slice_max(n = 8, order_by = avg_log2FC)
+
+top10 <- markers %>% group_by(cluster) %>% slice_max(n = 10, order_by = avg_log2FC)
+
+top20 <- markers %>% group_by(cluster) %>% slice_max(n = 20, order_by = avg_log2FC)
+
+top10
+
+```
+
+We generate a table of cluster markers for reference.
+
+```{r warning = FALSE}
+
+# Determine number of clusters
+num_clusters <- max(as.numeric(as.character(libs_combined@meta.data$seurat_clusters)))
+
+lapply(0:num_clusters, function(i) {
+  
+  # Select relevant information
+  tab <- filter(markers, cluster == i) %>% 
+    select(gene, p_val, p_val_adj, avg_log2FC, cluster)
+  
+  # Export as csv for Excel
+  write.csv(tab, file = paste0("results/humanPVATsn/markersCluster", i, ".csv"))
+  
+  # Print as datatable
+  DT::datatable(tab)
+  
+})
+
+```
+
+## Plot markers
+
+Plot the top 8 marker genes for each cluster.
+
+```{r fig.height=20, fig.width=15}
+
+# Ensure that RNA assay is used and not integrated assay
+DefaultAssay(libs_combined) <- "RNA"
+
+violinPlots <-
+  lapply(0:num_clusters, function(i) {
+    
+    # Get a list of genes
+    features_to_plot <- filter(top8, cluster == i)$gene
+    
+    # Get a list of violin plots, 8 per cluster
+    violinList <- VlnPlot(libs_combined, features = features_to_plot)
+    
+    # Plot a set of 8 violin plots for each cluster
+    violinList[[1]] + violinList[[2]] + violinList[[3]] + 
+      violinList[[4]] + violinList[[5]] + violinList[[6]] + 
+      violinList[[7]] + violinList[[8]] +
+      # Add cluster number as title
+      plot_annotation(title = paste("Cluster", i, sep = " "),
+                      theme = theme(plot.title = element_text(size = 18, face = "bold")))
+
+  })
+
+violinPlots
+
+```
+
+
+
+
+
+
+
 
 **Session Info**
 
