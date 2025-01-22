@@ -1,0 +1,724 @@
+---
+title: "Data Processing, UMAP and Definition of cell types"
+author: "Holly A. R. Giles"
+date: "`r doc_date()`"
+output:
+  BiocStyle::html_document:
+      toc: yes
+      toc_depth: 3
+      toc_float: yes
+      code_folding: "hide" 
+---
+
+In this vignette, I integrate 9 scRNAseq libraries, sequenced from control and NTCU-exposed hBEC and COPD samples, to generate a UMAP visualisation. 
+
+```{r setup, include=FALSE}
+
+
+knitr::opts_chunk$set(
+  tidy = TRUE,
+  tidy.opts = list(width.cutoff = 95),
+  fig.width = 10)
+ 
+set.seed(1996)
+
+```
+
+```{r loadLibraries, include=FALSE}
+
+library(patchwork)
+library(ggplot2)
+library(multtest)
+library(cowplot)
+library(tidyverse)
+library(scDblFinder)
+library(Seurat)
+library(speckle)
+library(ArchR) 
+
+
+```
+
+```{r plotDir, include=FALSE}
+
+plotDir = ifelse(exists(".standalone"), "", "../../../inst/fig/") 
+if(plotDir!="") if(!file.exists(plotDir)) dir.create(plotDir)
+
+```
+
+```{r defineAesthetics, include=FALSE, warning = FALSE }
+
+source("../../../R/themes_colors.R")
+
+
+#Use the ArchR bear pallette from the scATAC package ArchR
+clusterColours <- ArchRPalettes$bear
+
+#Wes Anderson
+sampleColors <- c(
+#Color 1: "Vintage Yellow"
+"1. HBEC D1 Control"  = "#FFEF9F", #(Light)
+"2. HBEC D1 3uM"  ="#FFDA6D", #(Medium)
+"3. HBEC D1 10uM"  = "#f0a60c", #(Dark)
+#Color 2: "Soft Salmon"
+"4. COPD D1 Control"  = "#FFEBF3", #(Light)
+"5. COPD D1 3uM"  = "#FFA5C2", #(Medium)
+"6. COPD D1 10uM"  ="#FF85AB", #(Dark)
+#Color 3: "Dusty Lavender"
+"7. COPD D2 Control"  = "#D6F1F4", #(Light)
+"8. COPD D2 3uM"  ="#77B6BD", #(Medium)
+"9. COPD D2 10uM"  = "#09717d" #(Dark)
+
+)
+
+
+```
+
+# Load the data
+
+```{r loadData}
+
+#Load meta data 
+metafile<- read.csv("../../../data/10X/metaData.csv")
+
+metafile[c("Number", "disease", "D", "Treatment")] <- str_split_fixed(metafile$Sample.name, ' ', 4)
+
+
+# List names of all  libraries 
+libs = c("SITTA2",
+         "SITTB2",
+         "SITTC2",
+         "SITTD2",
+         "SITTE2",
+         "SITTF2",
+         "SITTG2",
+         "SITTH1",
+         "SITTH2") 
+
+
+
+#loop through each of the folder names and load in the data 
+lib_list <- 
+  
+  lapply(libs, function(x){
+  
+  #get file path
+  filename <-  paste0("../../../data/10X/", x , "/outs/filtered_feature_bc_matrix/")
+  
+  #read in 10x data
+  data10x <- Read10X(data.dir = filename)
+  
+  #create a Seurat Object 
+ obj <- 
+  CreateSeuratObject(counts = data10x, project = x, min.cells = 3, min.features = 100)
+ 
+#make into a data frame of two columns
+cell_sampleIDs <- as.data.frame(obj$orig.ident)
+colnames(cell_sampleIDs) <- "Barcode"
+cellIDs <- row.names(cell_sampleIDs)
+
+#Add meta data to cell IDs 
+metaData <- left_join(cell_sampleIDs, 
+                      #add the data for this specific sampleID
+                      filter(metafile, Barcode ==x), by = "Barcode") 
+
+row.names(metaData) <- cellIDs
+
+#add three meta data columns as three separate slots to each Seurat object 
+metaData$disease <- as.factor(metaData$disease)
+obj$tissueType <- metaData[6]
+
+
+metaData$Sample.name <- as.factor(metaData$Sample.name)
+obj$sampleType <- metaData[4]
+
+metaData$Treatment <- as.factor(metaData$Treatment)
+obj$treatment <- metaData[8]
+
+ obj
+  
+})
+
+names(lib_list) <- libs
+
+
+
+
+```
+
+# Quality control 
+
+### Unique features, UMIs and mitochondrial counts 
+-   Filter cells that have unique feature counts greater than 1000
+-   Filter cells that have more than 100000 UMIs
+-   Filter cells that have \>17% mitochondrial counts
+
+```{r filterCells, fig.height=7, fig.width=13}
+
+#Use the set of all genes starting with `MT-` as a set of mitochondrial genes
+lib_list <- lapply(lib_list, function(seuset) {
+  seuset[["percent.mt"]] <- PercentageFeatureSet(seuset, pattern = "^MT-")
+  seuset
+})
+
+
+# Visualise QC metrics as a violin plot
+lapply(lib_list, function(x){
+  
+  VlnPlot(x, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+  
+})
+
+
+#filter based on QC metrics
+lib_list_filtered <- 
+  lapply(lib_list, function(x){
+    
+    subset(x, subset = nFeature_RNA > 1000  & nCount_RNA < 100000 & percent.mt < 17)
+ 
+  
+})
+
+
+names(lib_list_filtered) <- libs
+
+#check effect of filtering 
+lib_list[[1]]
+lib_list_filtered[[1]]
+
+
+lib_list[[5]]
+lib_list_filtered[[5]]
+
+
+```
+
+##  Doublets
+
+4 - 12% of cells are filtered out in each library 
+
+```{r findDoublets}
+
+lib_list_filtered <- 
+  lapply(lib_list_filtered, function(x){
+    
+    #Find doubles 
+    doublets <- scDblFinder(sce=x@assays$RNA@counts)
+    
+    #Add doublet scores to current seurat object x
+    x$doublet_score <- doublets$scDblFinder.score
+    
+    #add classification (singlet / doublet) to current seurat object x
+    x$doublet <- doublets$scDblFinder.class
+    
+    #get doublet information as a table
+    meta_doublet=doublets@colData
+    
+    #subset seurat object to only include singlets 
+    subset(x, cells = which(x@meta.data$doublet =='singlet'))
+   
+})
+
+
+
+
+```
+
+# Seurat steps 
+## Run NormalizeData and FindVariableFeatures 
+```{r}
+
+lib_list_filtered <- lapply(X = lib_list_filtered, FUN = function(x) {
+  
+  x <- NormalizeData(x)
+  x <- FindVariableFeatures(x, selection.method = "vst", nfeatures = 2000)
+
+  })
+
+### Select features that are repeatedly variable across datasets for integration
+features <- SelectIntegrationFeatures(object.list = lib_list_filtered)
+
+
+```
+
+Visualise variable features
+```{r var_features, fig.height=5, fig.width=11, message = FALSE, warning = FALSE}
+
+
+lapply(1:length(lib_list_filtered), function(i) {
+ 
+   x <- lib_list_filtered[[i]]
+  
+   # Identify the 10 most highly variable genes
+  top10 <- head(VariableFeatures(x), 10)
+
+  # plot variable features with and without labels
+  plot1 <- VariableFeaturePlot(x)
+  plot2 <- LabelPoints(plot = plot1, points = top10, repel = TRUE)
+  plot1 + plot2 + plot_annotation(title = names(lib_list_filtered[i]))
+  
+})
+
+
+
+```
+
+## Data integration 
+```{r find.anchors}
+
+#only run this if file doesn't exist (very time consuming)
+
+if(file.exists("../../../data/final/anchors.RData")){
+  
+  load(file = "../../../data/final/anchors.RData")
+
+  }else{
+    anchors <- FindIntegrationAnchors(object.list = lib_list_filtered, anchor.features = features)
+    
+    #This is a time consuming step, so save anchors: 
+    
+    save(anchors, file = "../../../data/final/anchors.RData")
+
+}
+
+
+
+```
+
+```{r makeIntegratedAssay}
+### Use anchors to generate an integrated data assay
+
+
+if(file.exists("../../../data/final/libsCombined.RData")){
+  
+  load(file = "../../../data/final/libsCombined.RData")
+  
+  }else{
+    
+    libs.combined <- IntegrateData(anchorset = anchors)
+    
+    #This is a time consuming step, so save : 
+    save(libs.combined, file = "../../../data/final/libsCombined.RData")
+
+}
+
+
+#check dimensions of libs.combined 
+libs.combined
+
+
+
+```
+
+## Scale data 
+```{r regressvarmt}
+
+# we will perform downstream analysis on the corrected data
+DefaultAssay(libs.combined) <- "integrated"
+
+#Scale data and regress out unwanted variation due to mitochondrial reads 
+
+libs.combined <- ScaleData(libs.combined, vars.to.regress = 'percent.mt')
+
+```
+
+
+## PCA 
+```{r pca, results='hide'}
+
+#NB (By default, only the previously determined variable features are used as input)
+
+libs.combined <- RunPCA(libs.combined, npcs = 30, verbose = FALSE)
+
+```
+
+
+```{r elbow_plot, fig.height=6, fig.width=10}
+
+ElbowPlot(libs.combined, ndims = 25)
+
+```
+
+
+```{r}
+
+DimPlot(libs.combined, reduction = "pca", 
+              group.by = "sampxleType", cols = sampleColors )
+
+DimPlot(libs.combined, reduction = "pca", 
+              group.by = "tissueType" )
+
+DimPlot(libs.combined, reduction = "pca", 
+              group.by = "treatment" )
+
+
+FeaturePlot(object = libs.combined, reduction = "pca", features = "percent.mt")
+
+```
+
+## UMAP 
+```{r runUMAP}
+
+libs.combined <- RunUMAP(libs.combined, reduction = "pca", dims = 1:20)
+
+p1 <- DimPlot(libs.combined, reduction = "umap", 
+              group.by = "sampleType"
+              ,cols = sampleColors ) + 
+  ggtitle("tSNE coloured by library")
+
+
+p2 <- DimPlot(libs.combined, reduction = "umap", split.by = "sampleType", group.by = "sampleType", ncol = 3, cols = sampleColors)
+
+p1 
+p2
+    
+
+
+```
+
+
+## Find neighbours and Find clusters 
+
+```{r cluster}
+
+libs.combined <- FindNeighbors(libs.combined, reduction = "pca", dims = 1:20)
+
+libs.combined <- FindClusters(libs.combined, resolution = 0.35, random.seed = 1996)
+
+
+# Look at cluster IDs of the first 5 cells
+head(Idents(libs.combined), 5)
+
+```
+
+
+## Find markers 
+
+```{r findAllMarkers}
+
+# DE analysis therefore return to RNA assay 
+DefaultAssay(libs.combined) <- "RNA"
+
+#only run this is file doesn't exist ( time consuming)
+
+if(file.exists("../../../data/final/cluster_markers.RData")){
+  
+  load(file = "../../../data/final/cluster_markers.RData")
+
+  }else{
+    
+    markers <- FindAllMarkers(libs.combined, only.pos = T, min.pct = 0.3, logfc.threshold = 0.3)
+    
+    #This is a time consuming step, so save data: 
+    
+    save(markers, file = "../../../data/final/cluster_markers.RData")
+
+}
+
+
+
+#show the top ten markers in each cluster
+
+top8 <- markers %>% group_by(cluster) %>% slice_max(n = 8, order_by = avg_log2FC)
+
+top10 <- markers %>% group_by(cluster) %>% slice_max(n = 10, order_by = avg_log2FC)
+
+top20 <- markers %>% group_by(cluster) %>% slice_max(n = 20, order_by = avg_log2FC)
+
+top10
+
+```
+
+Tables of cluster markers
+```{r clusterMarkerTables, warning = FALSE}
+
+#determine number of clusters
+num_clusters <- max(as.numeric(as.character(libs.combined@meta.data$seurat_clusters)))
+
+lapply(0:num_clusters, function(i){
+ 
+tab<-  
+filter(markers, cluster == i) %>% select(gene, p_val, p_val_adj, avg_log2FC, cluster)
+
+#export as csv for excel 
+write.csv(tab, file = paste0("../../../inst/extdata/markersCluster", i, ".csv"))
+
+#print as datatable
+DT::datatable(tab)
+
+  })
+
+```
+
+## Plot markers
+
+Top 8 marker genes 
+
+```{r Vlnplotstop8, fig.height=20, fig.width=15}
+
+
+DefaultAssay(libs.combined) <- "RNA"
+
+#determine number of clusters
+num_clusters <- max(as.numeric(as.character(libs.combined@meta.data$seurat_clusters)))
+
+violinPlots <- 
+  
+lapply(0:num_clusters, function(i){
+  
+  #get a list of genes
+  featurestoplot <- filter(top8, cluster == i)$gene
+  
+  #get a list of violin plots, 8 for each cluster
+  violinList <- VlnPlot(libs.combined, features = featurestoplot, cols = clusterColors)
+  
+  #plot a set of 8 violin plots for each cluster
+
+  violinList[[1]] + violinList[[2]] + violinList[[3]] +
+  violinList[[4]] + violinList[[5]] + violinList[[6]] +
+  violinList[[7]] + violinList[[8]] + 
+
+  
+  #add cluster number as title 
+  plot_annotation(title = paste("Cluster", i, sep = " "))  
+
+
+  
+})
+
+violinList
+
+```
+
+Known cell type markers 
+
+```{r VlnplotsKnownMarkers, fig.height=20, fig.width=15}
+
+DefaultAssay(libs.combined) <- "RNA"
+
+list_of_celltypes <- c("Basal", "proliferatingBasal", "BC_Club", "Club", "Ciliated", "Neuroendocine", "Tuft", "Ionocyte", "Goblet")
+
+
+list_of_cellmarkers <- list(Basal = c("KRT5","KRT14","TP63","DAPL1", "NGFR"),
+                          proliferatingBasal = c("MKI67","TOP2A","CDK1"),
+                          BC_Club = c("KRT4","KRT13"),
+                          Club = c("SCGB1A1","KRT15","LYPD2"),
+                          Ciliated =c("FOXJ1","CCDC153","CCDC113","MLF1","LZTFL1"),
+                          Neuroendocine = c("CHGA","ASCL1","SOX9","ITGA2","ITGB4"), 
+                          Tuft = c("PUO2F3","AVIL","GNAT3","TRPM5"),
+                          Ionocyte = c("FOXI1", "CFTR", "ASCL3"),
+                          Goblet = c("MUC5AC", "MUC5B", "GP2", "SPDEF"))
+
+
+cellViolins <- 
+lapply(list_of_celltypes, function(j){
+    
+    #get a list of genes
+    featurestoplot <- list_of_cellmarkers[[j]]
+  
+    #get a list of violin plots, 8 for each cluster
+    violinList <- VlnPlot(libs.combined, features = featurestoplot, cols = clusterColors)
+  
+    #plot a set of violin plots for each cell type
+    #wrap_plots(plots = violinList, ncol = 1) +
+  
+    #add cluster number as title 
+    violinList + plot_annotation(title = paste("Cell Type", j, sep = " "))  
+
+  
+})
+
+
+```
+
+
+
+
+## Cell type annotation 
+
+Unannotated UMAP
+```{r unannotatedUMAP, fig.path=plotDir, dev=c("png", "cairo_pdf"), fig.height=5, fig.width=10}
+
+DimPlot(libs.combined, reduction = "umap", split.by = "sampleType", cols = clusterColors,  ncol = 3)
+
+```
+
+Name clusters 
+```{r assignCellIdentity, eval = TRUE}
+						 
+anno.combined <- RenameIdents(libs.combined, 
+                              "0" = "Ciliated", 
+                              "1" = "Ciliated", 
+                              "2" = "Club/Goblet",
+                              "3" = "Suprabasal",
+                              "4" = "Basal-Club-Ciliated Mixture",
+                              "5" = "Basal", 
+                              "6" = "Ciliated" , 
+                              "7" = "Club/Goblet with inflammation", 
+                              "8" = "Ciliated",
+                              "9" = "Basal_Club?",  
+                              "10" = "Ionocyte", 
+                              "11" = "Proliferating Basal", 
+                              "12" = "Proliferating Ciliated",
+                              "13" = "Ciliated",
+                              "14" = "Mixed, maybe Tuft", 
+                              "15" = "Ciliated") 
+
+```
+
+# Final plots
+## Labelled UMAP Plots
+```{r annotated_UMAP, fig.path=plotDir, dev=c("png", "cairo_pdf"), eval = TRUE,  fig.height=5, fig.width=12}
+
+namedclusterColors <-  
+  list("Ciliated" = "#faa818", 
+       "Club/Goblet" = "#41a30d",
+       "Suprabasal" = "#fbdf72",
+       "Basal-Club-Ciliated Mixture" = "#367d7d", 
+       "Basal" = "#d33502", #(Cyan)
+       "Basal_Club?" = "#916848",
+       "Club/Goblet with inflammation" = "#f5b390", 
+       "Ionocyte" = "#bed678",# (Purple)
+       "Proliferating Basal" = "#725ca5",
+       "Proliferating Ciliated" = "#bf2837", 
+       "Mixed, maybe Tuft" = "#5e3106", 
+       "Ciliated" = "#342739" 
+  
+)
+
+
+
+DefaultAssay(anno.combined) <- "integrated"
+
+DimPlot(anno.combined, cols = namedclusterColors  ) 
+
+
+
+```
+
+## Labelled UMAP, split by sample 
+
+```{r annotated_UMAP_by_sample, fig.path=plotDir, dev=c("png", "cairo_pdf"), fig.height=10, fig.width=12}
+
+
+DimPlot(anno.combined, split.by = "sampleType", ncol = 3,repel = TRUE, cols = namedclusterColors) 
+
+
+```
+
+## Marker Dot plots 
+```{r markerGene_dotplot, fig.height = 15, fig.width = 20, fig.path=plotDir, dev=c("png", "cairo_pdf")}
+
+t4<-theme(                              
+  plot.background = element_blank(), 
+  panel.grid.major = element_line(linetype = "dotted", colour = "grey"),
+  panel.grid.minor = element_blank(), 
+  panel.border = element_blank(), 
+  panel.background = element_blank(),
+  axis.line = element_line(size=.4),
+  axis.line.x = element_line(),
+  axis.line.y = element_line(),
+ axis.text.x  = element_text(angle=45, size=16, face="bold", hjust = 1, vjust = 1),
+  axis.text.y = element_text(size = 18),
+  axis.ticks.x = element_line(linetype = "dotted"),
+  axis.ticks.length = unit(0.3,"cm"),
+  axis.title.x = element_text(face="bold", size=18), 
+  axis.title.y = element_text(face="bold", size=18),
+  plot.title = element_text(face="bold", size=18, hjust = 0.5),
+  strip.text = element_text(size = fontsize),
+  legend.text=element_text(size=20)
+)
+
+
+# set factor levels of cellular identities
+anno.combined2 <- anno.combined
+
+Idents(anno.combined2) <- factor(Idents(anno.combined2),
+                                 levels = c( "Mixed, maybe Tuft",
+                                             "Ionocyte",
+                                             "Proliferating Ciliated",
+                                             "Ciliated",
+                                             "Club/Goblet with inflammation",
+                                             "Club/Goblet",
+                                             "Basal_Club?",
+                                             "Basal-Club-Ciliated Mixture",
+                                             "Suprabasal",
+                                             "Proliferating Basal",
+                                             "Basal"))
+
+markers.to.plot <- unique(unlist(list_of_cellmarkers))
+
+
+DefaultAssay(anno.combined2) <- "RNA"
+
+#plot
+
+DotPlot(anno.combined2, features = markers.to.plot, dot.scale = 8) + 
+  RotatedAxis() + 
+  scale_colour_gradient2(low = palblues[1], mid = "white", high = palreds[8]) +
+  t4 + 
+  xlab("Marker gene") + ylab("Cell Type")
+
+
+```
+
+
+## Cell type proportions plot 
+```{r cellTypeProportions, fig.path=plotDir, dev=c("png", "cairo_pdf"), fig.height = 3.5}
+
+
+#set levels as in dot plot, and then set colours to match 
+
+Idents(anno.combined2) <- factor(Idents(anno.combined2),
+                                 levels = c( "Mixed, maybe Tuft",
+                                             "Ionocyte",
+                                             "Proliferating Ciliated",
+                                             "Ciliated",
+                                             "Club/Goblet with inflammation",
+                                             "Club/Goblet",
+                                             "Basal_Club?",
+                                             "Basal-Club-Ciliated Mixture",
+                                             "Suprabasal",
+                                             "Proliferating Basal",
+                                             "Basal"))
+
+
+
+
+#add ggplot manual colour scheme 
+plotCellTypeProps(anno.combined,clusters = Idents(anno.combined), sample =  anno.combined$sampleType) + t1 +
+  
+  scale_fill_manual("legend", values ="Ciliated" = "#faa818", 
+       "Club/Goblet" = "#41a30d",
+       "Suprabasal" = "#fbdf72",
+       "Basal-Club-Ciliated Mixture" = "#367d7d", 
+       "Basal" = "#d33502", #(Cyan)
+       "Basal_Club?" = "#916848",
+       "Club/Goblet with inflammation" = "#f5b390", 
+       "Ionocyte" = "#bed678",# (Purple)
+       "Proliferating Basal" = "#725ca5",
+       "Proliferating Ciliated" = "#bf2837", 
+       "Mixed, maybe Tuft" = "#5e3106", 
+       "Ciliated" = "#342739")
+
+
+
+
+```
+
+
+<details>
+
+
+
+<summary>**Session Info**</summary>
+
+```{r}
+
+#SAVE SO CAN USE IN OTHER SCRIPTS 
+save.image(file = "../../../data/final/workspace.RData")
+
+sessionInfo()
+```
+
+</details>
