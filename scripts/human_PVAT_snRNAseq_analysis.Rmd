@@ -282,17 +282,17 @@ We perform PCA on the scaled data with the variable features as input.
 
 # By default, only the previously determined variable features are used as input.
 
-libs_combined <- RunPCA(libs_combined, npcs = 30)
+libs_combined_filt <- RunPCA(libs_combined, npcs = 30)
 
 ```
 
 ## Determine dimensionality of the dataset
 
-We plot an elbow plot to determine the dimensionality of the dataset. From this plot we can see that the line starts to flatten significantly around PC 10. Therefore in the downstream analysis we keep 10 dimensions of the dataset.
+We plot an elbow plot to determine the dimensionality of the dataset. From this plot we can see that the line starts to flatten significantly around PC 10. Therefore in the downstream analysis we keep 15 dimensions of the dataset.
 
 ```{r cache = FALSE}
 
-elbow_plot <- ElbowPlot(libs_combined, ndims = 25)
+elbow_plot <- ElbowPlot(libs_combined_filt, ndims = 25)
 
 # Save elbow plot as PDF
 if (!dir.exists("results/humanPVATsn")) dir.create("results/humanPVATsn")
@@ -310,10 +310,10 @@ elbow_plot
 
 ```{r}
 
-DimPlot(libs_combined, reduction = "pca", 
+DimPlot(libs_combined_filt, reduction = "pca", 
               group.by = "sampleType")
 
-FeaturePlot(object = libs_combined, reduction = "pca", features = "percent.mt")
+FeaturePlot(object = libs_combined_filt, reduction = "pca", features = "percent.mt")
 
 ```
 
@@ -322,15 +322,16 @@ FeaturePlot(object = libs_combined, reduction = "pca", features = "percent.mt")
 Note: human1 is a healthy weight, human2 is overweight, and human3 is obese.
 
 ```{r message = FALSE, cache = FALSE}
-libs_combined <- RunUMAP(libs_combined, reduction = "pca", dims = 1:20)
+
+libs_combined_filt <- RunUMAP(libs_combined_filt, reduction = "pca", dims = 1:15)
 
 # Plot UMAP by sample type
-p1 <- DimPlot(libs_combined,
+p1 <- DimPlot(libs_combined_filt,
               reduction = "umap",
               group.by = "sampleType") +
   ggtitle("UMAP coloured by sample origin")
 
-p2 <- DimPlot(libs_combined,
+p2 <- DimPlot(libs_combined_filt,
               reduction = "umap",
               split.by = "sampleType",
               group.by = "sampleType",
@@ -358,7 +359,8 @@ The percentage of mitochondrial gene counts seems well distributed across the cl
 
 ```{r}
 
-mito_plot <- FeaturePlot(object = libs_combined, reduction = "umap", features = "percent.mt")
+mito_plot <- FeaturePlot(object = libs_combined_filt, reduction = "umap", features = "percent.mt") +
+  ggtitle("UMAP coloured by percentage of mitochondrial genes")
 
 pdf("results/humanPVATsn/UMAP_mt_percent.pdf", width = 12, height = 6)
 print(mito_plot)
@@ -371,16 +373,16 @@ mito_plot
 
 # Find neighbors and clusters
 
-I adapted the resolution to create an approximate number of clusters I am expecting based on the paper of reference (Angueira et al., 2021).
+I adapted the resolution to create an approximate number of clusters I am expecting based on the paper of reference (Angueira et al., 2021) - i.e. around 11 clusters.
 
 ```{r}
 
-libs_combined <- FindNeighbors(libs_combined, reduction = "pca", dims = 1:10)
+libs_combined_filt <- FindNeighbors(libs_combined_filt, reduction = "pca", dims = 1:15)
 
-libs_combined <- FindClusters(libs_combined, resolution = 0.35, random.seed = 1996)
+libs_combined_filt <- FindClusters(libs_combined_filt, resolution = 0.35, random.seed = 1996)
 
 # Look at cluster IDs of the first 5 cells
-head(Idents(libs_combined), 5)
+head(Idents(libs_combined_filt), 5)
 
 ```
 
@@ -391,7 +393,7 @@ We visualise the clusters based on cluster number.
 ```{r}
 
 # Plot UMAP with cluster numbers
-umap_with_numbers <- DimPlot(libs_combined,
+umap_with_numbers <- DimPlot(libs_combined_filt,
                             reduction = "umap",
                             label = TRUE) +
   ggtitle("UMAP with Cluster Numbers")
@@ -408,7 +410,7 @@ umap_with_numbers
 
 ```{r}
 # Plot UMAP with cluster numbers, split by sample
-umap_with_numbers_by_sample <- DimPlot(libs_combined,
+umap_with_numbers_by_sample <- DimPlot(libs_combined_filt,
                             reduction = "umap",
                             split.by = "sampleType",
                             label = TRUE) +
@@ -423,8 +425,6 @@ invisible(dev.off())
 umap_with_numbers_by_sample
 ```
 
-
-
 # Find markers
 
 Before differential gene expression analysis, we return to the RNA assay instead of the integrated one. The function `FindAllMarkers()` finds markers (differentially expressed genes) for each of the clusters in a dataset. By default, it uses a Wilcoxon Rank Sum test to identify differentially expressed genes between two groups. The parameters are set as follows:
@@ -436,7 +436,7 @@ Before differential gene expression analysis, we return to the RNA assay instead
 ```{r}
 
 # Return to RNA assay as default for DGEA
-DefaultAssay(libs_combined) <- "RNA"
+DefaultAssay(libs_combined_filt) <- "RNA"
 
 # Find markers
   # This is a time-consuming step, save the object
@@ -446,7 +446,7 @@ if(file.exists("data/analysis/cluster_markers.RData")){
 
   }else{
     
-    markers <- FindAllMarkers(libs_combined, only.pos = T, min.pct = 0.3, logfc.threshold = 0.3)
+    markers <- FindAllMarkers(libs_combined_filt, only.pos = T, min.pct = 0.3, logfc.threshold = 0.3)
     
     save(markers, file = "data/analysis/cluster_markers.RData")
 
@@ -468,7 +468,7 @@ We generate a table of cluster markers for reference.
 ```{r warning = FALSE}
 
 # Determine number of clusters
-num_clusters <- max(as.numeric(as.character(libs_combined@meta.data$seurat_clusters)))
+num_clusters <- max(as.numeric(as.character(libs_combined_filt@meta.data$seurat_clusters)))
 
 lapply(0:num_clusters, function(i) {
   
@@ -493,7 +493,7 @@ Plot the top 8 marker genes for each cluster.
 ```{r fig.height=20, fig.width=15}
 
 # Ensure that RNA assay is used and not integrated assay
-DefaultAssay(libs_combined) <- "RNA"
+DefaultAssay(libs_combined_filt) <- "RNA"
 
 violinPlots <-
   lapply(0:num_clusters, function(i) {
@@ -502,7 +502,7 @@ violinPlots <-
     features_to_plot <- filter(top8, cluster == i)$gene
     
     # Get a list of violin plots, 8 per cluster
-    violinList <- VlnPlot(libs_combined, features = features_to_plot)
+    violinList <- VlnPlot(libs_combined_filt, features = features_to_plot)
     
     # Plot a set of 8 violin plots for each cluster
     violinList[[1]] + violinList[[2]] + violinList[[3]] + 
@@ -518,10 +518,239 @@ violinPlots
 
 ```
 
+## Plot dot plot to identify clusters
+
+```{r}
+
+DotPlot(libs_combined_filt,
+        features = c(
+
+          # Early markers
+          "DCN", "FBLN1", "COL3A1", "COL1A1", "COL1A2", "FSTL1", "GSN", "FBLN5", "MFAP5", "ADAMTSL3", "IGFBP6", "SEMA3C", "CREB5"
+          
+          )) +
+  
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  ggtitle("Early marker expression")
+
+```
+
+```{r}
+
+DotPlot(libs_combined_filt,
+        features = c(
+
+          # Intermediate markers
+          "COL15A1", "APOD", "EBF1"
+          
+          )) +
+  
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  ggtitle("Intermediate marker expression")
+
+```
+
+```{r}
+
+DotPlot(libs_combined_filt,
+        features = c(
+
+          # Pre-adipocyte markers
+          "PDGFRA", "LAMA2", "FBLN1", "FBN1", "FSTL1", "NEGR1", "EBF2", "DCN", "MGP", "PPARG"
+          
+          )) +
+  
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  ggtitle("Literature pre-adipocyte markers")
+
+```
+
+
+
+```{r fig.height=7, fig.width=10}
+
+DotPlot(libs_combined_filt,
+        features = c(
+          # Early markers
+          "DCN", "FBLN1", "COL3A1", "COL1A1", "COL1A2", "FSTL1", "GSN", "FBLN5", "MFAP5", "ADAMTSL3", "IGFBP6", "SEMA3C", "CREB5",
+      
+          # Intermediate markers
+          "COL15A1", "APOD", "EBF1",
+          
+          # Pre-adipocyte
+          "NEGR1","EBF2","MGP", "PPARG",
+          # "DCN"
+          
+          # Mature adipocyte
+          "CD3D","GHR","CIDEC", "PLIN1", "CIDEA", "ADIPOQ", "LPL", "LIPE", "UCP1",
+          
+          # T cell
+          "PTPRC","CD3G",
+          
+          # Macrophages (until CD69)
+          "FRMD4B","CD68","ITGAM","LPAR1","SOX9",
+         
+           # Endothelial
+          "VWF", "PECAM1", "ANO2","FLT4",
+          
+          # SMC
+          "MYH11", "MYO1D", "RYR2", "ACTA2",
+          
+          # Circadian rhythm
+          "CRY2", "CSNK1E",
+          
+          # Other
+          "CD14","FCGR3A",
+          
+          # Other
+          "BCL11A","MS4A1","CD79A","IGHM",
+
+          # Other
+          "LAMP3","ITGAX","VIM","CCR7","SELL","CREM","CD69", "GATA6",
+          
+          "DPP4", "ICAM1"
+          
+          )) +
+  
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+```
+
+This dot plot contains the genes I found were important marker genes for the cell types I identified in my clusters.
+
+```{r}
+
+annot_dot_plot <- DotPlot(libs_combined_filt,
+        features = c(
+          
+          ## Adipocyte-related
+          
+          # Pre-adipocytes
+          "NEGR1", "EBF2", "DCN", "MGP", "PDGFRA", "FBLN1", "FBLN2", "FBLN5", "COL3A1", "COL1A1", "COL1A2", "FSTL1", "GSN", "ADAMTSL3", "CREB5",
+          
+          # Mature brown adipocytes
+          "ADIPOQ", "PLIN1", "PLIN4", "PLIN5", "CIDEA", "CIDEC", "LPL", "UCP1", "GHR",
+          
+          
+          ## Endothelial cells
+          
+          # General endothelial cells
+          "VWF", "PECAM1", "CDH5", "ANO2",
+          
+          # Vascular endothelial cells
+          "VEGFC", "ROR2", "KDR",  "PLVAP", "EMCN",
+          
+          # Arterial endothelial cells
+          "FLT1", "TEK", "EFNB2", "NOTCH4", "ANGPT2",
+          
+          # Lymphatic endothelial cells
+          "PROX1", "FLT4",
+          
+          # Adhesion & cytoskeletal genes
+          "EZR", "RBFOX1",
+          
+          
+          ## Immune cells
+
+          # Macrophages
+          "MRC1", "F13A1", "CD163", "LYVE1", "SIGLEC1", "FRMD4B", "CD68", "ITGAM", "LPAR1", "SOX9",
+          
+          # T cells
+          "BCL11B", "LCK", "PTPRC", "CD247", "CD3G",
+          
+          ## Muscle cells
+          
+          # Pericyte and VSMC
+          "PDGFRB", "NOTCH3", "GUCY1A2", "GUCY1A1",
+          
+          # VSMC
+          "MYH11", "MYO1D", "RYR2", "ACTA2", "CNN1", "DES",
+          
+          ## Other
+          
+          # Circadian rhythm
+          "CRY2", "CSNK1E"
+          
+        )) +
+  
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+# Save plot as PDF
+if (!dir.exists("results/humanPVATsn")) dir.create("results/humanPVATsn")
+
+pdf("results/humanPVATsn/cluster_dot_plot.pdf", width = 12, height = 8)
+print(annot_dot_plot)
+invisible(dev.off())
+
+# Display plot
+annot_dot_plot
+
+```
 
 
 
 
+```{r}
+
+FeaturePlot(libs_combined_filt, features = c(
+  
+  # Pre-adipocyte
+  "NEGR1","EBF2", "PPARG",
+  # "DCN"
+  
+  # Mature adipocyte
+  "PLIN1", "CIDEA", "ADIPOQ"
+  
+))
+
+```
+
+
+
+
+## Cell type annotation 
+
+Unannotated UMAP
+
+```{r fig.height=5, fig.width=10}
+
+DimPlot(libs_combined_filt, reduction = "umap",  ncol = 3, label = TRUE)
+
+```
+
+Save the final annotated UMAP plot.
+
+```{r}
+
+# Name clusters
+anno_combined <- RenameIdents(libs_combined_filt, 
+                              "0" = "Adipocytes", 
+                              "1" = "Early pre-adipocytes", 
+                              "2" = "?",
+                              "3" = "Macrophages",
+                              "4" = "Vascular endothelial cells",
+                              "5" = "Vascular endothelial cells", 
+                              "6" = "Pre-adipocytes" , 
+                              "7" = "Lymphatic endothelial cells", 
+                              "8" = "Pericytes/vascular SMCs?",
+                              "9" = "Adipocytes",  
+                              "10" = "Vascular endothelial cells", 
+                              "11" = "T cells", 
+                              "12" = "Vascular SMCs")
+
+final_umap <- DimPlot(anno_combined)
+
+# Save plot as PDF
+if (!dir.exists("results/humanPVATsn")) dir.create("results/humanPVATsn")
+
+pdf("results/humanPVATsn/umap_annot.pdf", width = 12, height = 8)
+print(final_umap)
+invisible(dev.off())
+
+# Display plot
+final_umap
+
+```
 
 
 
