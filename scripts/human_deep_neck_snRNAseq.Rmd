@@ -1,0 +1,117 @@
+---
+title: "SnRNA-sequencing analysis of human deep neck tissue"
+author: "Hannah Bazin"
+date: "r doc_date()"
+output: BiocStyle::html_document:
+      toc: yes
+      toc_depth: 3
+      toc_float: yes
+      code_folding: "hide" 
+---
+
+In this vignette, I analyse 9 datasets of single-nucleus RNA sequencing of human deep neck tissue. There are X, X and X cells in 9 samples respectively that were sequenced on the X. The raw data can be found on the BioStudies ArrayExpress website [at this link](https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-8564). I am building on code from Holly A. R. Giles.
+
+# Set up
+
+```{r}
+
+# Set random seed for reproducibility
+set.seed(1996)
+
+```
+
+## Load libraries
+
+```{r}
+
+library(GEOquery)
+library(Seurat)
+library(dplyr)
+library(patchwork)
+library(ggplot2)
+library(ggpubr)
+library(tidyverse)
+
+```
+
+## Set working directory
+
+The working directory can be set by running the following command in the terminal: `setwd("/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project")`
+
+## Load data
+
+The data stems from single-nucleus RNA sequencing experiments of human deep neck tissue from nine different healthy donors, sequenced with Illumina Nextseq 500 and Novaseq 6000. The raw data can be found [here](https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-8564). It was first published by Sun et al. on 28 October 2020 in Nature in the paper titled "snRNA-seq reveals a subpopulation of adipocytes that regulates thermogenesis" ([link](https://www.nature.com/articles/s41586-020-2856-x)).
+
+We read in the data using the `Read10X()` function which takes in three files (barcodes.tsv, genes.tsv, and matrix.mtx) and returns a UMI sparse count matrix representing the gene expression data. This function can be used because the data was generated using CellRanger.
+
+```{r}
+
+# List names of all libraries and their corresponding replicates
+libs <- c("H-BAT_F_1",
+          "H-BAT_F_5",
+          "H-BAT_F_6",
+          "H-BAT_F_7",
+          "H-BAT_F_8",
+          "H-BAT_nF_1",
+          "H-BAT_nF_2",
+          "H-BAT_nF_3",
+          "H-BAT_nF_4")
+
+replicates <- c("replicate_9",
+                "replicate_5",
+                "replicate_6",
+                "replicate_7",
+                "replicate_8",
+                "replicate_1",
+                "replicate_2",
+                "replicate_3",
+                "replicate_4")
+
+# Create a named vector for mapping library names to replicates
+replicate_map <- setNames(replicates, libs)
+
+# Loop through each of the folder names and load in the data
+lib_list <- 
+  lapply(libs, function(x){
+    
+    # Get file path
+    filename <- paste0("data/H-BAT/", x, "/")
+    print(paste("Loading", filename))
+    
+    # Read in 10X data
+    data10X <- Read10X(data.dir = filename)
+    
+    # Create a Seurat Object
+    obj <- CreateSeuratObject(counts = data10X,
+                              project = x,
+                              min.cells = 3,
+                              min.features = 200)
+    
+    # Add replicate metadata
+    obj$replicate <- replicate_map[x]
+    
+    obj
+  })
+
+# Assign names to lib_list to retain library names
+names(lib_list) <- libs
+
+```
+
+# Pre-processing workflow
+
+## Visualise QC metrics
+
+do i need to run NormalizeData() ?? it has already been normalised ?
+
+
+
+
+
+
+
+
+
+
+
+
