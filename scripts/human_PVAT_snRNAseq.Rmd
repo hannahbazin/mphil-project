@@ -1,12 +1,12 @@
 ---
 title: "SnRNA-sequencing analysis of human perivascular adipose tissue (PVAT)"
-author: "Hannah Bazin"
-date: "r doc_date()"
-output: BiocStyle::html_document:
+author: "Hannah M. L. Bazin"
+date: "`r doc_date()`"
+output:
+  BiocStyle::html_document:
       toc: yes
       toc_depth: 3
       toc_float: yes
-      code_folding: "hide" 
 ---
 
 In this vignette, I analyse three datasets of single-nucleus RNA sequencing of human perivascular adipose tissue (PVAT). There are 12’657, 6’084 and 6’456 cells in three samples respectively that were sequenced on the Illumina NovaSeq 6000. The raw data can be found on the Gene Expression Omnibus website [at this link](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE164528). I am building on code from Holly A. R. Giles.
@@ -16,7 +16,7 @@ In this vignette, I analyse three datasets of single-nucleus RNA sequencing of h
 ```{r}
 
 # Set random seed for reproducibility
-set.seed(1996)
+set.seed(42)
 
 ```
 
@@ -63,9 +63,9 @@ human2 <- CreateSeuratObject(counts = human2_data, project = "GSE164528", min.ce
 human3 <- CreateSeuratObject(counts = human3_data, project = "GSE164528", min.cells = 3, min.features = 200)
 
 # See number of cells in each sample
-ncol(human1)
-ncol(human2)
-ncol(human3)
+print(paste("Before QC, human1 sample contains", ncol(human1), "cells."))
+print(paste("Before QC, human2 sample contains", ncol(human2), "cells."))
+print(paste("Before QC, human3 sample contains", ncol(human3), "cells."))
 
 ```
 
@@ -101,7 +101,7 @@ head(human3@meta.data, 5)
 
 ```
 
-```{r fig.height=7, fig.width=13}
+```{r fig.height=7, fig.width=13, warning = FALSE}
 
 # Plot QC metrics for each sample
 VlnPlot(human1, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
@@ -151,15 +151,15 @@ human2_filtered <- subset(human2, subset = nFeature_RNA > 1000 & nFeature_RNA < 
 human3_filtered <- subset(human3, subset = nFeature_RNA > 1000 & nFeature_RNA < 6000 & nCount_RNA > 500 & nCount_RNA < 40000 & percent.mt < 1)
 
 # See number of cells in each sample after QC
-ncol(human1_filtered)
-ncol(human2_filtered)
-ncol(human3_filtered)
+print(paste("After QC, human1 sample contains", ncol(human1_filtered), "cells."))
+print(paste("After QC, human2 sample contains", ncol(human2_filtered), "cells."))
+print(paste("After QC, human3 sample contains", ncol(human3_filtered), "cells."))
 
 ```
 
 # Normalise data and find variable features
 
-We normalise the data using a global-scaling method called "LogNormalize". This process normalises the feature expression levels for each cell by dividing by the total expression, multiplies this by a scale factor (10'000 by default), and applies a log transformation to the result. Normalised values are stored in `human1[["RNA"]]@data`.
+We normalise the data using a global-scaling method called "LogNormalize". This process normalises the feature expression levels for each cell by dividing by the total expression, multiplies this by a scale factor (10'000 by default), and applies a log transformation to the result. Normalised values are stored in `human1_filtered[["RNA"]]@data` for each of the three samples.
 
 We also identify features that have high cell-to-cell variation, these are likely to have the most biological significance. The function returns 2'000 features per dataset by default.
 
@@ -187,7 +187,7 @@ features <- SelectIntegrationFeatures(object.list = lib_list_filtered)
 
 We visualise the variable features.
 
-```{r fig.height=5, fig.width=11}
+```{r fig.height=5, fig.width=11, warning=FALSE}
 
 lapply(1:length(lib_list_filtered), function(i) {
  
@@ -199,8 +199,8 @@ lapply(1:length(lib_list_filtered), function(i) {
   # Plot variable features with and without labels
   plot1 <- VariableFeaturePlot(x)
   plot2 <- LabelPoints(plot = plot1, points = top10, repel = TRUE)
-  plot1 + plot2 + plot_annotation(title = names(lib_list_filtered[i]))
-  
+  plot1 + plot2
+
 })
 
 ```
@@ -218,13 +218,13 @@ Integration of data from the three different donors is an important step in this
 
 if (file.exists("data/analysis/anchors.RData")) {
   
-  print("file exists")
+  print("anchors file exists")
   
   load(file = "data/analysis/anchors.RData")
   
 } else {
   
-  print("file does not exist")
+  print("anchors file does not exist")
   
   anchors <- FindIntegrationAnchors(object.list = lib_list_filtered, anchor.features = features)
   
@@ -282,13 +282,13 @@ We perform PCA on the scaled data with the variable features as input.
 
 # By default, only the previously determined variable features are used as input.
 
-libs_combined_filt <- RunPCA(libs_combined, npcs = 30)
+libs_combined_filt <- RunPCA(libs_combined, npcs = 30, seed.use = 42)
 
 ```
 
 ## Determine dimensionality of the dataset
 
-We plot an elbow plot to determine the dimensionality of the dataset. From this plot we can see that the line starts to flatten significantly around PC 10. Therefore in the downstream analysis we keep 15 dimensions of the dataset.
+We plot an elbow plot to determine the dimensionality of the dataset. From this plot we can see that the line starts to flatten significantly around PC 15. Therefore in the downstream analysis we keep 15 dimensions of the dataset.
 
 ```{r cache = FALSE}
 
@@ -308,6 +308,8 @@ elbow_plot
 
 ## Visualise PCA results
 
+We plot the PCA by sample origin to verify that the integration worked successfully. We also check that there is no clear pattern in the percentage of mitochondrial genes and that there is no excessive percentage of such genes in our data.
+
 ```{r}
 
 DimPlot(libs_combined_filt, reduction = "pca", 
@@ -319,11 +321,12 @@ FeaturePlot(object = libs_combined_filt, reduction = "pca", features = "percent.
 
 ## Run and visualise UMAP
 
+We run and plot the UMAP dimensionality reduction, first coloured by sample origin to verify that the integration worked successfully, and then by individual sample origin.
 Note: human1 is a healthy weight, human2 is overweight, and human3 is obese.
 
 ```{r message = FALSE, cache = FALSE}
 
-libs_combined_filt <- RunUMAP(libs_combined_filt, reduction = "pca", dims = 1:15)
+libs_combined_filt <- RunUMAP(libs_combined_filt, reduction = "pca", dims = 1:15, seed.use = 42)
 
 # Plot UMAP by sample type
 p1 <- DimPlot(libs_combined_filt,
@@ -373,13 +376,13 @@ mito_plot
 
 # Find neighbors and clusters
 
-I adapted the resolution to create an approximate number of clusters I am expecting based on the paper of reference (Angueira et al., 2021) - i.e. around 11 clusters.
+We adapt the resolution to create an approximate number of clusters we expect based on papers of reference (such as Angueira et al., 2021) - i.e. around 13 clusters.
 
 ```{r}
 
 libs_combined_filt <- FindNeighbors(libs_combined_filt, reduction = "pca", dims = 1:15)
 
-libs_combined_filt <- FindClusters(libs_combined_filt, resolution = 0.35, random.seed = 1996)
+libs_combined_filt <- FindClusters(libs_combined_filt, resolution = 0.35, random.seed = 42)
 
 # Look at cluster IDs of the first 5 cells
 head(Idents(libs_combined_filt), 5)
@@ -429,9 +432,9 @@ umap_with_numbers_by_sample
 
 Before differential gene expression analysis, we return to the RNA assay instead of the integrated one. The function `FindAllMarkers()` finds markers (differentially expressed genes) for each of the clusters in a dataset. By default, it uses a Wilcoxon Rank Sum test to identify differentially expressed genes between two groups. The parameters are set as follows:
 
-- only.pos = T only returns positive markers
-- min.pct = 0.3 only tests genes detected in 30% of either of the two populations being compared. This speeds up the function and allows us to focus on more biologically relevant genes. 
-- logfc.threshold = 0.3 limits testing to genes that show at least 0.3-fold difference (log-scale) between the two groups (removes weaker signals)
+- `only.pos = T` only returns positive markers.
+- `min.pct = 0.3` only tests genes detected in 30% of either of the two populations being compared. This speeds up the function and allows us to focus on more biologically relevant genes.
+- `logfc.threshold = 0.3` limits testing to genes that show at least 0.3-fold difference (log-scale) between the two groups (removes weaker signals).
 
 ```{r}
 
@@ -488,7 +491,7 @@ lapply(0:num_clusters, function(i) {
 
 ## Plot markers
 
-Plot the top 8 marker genes for each cluster.
+We plot violin plots for the top 8 marker genes for each cluster.
 
 ```{r fig.height=20, fig.width=15}
 
@@ -520,6 +523,9 @@ violinPlots
 
 ## Plot dot plot to identify clusters
 
+We generate different dot plots to identify which clusters correspond to which cell types with PVAT.
+
+
 ```{r}
 
 DotPlot(libs_combined_filt,
@@ -531,7 +537,7 @@ DotPlot(libs_combined_filt,
           )) +
   
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-  ggtitle("Early marker expression")
+  ggtitle("Early pre-adipocyte marker expression")
 
 ```
 
@@ -546,7 +552,7 @@ DotPlot(libs_combined_filt,
           )) +
   
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-  ggtitle("Intermediate marker expression")
+  ggtitle("Intermediate pre-adipocyte marker expression")
 
 ```
 
@@ -564,7 +570,6 @@ DotPlot(libs_combined_filt,
   ggtitle("Literature pre-adipocyte markers")
 
 ```
-
 
 ```{r fig.height=7, fig.width=10}
 
@@ -616,7 +621,7 @@ DotPlot(libs_combined_filt,
 ```
 
 
-This dot plot contains the genes I found were important marker genes for the cell types I identified in my clusters.
+This dot plot contains the genes identified as important marker genes for the cell types identified in these clusters. They are listed in order of cell types.
 
 ```{r}
 
@@ -686,30 +691,13 @@ annot_dot_plot
 ```
 
 
-
-```{r}
-
-FeaturePlot(libs_combined_filt, features = c(
-  
-  # Pre-adipocyte
-  "NEGR1","EBF2", "PPARG",
-  # "DCN"
-  
-  # Mature adipocyte
-  "PLIN1", "CIDEA", "ADIPOQ"
-  
-))
-
-```
-
-
-
-
 ## Cell type annotation 
 
-Unannotated UMAP
+First we plot the unannotated UMAP to visualise clusters. This might help in identifying cell types as more similar cell types tend to cluster together.
 
 ```{r fig.height=5, fig.width=10}
+
+DefaultAssay(libs_combined_filt) <- "integrated"
 
 unnannot_umap <- DimPlot(libs_combined_filt, reduction = "umap",  ncol = 3, label = TRUE) +
   ggtitle("Unannotated UMAP of PVAT Cells (snRNA-seq)") +
@@ -727,8 +715,7 @@ unnannot_umap
 
 ```
 
-
-Name clusters
+We name the clusters with the corresponding cell type based on the dot plots generated above.
 
 ```{r}
 anno_combined <- RenameIdents(libs_combined_filt, 
@@ -751,9 +738,11 @@ anno_combined <- RenameIdents(libs_combined_filt,
 
 ## Final UMAP plots
 
+These are the final plots from the analysis.
+
 ### Unannotated UMAP plots
 
-To show proper integration of all three samples
+We show proper integration of all three samples by colouring the UMAP by sample origin.
 
 ```{r}
 
@@ -766,16 +755,17 @@ umap_plot <- DimPlot(libs_combined_filt,
 
 # Save and display plot
 if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
+
 pdf("results/humanPVATsn/final_figs/final_umap_integration.pdf", width = 12, height = 8)
 print(umap_plot)
 invisible(dev.off())
+
 umap_plot
 
 ```
 
 
-
-Unannotated UMAP by sample
+We plot the unannotated UMAP split by sample origin.
 
 ```{r fig.height=6, fig.width=14}
 
@@ -798,7 +788,7 @@ plot1
 
 ```
 
-Unannotated UMAP
+We plot the unannotated UMAP of all three samples integrated into one.
 
 ```{r fig.height=5, fig.width=10}
 
@@ -818,6 +808,8 @@ unnannot_umap
 ```
 
 ### Annotated UMAP plots
+
+We plot the annotated UMAP coloured by cluster identity.
 
 ```{r fig.height=5, fig.width=12}
 
@@ -867,7 +859,9 @@ final_umap
 
 ## Final dot plot
 
-The dot size represents the percent expressed, i.e. how many cells in the given cluster express the gene. The dot colour shows the average expression, i.e. the expression level in cells that do express the gene.
+We plot a dot plot showing the expression of marker genes across clusters.
+- Dot size: percent expressed, i.e. how many cells in the given cluster express the gene.
+- Dot colour: average expression, i.e. the expression level in cells that do express the given gene.
 
 ```{r fig.height = 7, fig.width = 16}
 
@@ -908,7 +902,7 @@ markers_to_plot <- c(
           ## Adipocyte-related
           
           # Pre-adipocytes
-          "NEGR1", "EBF2", "DCN", "MGP", "PDGFRA", "FBLN1", "COL1A1", "COL1A2", "FSTL1", "CREB5", "PPARG",
+          "NEGR1", "EBF2", "ABCA10", "DCN", "MGP", "PDGFRA", "FBLN1", "COL1A1", "COL1A2", "FSTL1", "CREB5", "PPARG",
           # Mature brown adipocytes
           "ADIPOQ", "PLIN1", "PLIN4", "PLIN5", "CIDEA", "CIDEC", "LPL", "GHR",
           
@@ -957,30 +951,55 @@ final_dotplot
 
 ## Final feature plots
 
-```{r}
+We plot feature plots of marker genes to show the expression specific to some clusters.
 
-FeaturePlot(libs_combined_filt,
-            features = c(
-  
-  
-  
-))
+```{r fig.height=15, fig.width=15}
+
+DefaultAssay(anno_combined) <- "RNA"
+
+feature_plot <- FeaturePlot(anno_combined,
+                            features = c(
+                              # Pre-adipocyte
+                              "ABCA10","PDGFRA", "EBF2", 
+                              # Mature adipocyte
+                              "PLIN4", "CIDEA", "ADIPOQ",
+                              # vSMC
+                              "MYH11",
+                              # Endothelial
+                              "PECAM1",
+                              # Macrophages
+                              "MRC1"
+                              ),
+                            min.cutoff = 1)
+
+final_feature <- feature_plot + plot_annotation(title = "Feature Plot of Marker Genes of PVAT Cell Populations (snRNA-seq)",
+                  theme = theme(plot.title = element_text(face="bold", size=20)))
+
+# Save the figure
+if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
+
+pdf("results/humanPVATsn/final_figs/feature_plots.pdf", width = 15, height = 15)
+print(final_feature)
+invisible(dev.off())
+
+# Display the plot
+final_feature
 
 ```
 
 
 ## Final violin plots
 
-TODO: MAKE LEGEND TEXT BIGGER AND BE IN TOP RIGHT CORNER. AND MAKE FEATURE PLOTS THESIS READY.
+We plot violin plots of marker genes to show distribution of expression across clusters.
 
-```{r fig.width=25, fig.height=15}
+```{r fig.width=30, fig.height=20}
 
 # Set default assay to RNA for expression plots
 DefaultAssay(anno_combined) <- "RNA"
 
 # Define theme
 t1 <- theme(
-  plot.title = element_text(size = 18, face = "bold", hjust = 0.5),
+  plot.title = element_text(size = 22, face = "bold", hjust = 0.5),
   legend.position = "right",
   legend.text = element_text(size = 20),
   plot.margin = margin(10, 10, 10, 50)
@@ -1006,75 +1025,17 @@ final_violin_plot <- wrap_plots(violin_plots, ncol = 3, nrow = 2, guides = "coll
   plot_annotation(title = "Violin Plot of Marker Gene Expression in PVAT",
                   theme = t1)
 
-# Save the figure
+# Save figure
 if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
 
 pdf("results/humanPVATsn/final_figs/violin_plots.pdf", width = 25, height = 15)
 print(final_violin_plot)
 invisible(dev.off())
 
-# Display the plot
+# Display plot
 final_violin_plot
 
 ```
-
-
-```{r}
-
-# Ensure that RNA assay is used and not integrated assay
-DefaultAssay(libs_combined_filt) <- "RNA"
-
-# Plot violin plot of interesting genes
-
-VlnPlot(libs_combined_filt,
-                  features = c("EBF2", "PPARG", "PDGFRA", "ADIPOQ", "MYH11", "PDGFRB"),
-                  cols = namedclusterColours,
-                  ncol = 3,
-                  pt.size = 0)
-
-violin <- VlnPlot(libs_combined_filt,
-                  features = c("EBF2", "PPARG", "PDGFRA", "ADIPOQ", "MYH11", "PDGFRB"),
-                  cols = namedclusterColours,
-                  ncol = 3,
-                  pt.size = 0)) +
-  plot_layout(ncol = 3, nrow = 2)
-  
-  
-  
-  
-  
-  #ggtitle("Violin Plots of Marker Genes Across PVAT Cell Types (snRNA-seq)") + 
-  #xlab("Cell Type") + ylab("Expression Level")
-
-violin
-
-```
-
-
-```{r}
-finalviolinPlots <-
-  lapply(0:num_clusters, function(i) {
-    
-    
-    
-    # Plot a set of 8 violin plots for each cluster
-    violinList[[1]] + violinList[[2]] + violinList[[3]] + 
-      violinList[[4]] + violinList[[5]] + violinList[[6]] + 
-      violinList[[7]] + violinList[[8]] +
-      # Add cluster number as title
-      plot_annotation(title = paste("Cluster", i, sep = " "),
-                      theme = theme(plot.title = element_text(size = 18, face = "bold")))
-
-  })
-
-finalviolinPlots
-
-
-
-
-
-```
-
 
 
 **Session Info**
