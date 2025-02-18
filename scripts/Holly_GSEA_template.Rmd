@@ -1,0 +1,93 @@
+---
+title: "GSEA Template"
+output: html_document
+date: "2024-10-04"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Libraries 
+
+```{r loadlibraries , include=FALSE}
+
+# Set seed to keep outputs consistent
+set.seed(1996)
+
+# Load software packages 
+library('org.Hs.eg.db')
+library(msigdbr)
+library(tidyverse)
+library(pheatmap)
+library("clusterProfiler")
+
+
+
+```
+
+### GSEA
+
+GSEA analysis of the ranked p values / wald statistic / log fold change values to highlight enriched pathways. 
+   
+NB Any GSEA needs a ranked gene list, and a set of pathways, to look for gene enrichment. 
+
+```{r }
+
+#GSEA
+#First get a ranked  gene list to feed to GSEA (jsut make a datframe of gene names with Ensembl or EntrezIDs and their p value / wald stat from DESEQ)
+
+scores <- 
+  dplyr::select(DESEQ_results_table, 
+                Gene, 
+                p.value) 
+
+#Convert gene names to Entrez IDs (or EnsembleIDs)
+
+#get a list of entrezIDs
+entrezIDs <- 
+  mapIds(org.Hs.eg.db, scores$Gene, 'ENTREZID', 'SYMBOL') %>% 
+  as.data.frame() %>% 
+  rownames_to_column()
+
+colnames(entrezIDs) <- c("Gene", "EntrezID")
+
+#now add entrezID or ensemblIDs to scores table
+scores <- left_join(scores, entrezIDs, by = "Gene")
+
+#Make ranked gene list to feed to GSEA function
+## get the first feature, a  numeric vector
+geneList <- scores$p.value
+
+## get the second feature, a named vector
+names(geneList) <- as.character(scores$EntrezID)
+
+## now put in  decreasing order
+geneList <- sort(geneList, decreasing = TRUE) 
+
+
+#Second get a list of metabolomic pathways e.g. Hallmark, KEGG, Reactome
+#you can load this in from the MSIGDDBR database
+pathways <- 
+  msigdbr(species = "Homo sapiens", # set species
+          category = "C2") %>% # code for category e.g. C1 corresponds to Hallmark?
+  dplyr::select(gs_name, entrez_gene)
+
+#or yuo can load in your excel file 
+pathways <- read.tsv("/name/of/file")
+
+#run GSEA -feed the above two tables to the GSEA function 
+gsea.res <- GSEA(geneList, TERM2GENE = pathways, by = "fgsea", seed = TRUE,  pvalueCutoff = 0.05) #NB GSEA function is from clusterProfiler package
+
+#get dataframe of results for up to 20 top results 
+gsea.df <- fortify(gsea.res, 
+              showCategory = 20, #how many levels to show - top 20 here
+              split=NULL)
+
+DT::datatable(gsea.df)
+
+#Make a bar plot of results (see clusterProfiler package )
+
+
+```
+

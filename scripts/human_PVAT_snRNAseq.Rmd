@@ -623,7 +623,7 @@ DotPlot(libs_combined_filt,
 
 This dot plot contains the genes identified as important marker genes for the cell types identified in these clusters. They are listed in order of cell types.
 
-```{r}
+```{r fig.height=7, fig.width=10}
 
 annot_dot_plot <- DotPlot(libs_combined_filt,
                           cols = "PiYG",
