@@ -218,19 +218,20 @@ Integration of data from the three different donors is an important step in this
 
 if (file.exists("data/analysis/anchors.RData")) {
   
-  print("anchors file exists")
+  message("Loading existing anchors file.")
   
   load(file = "data/analysis/anchors.RData")
   
 } else {
   
-  print("anchors file does not exist")
+  message("Missing anchors file. Finding integration anchors.")
   
   anchors <- FindIntegrationAnchors(object.list = lib_list_filtered, anchor.features = features)
   
   save(anchors, file = "data/analysis/anchors.RData")
 
 }
+
 ```
 
 ## Perform integration
@@ -432,9 +433,9 @@ umap_with_numbers_by_sample
 
 Before differential gene expression analysis, we return to the RNA assay instead of the integrated one. The function `FindAllMarkers()` finds markers (differentially expressed genes) for each of the clusters in a dataset. By default, it uses a Wilcoxon Rank Sum test to identify differentially expressed genes between two groups. The parameters are set as follows:
 
-- `only.pos = T` only returns positive markers.
 - `min.pct = 0.3` only tests genes detected in 30% of either of the two populations being compared. This speeds up the function and allows us to focus on more biologically relevant genes.
 - `logfc.threshold = 0.3` limits testing to genes that show at least 0.3-fold difference (log-scale) between the two groups (removes weaker signals).
+
 
 ```{r}
 
@@ -449,7 +450,7 @@ if(file.exists("data/analysis/cluster_markers.RData")){
 
   }else{
     
-    markers <- FindAllMarkers(libs_combined_filt, only.pos = T, min.pct = 0.3, logfc.threshold = 0.3)
+    markers <- FindAllMarkers(libs_combined_filt, min.pct = 0.3, logfc.threshold = 0.3)
     
     save(markers, file = "data/analysis/cluster_markers.RData")
 
@@ -1037,6 +1038,16 @@ final_violin_plot
 
 ```
 
+# Save final integrated Seurat object
+
+```{r}
+
+save(anno_combined, file = "data/analysis/anno_combined.RData")
+
+```
+
+
+# Session info
 
 **Session Info**
 

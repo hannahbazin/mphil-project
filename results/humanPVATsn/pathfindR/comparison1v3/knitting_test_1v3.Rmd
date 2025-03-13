@@ -1,0 +1,106 @@
+
+```{r}
+
+library(GEOquery)
+library(Seurat)
+library(dplyr)
+library(patchwork)
+library(ggplot2)
+library(ggpubr)
+library(tidyverse)
+library(pathfindR)
+
+```
+
+## Bar plots
+
+Load data and list patient conditions.
+
+```{r}
+
+# Load data
+early_df <- read_csv("results/humanPVATsn/pathfindR/comparison1v3/early_pre_healthy_vs_obese.csv")
+intermediate_df <- read_csv("results/humanPVATsn/pathfindR/comparison1v3/intermediate_pre_healthy_vs_obese.csv")
+mature_df <- read_csv("results/humanPVATsn/pathfindR/comparison1v3/mature_healthy_vs_obese.csv")
+
+# List of conditions
+conditions <- c("A only", "B only", "common")
+condition_labels <- list("A only" = "Healthy Only", "B only" = "Obese Only", "common" = "Both Healthy and Obese")
+
+```
+
+Define function to create and save bar plots.
+- For the A only and B only pathways, we rank them based on fold enrichment.
+- For the common pathways, we rank them based on the combined p-value; this helps identify pathways that are consistently significant in both datasets.
+
+```{r}
+
+create_and_save_bar_plot <- function(df, category, title_label, output_file) {
+  
+  # Define sorting column
+  sorting_col <- ifelse(category == "common", "combined_p", paste0("Fold_Enrichment_", substr(category, 1, 1)))
+
+  # Filter top 20 enriched pathways
+  if(category == "common") {
+    df_filtered <- df %>% 
+      filter(status == category) %>%
+      arrange(combined_p) %>%
+      slice_head(n = 20)
+  } else {
+    df_filtered <- df %>% 
+      filter(status == category) %>%
+      arrange(desc(.data[[sorting_col]])) %>%
+      slice_head(n = 20)
+  }
+
+  # Ensure factor levels are correctly ordered for plotting
+  if(category == "common") {
+     df_filtered <- df_filtered %>%
+       mutate(Term_Description = factor(Term_Description,
+                                        levels = Term_Description))
+  } else {
+    df_filtered <- df_filtered %>%
+      mutate(Term_Description = factor(Term_Description, levels = rev(Term_Description)))
+
+  }
+  
+  # Create bar plot
+  plot <- ggplot(df_filtered, aes(x = .data[[sorting_col]], y = Term_Description, fill = Term_Description)) +
+    geom_bar(stat = "identity", color = "black") +
+    labs(title = title_label, x = ifelse(category == "common", "Combined P Value", "Fold Enrichment"),
+         y = "Pathway") +
+    theme_minimal() +
+    theme(legend.position = "none")
+  
+  
+  # Save plot
+  ggsave(output_file, plot, width = 12, height = 6, device = "pdf")
+
+  # Return plot
+  return(plot)
+  
+}
+
+```
+
+Generate plots for each differentiation stage: early pre-adipocytes, intermediate pre-adipocytes, and mature adipocytes.
+
+```{r fig.width=12, fig.height=6}
+
+for (condition in conditions) {
+  
+  # Early adipocytes
+  early_plot <- create_and_save_bar_plot(early_df, condition, paste("Early Pre-adipocytes: Enriched Pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/early_", gsub(" ", "_", condition), ".pdf"))
+  print(early_plot)
+
+  # Intermediate adipocytes
+  inter_plot <- create_and_save_bar_plot(intermediate_df, condition, paste("Intermediate Pre-adipocytes: Enriched Pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/intermediate_", gsub(" ", "_", condition), ".pdf"))
+  print(inter_plot)
+  
+  # Mature adipocytes
+  mature_plot <- create_and_save_bar_plot(mature_df, condition, paste("Mature Adipocytes: Enriched Pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/mature_", gsub(" ", "_", condition), ".pdf"))
+  print(mature_plot)
+  
+}
+
+```

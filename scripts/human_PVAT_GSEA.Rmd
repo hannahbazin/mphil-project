@@ -1,0 +1,107 @@
+---
+title: "Gene set enrichment analysis on snRNA-sequencing samples of human perivascular adipose tissue (PVAT)"
+author: "Hannah M. L. Bazin"
+date: "`r doc_date()`"
+output:
+  BiocStyle::html_document:
+      toc: yes
+      toc_depth: 3
+      toc_float: yes
+---
+
+In this vignette I run a gene set enrichment analysis (GSEA) on four clusters of brown adipocyte lineage. The clusters and their markers have been identified by using the functions in Seurat 4.4.0. The corresponding code can be found in the file `human_PVAT_snRNAseq.Rmd`. I am building on code from Holly A. R. Giles.
+
+
+# Set up
+
+## Set working directory
+
+The working directory can be set by running the following command in the terminal: `setwd("/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project")`
+
+
+## Set seed
+
+
+```{r}
+
+# Set random seed for reproducibility
+set.seed(1996)
+
+```
+
+## Load libraries
+
+```{r}
+
+# Load software packages 
+library('org.Hs.eg.db')
+library(msigdbr)
+library(pheatmap)
+library("clusterProfiler")
+library(tidyverse)
+
+```
+
+
+## Load data
+
+To save on time we reload the integrated Seurat object generated in `human_PVAT_snRNAseq.Rmd`.
+
+```{r}
+
+# Load integrated Seurat object from previous analysis
+load(file = "data/analysis/anno_combined.RData")
+
+```
+
+
+## Get ranked gene list
+
+```{r}
+# Select clusters in adipocyte lineage
+adipo_clusters <- c("Early pre-adipocytes", "Intermediate pre-adipocytes", "Transitional adipocytes", "Mature adipocytes")
+```
+
+
+Get markers for each cluster compared to the other 3 clusters, with
+
+```{r}
+
+logfc.threshold = -Inf, min.pct = -Inf, min.diff.pct = -Inf
+
+```
+
+
+Holly: Do a quick check that the number of genes in teh output of FindMarkers is the same as the number of genes in teh seurat object!!
+ 
+
+```{r}
+Result <- FindMarkers(lung_combined, assay = "RNA", slot = "data", subset.ident = 'monocyte', group.by = "clinical_groups", ident.1 = "disease", ident.2 = "control", test.use = "wilcox", logfc.threshold = -Inf, min.pct = -Inf, min.diff.pct = -Inf)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

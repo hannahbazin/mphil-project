@@ -1,0 +1,410 @@
+---
+title: "Pathway enrichment analysis of human perivascular adipose tissue (PVAT) snRNA-seq data"
+author: "Hannah M. L. Bazin"
+date: "`r doc_date()`"
+output:
+  BiocStyle::html_document:
+      toc: yes
+      toc_depth: 3
+      toc_float: yes
+---
+
+In this vignette, I run `pathfindR` on differentially expressed genes of single-nucleus RNA sequencing of human perivascular adipose tissue (PVAT). The aim is to identify enriched pathways in different steps of brown adipocyte development. The raw data is available on the Gene Expression Omnibus website under the accession number GSE164528, found [here](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE164528).
+
+
+# Overview of `pathfindR` algorithm
+
+`pathfindR` is an R package designed for active-subnetwork-oriented pathway enrichment analysis. Unlike traditional over-representation analysis (ORA) and gene set enrichment analysis (GSEA), which evaluate gene lists without considering gene interactions, pathfindR integrates protein-protein interaction networks (PINs) to identify active subnetworks – groups of interacting genes enriched in significantly altered genes. A subnetwork is defined as a cluster of interconnected genes in a PIN, and it is considered active if it contains a disproportionately high number of differentially expressed genes. The algorithm then performs pathway enrichment analysis on these subnetworks to identify biologically relevant pathways.
+
+The `pathfindR` workflow consists of the following steps:
+
+1.  **Mapping input genes** and their p-values onto a predefined PIN.
+2.  **Identification of active subnetworks**, using a heuristic search algorithm to detect interconnected gene clusters enriched in significant genes.
+3.  **Filtering subnetworks** based on predefined scoring criteria, including (i) the number of significant genes (minimum of 3 by default) and (ii) the subnetwork score, calculated as the sum of absolute log-transformed p-values of significant genes.
+4.  **Pathway enrichment analysis** on selected subnetworks using Fisher’s Exact Test, with multiple testing correction using the Bonferroni method by default.
+5.  **Iterative analysis**, where the active subnetwork search and enrichment steps are repeated multiple times to account for random variation in subnetwork detection, ensuring robustness by identifying pathways that remain significantly enriched across multiple runs.
+6.  **Output generation**, producing a structured data frame of significantly enriched pathways and gene sets, along with key metrics such as the lowest and highest adjusted p-values across iterations, to assess the reproducibility of pathway enrichment across iterations.
+
+# Set up
+
+## Set working directory
+
+The working directory can be set by running the following command in the terminal: `setwd("/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project")`
+
+## Load libraries
+
+```{r}
+
+library(Seurat)
+library(pathfindR)
+library(tidyverse)
+
+```
+
+## Set seed
+
+Because `pathfindR` includes a heuristic search algorithm to identify active subnetworks, we set a random seed for reproducibility.
+
+```{r}
+
+set.seed(1996)
+
+```
+
+
+## Load data
+
+We reload the integrated Seurat object generated in the notebook titled `human_PVAT_snRNAseq.Rmd`.
+
+```{r}
+
+# Load integrated Seurat object from previous analysis
+load(file = "data/analysis/anno_combined.RData")
+
+```
+
+# Pre-processing workflow
+
+## Subset adipocyte clusters
+
+Since the aim is to identify differentially activated pathways in the four adipocyte-related clusters, we subset the Seurat object to contain only these clusters.
+
+```{r}
+
+# Select clusters in adipocyte lineage
+adipo_clusters <- c("Early pre-adipocytes",
+                    "Intermediate pre-adipocytes",
+                    "Transitional adipocytes",
+                    "Mature adipocytes")
+
+# Subset Seurat object to include only adipocyte clusters
+anno_combined_adipo <- subset(anno_combined, idents = adipo_clusters)
+
+```
+
+## Scale data
+
+Subsetting a Seurat object may cause the loss of the scaled data in the object. We verify this and recompute the scaled data as needed. This is a time-consuming step, so it is best to save the R object.
+
+```{r}
+
+# Ensure default assay is RNA assay
+DefaultAssay(anno_combined_adipo) <- "RNA"
+
+# Check that scaled data was preserved - this can be lost while subsetting
+head(anno_combined_adipo@assays$RNA@scale.data) # NOT OK
+
+# Scale data if needed
+  # This is a time-consuming step, save the object
+if (file.exists("data/analysis/anno_combined_adipo_scaled.RData")) {
+  
+  message("Loading existing scaled data file.")
+  
+  load(file = "data/analysis/anno_combined_adipo_scaled.RData")
+  
+} else {
+  
+  message("Missing scaled data file. Scaling data now.")
+  
+  anno_combined_adipo_scaled <- ScaleData(anno_combined_adipo, vars.to.regress = "percent.mt")
+  
+  save(anno_combined_adipo_scaled, file = "data/analysis/anno_combined_adipo_scaled.RData")
+
+}
+
+```
+
+# Find markers
+
+The Seurat `FindMarkers` function can identify differentially expressed genes by comparing one cluster with another cluster. To rerun the full analysis from scratch, be sure to delete any existing marker files in the folder `results/humanPVATsn/pathfindR/full/`.
+
+### Set up
+
+```{r}
+
+# Ensure default assay is RNA assay
+DefaultAssay(anno_combined_adipo_scaled) <- "RNA"
+
+marker_files <- c("results/humanPVATsn/pathfindR/full/early_vs_inter_markers.csv",
+                  "results/humanPVATsn/pathfindR/full/inter_vs_trans_markers.csv",
+                  "results/humanPVATsn/pathfindR/full/trans_vs_mature_markers.csv",
+                  "results/humanPVATsn/pathfindR/full/early_vs_mature_markers.csv"
+                  )
+
+```
+
+### Early vs intermediate pre-adipocytes
+
+```{r}
+
+# Find differentially expressed genes
+  # This is a time-consuming step, save the object
+if (!file.exists(marker_files[1])) {
+  
+  early_vs_inter_markers <- FindMarkers(object = anno_combined_adipo_scaled,
+                                      ident.1 = "Early pre-adipocytes",
+                                      ident.2 = "Intermediate pre-adipocytes",
+                                      min.pct = 0.3,
+                                      logfc.threshold = 0.3,
+                                      )
+  
+  write.csv(early_vs_inter_markers, marker_files[1], row.names = TRUE)
+  
+  message(paste0("Saved markers for early vs intermediate pre-adipocytes to ", marker_files[1]))
+  
+} else {
+  
+  message("Marker file for early vs intermediate pre-adipocytes already exists. Skipping FindMarkers.")
+  
+}
+
+```
+
+### Intermediate pre-adipocytes vs transitional adipocytes
+
+```{r}
+
+# Find differentially expressed genes
+  # This is a time-consuming step, save the object
+if (!file.exists(marker_files[2])) {
+  
+  inter_vs_trans_markers <- FindMarkers(object = anno_combined_adipo_scaled,
+                                      ident.1 = "Intermediate pre-adipocytes",
+                                      ident.2 = "Transitional adipocytes",
+                                      min.pct = 0.3,
+                                      logfc.threshold = 0.3,
+                                      )
+  
+  write.csv(inter_vs_trans_markers, marker_files[2], row.names = TRUE)
+  
+  message(paste0("Saved markers for intermediate pre-adipocytes vs transitional adipocytes to ", marker_files[2]))
+  
+} else {
+  
+  message("Marker file for intermediate pre-adipocytes vs transitional adipocytes already exists. Skipping FindMarkers.")
+  
+}
+
+```
+
+### Transitional adipocytes vs mature adipocytes
+
+```{r}
+
+# Find differentially expressed genes
+  # This is a time-consuming step, save the object
+if (!file.exists(marker_files[3])) {
+  
+  trans_vs_mature_markers <- FindMarkers(object = anno_combined_adipo_scaled,
+                                      ident.1 = "Transitional adipocytes",
+                                      ident.2 = "Mature adipocytes",
+                                      min.pct = 0.3,
+                                      logfc.threshold = 0.3,
+                                      )
+  
+  write.csv(trans_vs_mature_markers, marker_files[3], row.names = TRUE)
+  
+  message(paste0("Saved markers for transitional vs mature adipocytes to ", marker_files[3]))
+  
+} else {
+  
+  message("Marker file for transitional vs mature adipocytes already exists. Skipping FindMarkers.")
+  
+}
+
+```
+
+### Early pre-adipocytes vs mature adipocytes
+
+```{r}
+
+# Find differentially expressed genes
+  # This is a time-consuming step, save the object
+if (!file.exists(marker_files[4])) {
+  
+  early_vs_mature_markers <- FindMarkers(object = anno_combined_adipo_scaled,
+                                      ident.1 = "Early pre-adipocytes",
+                                      ident.2 = "Mature adipocytes",
+                                      min.pct = 0.3,
+                                      logfc.threshold = 0.3,
+                                      )
+  
+  write.csv(early_vs_mature_markers, marker_files[4], row.names = TRUE)
+  
+  message(paste0("Saved markers for early pre-adipocytes vs mature adipocytes to ", marker_files[4]))
+  
+} else {
+  
+  message("Marker file for early pre-adipocytes vs mature adipocytes already exists. Skipping FindMarkers.")
+  
+}
+
+```
+
+
+# Pathway enrichment analysis
+
+### Load marker files
+
+To streamline the workflow we save the marker files as `csv` files in the folder `results/humanPVATsn/pathfindR/full/`. These marker files can be loaded into RStudio to save the user from running FindMarkers() again, which is a time-consuming step.
+
+```{r}
+
+# Redefine marker files if starting code from this chunk
+marker_files <- c("results/humanPVATsn/pathfindR/full/early_vs_inter_markers.csv",
+                  "results/humanPVATsn/pathfindR/full/inter_vs_trans_markers.csv",
+                  "results/humanPVATsn/pathfindR/full/trans_vs_mature_markers.csv",
+                  "results/humanPVATsn/pathfindR/full/early_vs_mature_markers.csv"
+                  )
+
+# Load all relevant marker files
+if (all(file.exists(marker_files))) {
+  
+  early_vs_inter_markers <- read_csv(marker_files[1])
+  inter_vs_trans_markers <- read_csv(marker_files[2])
+  trans_vs_mature_markers <- read_csv(marker_files[3])
+  early_vs_mature_markers <- read_csv(marker_files[4])
+  
+} else {
+  
+  stop("One or more marker files are missing. Run FindMarkers first.")
+  
+}
+
+```
+
+### Reformat data
+
+The data needs to be reformatted to align with the expected input of `pathfindR`. The input data frame must consist of columns containing: gene symbols, change values (optional) and p values.
+
+```{r}
+
+# Make function to reformat to pathfindR input
+reformat_pathfindR <- function(input) {
+  
+  input %>%
+    select(Gene.symbol = ...1, logFC = avg_log2FC, adj.P.Val = p_val_adj) %>% 
+    as.data.frame()
+
+}
+
+# Reformat markers
+early_vs_inter_markers <- reformat_pathfindR(early_vs_inter_markers)
+inter_vs_trans_markers <- reformat_pathfindR(inter_vs_trans_markers)
+trans_vs_mature_markers <- reformat_pathfindR(trans_vs_mature_markers)
+early_vs_mature_markers <- reformat_pathfindR(early_vs_mature_markers)
+
+```
+
+### Run `pathfindR`
+
+For early vs intermediate pre-adipocytes
+
+```{r}
+
+step1_output <- run_pathfindR(early_vs_inter_markers,
+                              gene_sets = "GO-BP",
+                              min_gset_size = 5,
+                              max_gset_size = 300
+                              )
+
+```
+
+For intermediate pre-adipocytes vs transitional adipocytes
+
+```{r}
+
+step2_output <- run_pathfindR(inter_vs_trans_markers,
+                              gene_sets = "GO-BP",
+                              min_gset_size = 5,
+                              max_gset_size = 300
+                              )
+
+```
+
+For transitional vs mature adipocytes
+
+```{r}
+
+step3_output <- run_pathfindR(trans_vs_mature_markers,
+                              gene_sets = "GO-BP",
+                              min_gset_size = 5,
+                              max_gset_size = 300
+                              )
+
+```
+
+For early pre-adipocytes vs mature adipocytes
+
+```{r}
+
+full_diff_output <- run_pathfindR(early_vs_mature_markers,
+                                  gene_sets = "GO-BP",
+                                  min_gset_size = 5,
+                                  max_gset_size = 300
+                                  )
+
+```
+
+
+### Compare `pathfindR` results
+
+The `pathfindR` package provides a function to compare two different `pathfindR` output dataframes. More details can be found in [this vignette](https://cran.r-project.org/web/packages/pathfindR/vignettes/comparing_results.html).
+
+We can compare pathway activation between the first and second step of adipocyte differentiation: early pre-adipocytes to intermediate pre-adipocytes and intermediate pre-adipocytes to transitional adipocytes.
+
+```{r}
+
+compare_steps1v2 <- combine_pathfindR_results(
+  result_A = step1_output,
+  result_B = step2_output
+)
+
+```
+
+We can compare pathway activation between the second and third (final) step of adipocyte differentiation: intermediate pre-adipocytes to transitional adipocytes and transitional adipocytes to mature adipocytes.
+
+```{r}
+
+compare_steps1v2 <- combine_pathfindR_results(
+  result_A = step2_output,
+  result_B = step3_output
+)
+
+```
+
+
+## Visualisation
+
+We can create bar plots of the top 20 enriched pathways for each of the comparisons.
+
+```{r}
+
+
+
+```
+
+
+
+
+
+
+
+
+
+# Session info
+
+```{r}
+
+sessionInfo()
+
+```
+
+
+
+
+
+
+
+
+
