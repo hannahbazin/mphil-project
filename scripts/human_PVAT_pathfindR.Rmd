@@ -145,7 +145,7 @@ if (!file.exists(marker_files[1])) {
                                       ident.1 = "Early pre-adipocytes",
                                       ident.2 = "Intermediate pre-adipocytes",
                                       min.pct = 0.3,
-                                      logfc.threshold = 0.3,
+                                      logfc.threshold = 0.3
                                       )
   
   write.csv(early_vs_inter_markers, marker_files[1], row.names = TRUE)
@@ -172,7 +172,7 @@ if (!file.exists(marker_files[2])) {
                                       ident.1 = "Intermediate pre-adipocytes",
                                       ident.2 = "Transitional adipocytes",
                                       min.pct = 0.3,
-                                      logfc.threshold = 0.3,
+                                      logfc.threshold = 0.3
                                       )
   
   write.csv(inter_vs_trans_markers, marker_files[2], row.names = TRUE)
@@ -199,7 +199,7 @@ if (!file.exists(marker_files[3])) {
                                       ident.1 = "Transitional adipocytes",
                                       ident.2 = "Mature adipocytes",
                                       min.pct = 0.3,
-                                      logfc.threshold = 0.3,
+                                      logfc.threshold = 0.3
                                       )
   
   write.csv(trans_vs_mature_markers, marker_files[3], row.names = TRUE)
@@ -226,7 +226,7 @@ if (!file.exists(marker_files[4])) {
                                       ident.1 = "Early pre-adipocytes",
                                       ident.2 = "Mature adipocytes",
                                       min.pct = 0.3,
-                                      logfc.threshold = 0.3,
+                                      logfc.threshold = 0.3
                                       )
   
   write.csv(early_vs_mature_markers, marker_files[4], row.names = TRUE)
@@ -244,7 +244,7 @@ if (!file.exists(marker_files[4])) {
 
 # Pathway enrichment analysis
 
-### Load marker files
+## Load marker files
 
 To streamline the workflow we save the marker files as `csv` files in the folder `results/humanPVATsn/pathfindR/full/`. These marker files can be loaded into RStudio to save the user from running FindMarkers() again, which is a time-consuming step.
 
@@ -273,7 +273,7 @@ if (all(file.exists(marker_files))) {
 
 ```
 
-### Reformat data
+## Reformat data
 
 The data needs to be reformatted to align with the expected input of `pathfindR`. The input data frame must consist of columns containing: gene symbols, change values (optional) and p values.
 
@@ -296,7 +296,7 @@ early_vs_mature_markers <- reformat_pathfindR(early_vs_mature_markers)
 
 ```
 
-### Run `pathfindR`
+## Run `pathfindR`
 
 For early vs intermediate pre-adipocytes
 
@@ -347,7 +347,7 @@ full_diff_output <- run_pathfindR(early_vs_mature_markers,
 ```
 
 
-### Compare `pathfindR` results
+## Compare `pathfindR` results
 
 The `pathfindR` package provides a function to compare two different `pathfindR` output dataframes. More details can be found in [this vignette](https://cran.r-project.org/web/packages/pathfindR/vignettes/comparing_results.html).
 
@@ -366,7 +366,7 @@ We can compare pathway activation between the second and third (final) step of a
 
 ```{r}
 
-compare_steps1v2 <- combine_pathfindR_results(
+compare_steps2v3 <- combine_pathfindR_results(
   result_A = step2_output,
   result_B = step3_output
 )
@@ -374,22 +374,202 @@ compare_steps1v2 <- combine_pathfindR_results(
 ```
 
 
-## Visualisation
+## Save files
 
-We can create bar plots of the top 20 enriched pathways for each of the comparisons.
+We save the files to streamline the workflow, allowing for quick access when rerunning only the visualisation chunks.
 
 ```{r}
 
+# Save comparison dataframes as csv files
+write.csv(compare_steps1v2, "results/humanPVATsn/pathfindR/full/step1_vs_step2.csv", row.names = TRUE)
+
+write.csv(compare_steps2v3, "results/humanPVATsn/pathfindR/full/step2_vs_step3.csv", row.names = TRUE)
+
+write.csv(full_diff_output, "results/humanPVATsn/pathfindR/full/full_diff.csv", row.names = TRUE)
+
+```
+
+
+# Visualisation
+
+We can create bar plots of the top 20 enriched pathways for each of the comparisons.
+
+### Load data
+
+```{r}
+
+# Load data
+step1_vs_step2 <- read_csv("results/humanPVATsn/pathfindR/full/step1_vs_step2.csv")
+
+step2_vs_step3 <- read_csv("results/humanPVATsn/pathfindR/full/step2_vs_step3.csv")
+
+full_diff <- read_csv("results/humanPVATsn/pathfindR/full/full_diff.csv")
+
+```
+
+### Create bar plots
+
+Define function to create and save bar plots.
+- For the A only and B only pathways, we rank them based on fold enrichment.
+- For the common pathways, we rank them based on the combined p-value; this helps identify pathways that are consistently significant in both datasets.
+
+```{r}
+
+create_and_save_bar_plot <- function(df, category, title_label, output_file) {
+
+  # Differentiate cases for common or A only and B only enriched pathways
+  if(category == "common") {
+    
+    sorting_col <- "combined_p"
+    
+    # Filter top 20 enriched pathways
+    df_filtered <- df %>% 
+      filter(status == category) %>%
+      # Sort by ascending combined p value
+      arrange(combined_p) %>%
+      # Keep only those with more than 5 occurrences
+      filter(occurrence_A > 5 & occurrence_B > 5) %>%
+      # Keep top 20 enriched pathways
+      slice_head(n = 20) %>%
+      # Ensure factor levels are correctly ordered for plotting
+      mutate(Term_Description = factor(Term_Description, levels = Term_Description))
+    
+  } else {
+    
+    sorting_col <- paste0("Fold_Enrichment_", substr(category, 1, 1))
+    occurrence_col <- paste0("occurrence_", substr(category, 1, 1))
+    
+    # Filter top 20 enriched pathways
+    df_filtered <- df %>%
+      filter(status == category) %>%
+      # Sort by descending fold enrichment
+      arrange(desc(.data[[sorting_col]])) %>%
+      # Keep only those with more than 5 occurrences
+      filter(.data[[occurrence_col]] > 5) %>% 
+      # Keep top 20 enriched pathways
+      slice_head(n = 20) %>%
+      # Ensure factor levels are correctly ordered for plotting
+      mutate(Term_Description = factor(Term_Description, levels = rev(Term_Description)))
+    
+  }
+  
+  # Adjust x-axis for "common" category to ensure longest bars at the top
+  if(category == "common") {
+    
+    x_var <- -log10(df_filtered[[sorting_col]])  # Convert p-values for better visualisation
+    x_label <- "-log10(Combined P Value)"
+    
+  } else {
+    
+    x_var <- df_filtered[[sorting_col]]
+    x_label <- "Fold Enrichment"
+    
+  }
+
+  # Create bar plot
+  plot <- ggplot(df_filtered, aes(x = x_var,
+                                  y = Term_Description,
+                                  fill = Term_Description)) +
+    geom_bar(stat = "identity", color = "black") +
+    labs(title = title_label, x = x_label, y = "Pathway") +
+    theme_minimal() +
+    theme(legend.position = "none", plot.margin = margin(10, 20, 10, 10))
+  
+  # Save plot
+  ggsave(output_file, plot, width = 12, height = 6, device = "pdf")
+
+  # Return plot
+  return(plot)
+  
+}
+
+```
+
+Call bar plot function for each comparison. *TO DO: fix the common plot order of p values.*
+
+```{r fig.width=13, fig.height=6}
+
+# List of conditions
+conditions <- c("A only", "B only", "common")
+
+# Condition labels for each comparison
+condition_labels1 <- list("A only" = "Step 1 Only", "B only" = "Step 2 Only", "common" = "Both Steps")
+condition_labels2 <- list("A only" = "Step 2 Only", "B only" = "Step 3 Only", "common" = "Both Steps")
+
+# Create a bar plot for each condition defined above
+for (condition in conditions) {
+  
+  # Bar plot for comparing steps 1 and 2 of differentiation
+  step1_vs_step2_plot <- create_and_save_bar_plot(step1_vs_step2, condition,
+                                                  paste("Step 1 vs Step 2 of Brown Adipocyte Differentiation: Enriched Pathways for", condition_labels1[[condition]]), paste0("results/humanPVATsn/pathfindR/full/step1_vs_step2_", gsub(" ", "_", condition_labels1[[condition]]), ".pdf"))
+  
+  print(step1_vs_step2_plot)
+  
+  # Bar plot for comparing steps 2 and 3 of differentiation
+  step2_vs_step3_plot <- create_and_save_bar_plot(step2_vs_step3, condition,
+                                                    paste("Step 2 vs Step 3 of Brown Adipocyte Differentiation: Enriched Pathways for", condition_labels2[[condition]]), paste0("results/humanPVATsn/pathfindR/full/step2_vs_step3_", gsub(" ", "_", condition_labels2[[condition]]), ".pdf"))
+  
+  print(step2_vs_step3_plot)
+  
+}
+
+```
+
+Visualise results for differentially activated pathways for the full differentiation process. TO FINISH. TO DO. TO CHECK.
+
+```{r fig.width=12, fig.height=6}
+
+full_diff_filtered <- full_diff %>%
+  # Sort by descending fold enrichment
+  arrange(desc(.data[["Fold_Enrichment"]])) %>%
+  # Keep only those with more than 5 occurences
+  filter(occurrence > 5) %>% 
+  # Keep top 20 enriched pathways
+  slice_head(n = 20) %>%
+  # Ensure factor levels are correctly ordered for plotting
+  mutate(Term_Description = factor(Term_Description,
+                                   levels = rev(Term_Description)))
+
+plot <- ggplot(full_diff_filtered,
+                 aes(x = .data[["Fold_Enrichment"]],
+                     y = Term_Description,
+                     fill = Term_Description)) +
+    geom_bar(stat = "identity", color = "black") +
+    labs(title = "Enriched Pathways for Full Differentiation of Brown Adipocytes",
+         x = "Fold Enrichment",
+         y = "Pathway") +
+    theme_minimal() +
+    theme(legend.position = "none",
+          plot.margin = margin(10, 20, 10, 10))
+  
+# Save plot
+ggsave("results/humanPVATsn/pathfindR/full/full_diff.pdf", plot, width = 12, height = 6, device = "pdf")
+
+# Show plot
+plot
+
+```
+
+### Show up and downregulated genes
+
+We create a table showing up and downregulated genes of the top 10 pathways for each step and each condition. TO FINISH. TO DO.
+
+```{r}
+
+# Step 1 vs step 2
+  ## Step 1 only
+step1_vs_step2 %>% 
+  filter(status == "A only") %>%
+  arrange(desc("Fold_Enrichment_A")) %>%  # arrange in descending order
+  slice(1:10) %>%
+  select("Up_regulated_A", "Down_regulated_A")
 
 
 ```
 
 
 
-
-
-
-
+TO DO: run cluster_enriched_terms()?? "The wrapper function cluster_enriched_terms() can be used to perform clustering of enriched terms and partitioning the terms into biologically-relevant groups. Clustering can be performed either via hierarchical or fuzzy method using the pairwise kappa statistics (a chance-corrected measure of co-occurrence between two sets of categorized data) matrix between all enriched terms."
 
 
 # Session info
@@ -399,12 +579,4 @@ We can create bar plots of the top 20 enriched pathways for each of the comparis
 sessionInfo()
 
 ```
-
-
-
-
-
-
-
-
 

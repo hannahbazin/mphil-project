@@ -67,6 +67,8 @@ obese <- subset(anno_combined, subset = sampleType == "GSM5068998")
 
 ## Visualise UMAPs
 
+It is helpful to visualise individual UMAP plots for the healthy and obese patients.
+
 ```{r}
 
 # Plot UMAP per sample
@@ -92,7 +94,6 @@ obese_umap
 
 Subsetting a Seurat object may cause the loss of the scaled data in the object. We verify this and recompute the scaled data for both patients. This is a time-consuming step, so it is best to save the R objects.
 
-
 ```{r}
 
 # Ensure default assay is RNA assay
@@ -100,8 +101,8 @@ DefaultAssay(healthy) <- "RNA"
 DefaultAssay(obese) <- "RNA"
 
 # Check that scaled data was preserved - this can be lost while subsetting
-head(healthy@assays$RNA@scale.data) # NOT OK
-head(obese@assays$RNA@scale.data) # NOT OK
+#healthy@assays$RNA@scale.data[1:10, 1:10]
+#obese@assays$RNA@scale.data[1:10, 1:10]
 
 # Scale data for each subset separately - if needed
   # This is a time-consuming step, save the object
@@ -141,14 +142,13 @@ if (file.exists("data/analysis/obese_scaled.RData")) {
 
 ## Find markers
 
-The `FindAllMarkers()` function finds markers (i.e. differentially expressed genes) for each of the clusters in a dataset. By default, it uses a Wilcoxon Rank Sum test to identify differentially expressed genes between two groups.Because the function compares one cluster with all other clusters - including non-adipocytes ones, meaning it may identify pathways reflecting differences between adipocytes and non-adipocytes rather than differences between adipocyte developmental stages.
+The `FindAllMarkers()` function finds markers (i.e. differentially expressed genes) for each of the clusters in a dataset. By default, it uses a Wilcoxon Rank Sum test to identify differentially expressed genes between two groups. The function compares one cluster to all other clusters, therefore it may identify pathways reflecting differences between adipocytes and non-adipocytes rather than differences between adipocyte developmental stages.
 
-For this reason, we use the `FindMarkers` function instead. This function finds differentially expressed genes in adipocyte clusters by comparing them only to the three other adipocyte clusters. Seurat will combine all the clusters in `ident.2` into a single reference group.
+For this reason, we use the `FindMarkers` function instead. This function finds differentially expressed genes in adipocyte clusters by comparing them only to the three other adipocyte clusters. Seurat combines all the clusters in `ident.2` into a single reference group.
 
 The parameters are set as follows:
 - `min.pct = 0.3` only tests genes detected in 30% of either of the two populations being compared. This speeds up the function and allows us to focus on more biologically relevant genes.
 - `logfc.threshold = 0.3` limits testing to genes that show at least 0.3-fold difference (log-scale) between the two groups (removes weaker signals).
-
 
 ```{r}
 
@@ -332,7 +332,7 @@ o_mature <- reformat_pathfindR(o_mature)
 
 ### For healthy patient
 
-For early pre-adipocytes
+For early pre-adipocytes.
 
 ```{r}
 
@@ -344,7 +344,7 @@ h_early_output <- run_pathfindR(h_early,
 
 ```
 
-For intermediate pre-adipocytes
+For intermediate pre-adipocytes.
 
 ```{r}
 
@@ -356,7 +356,7 @@ h_inter_output <- run_pathfindR(h_intermediate,
 
 ```
 
-For transitional adipocytes
+For transitional adipocytes.
 
 ```{r}
 
@@ -367,7 +367,7 @@ h_trans_output <- run_pathfindR(h_transitional,
                                 )
 ```
 
-For mature adipocytes
+For mature adipocytes.
 
 ```{r}
 
@@ -381,7 +381,7 @@ h_mature_output <- run_pathfindR(h_mature,
 
 ### For obese patient
 
-For early preadipocytes
+For early preadipocytes.
 
 ```{r}
 
@@ -393,7 +393,7 @@ o_early_output <- run_pathfindR(o_early,
 
 ```
 
-For intermediate pre-adipocytes
+For intermediate pre-adipocytes.
 
 ```{r}
 
@@ -405,9 +405,9 @@ o_inter_output <- run_pathfindR(o_intermediate,
 
 ```
 
-For transitional adipocytes, the analysis is not possible because the obese patient does not have enough of these cells, therefore no conclusions can be drawn.
+For transitional adipocytes, the analysis is not possible because the obese patient only has 192 of these cells.
 
-For mature adipocytes
+For mature adipocytes.
 
 ```{r}
 
@@ -419,6 +419,22 @@ o_mature_output <- run_pathfindR(o_mature,
 
 ```
 
+We save these objects as RDS for downstream analysis, as this is a time-consuming process.
+
+```{r}
+
+# For healthy patient
+saveRDS(h_early_output, file = "data/analysis/pathfindR/h_early_output.rds")
+saveRDS(h_inter_output, file = "data/analysis/pathfindR/h_inter_output.rds")
+saveRDS(h_trans_output, file = "data/analysis/pathfindR/h_trans_output.rds")
+saveRDS(h_mature_output, file = "data/analysis/pathfindR/h_mature_output.rds")
+
+# For obese patient
+saveRDS(o_early_output, file = "data/analysis/pathfindR/o_early_output.rds")
+saveRDS(o_inter_output, file = "data/analysis/pathfindR/o_inter_output.rds")
+saveRDS(o_mature_output, file = "data/analysis/pathfindR/o_mature_output.rds")
+
+```
 
 
 ## Compare `pathfindR` results
@@ -426,7 +442,7 @@ o_mature_output <- run_pathfindR(o_mature,
 The `pathfindR` package provides a function to compare two different `pathfindR` output dataframes. More details can be found in [this vignette](https://cran.r-project.org/web/packages/pathfindR/vignettes/comparing_results.html).
 
 
-For early-pre-adipocytes
+For early-pre-adipocytes.
 
 ```{r}
 
@@ -438,7 +454,7 @@ combined_early <- combine_pathfindR_results(
 
 ```
 
-For intermediate pre-adipocytes
+For intermediate pre-adipocytes.
 
 ```{r}
 
@@ -450,11 +466,9 @@ combined_intermediate <- combine_pathfindR_results(
 
 ```
 
-
 For transitional adipocytes, the comparison is not possible because the obese patient does not show a sufficient quantity of transitional adipocyte cells, therefore no conclusions can be drawn.
 
-
-For mature adipocytes
+For mature adipocytes.
 
 ```{r}
 
@@ -473,9 +487,7 @@ We save the files to streamline the workflow, allowing for quick access when rer
 ```{r}
 
 write.csv(combined_early, "results/humanPVATsn/pathfindR/comparison1v3/early_pre_healthy_vs_obese.csv", row.names = TRUE)
-
 write.csv(combined_intermediate, "results/humanPVATsn/pathfindR/comparison1v3/intermediate_pre_healthy_vs_obese.csv", row.names = TRUE)
-
 write.csv(combined_mature, "results/humanPVATsn/pathfindR/comparison1v3/mature_healthy_vs_obese.csv", row.names = TRUE)
 
 ```
@@ -490,13 +502,11 @@ Load data and list patient conditions.
 # Load data
 early_df <- read_csv("results/humanPVATsn/pathfindR/comparison1v3/early_pre_healthy_vs_obese.csv")
 intermediate_df <- read_csv("results/humanPVATsn/pathfindR/comparison1v3/intermediate_pre_healthy_vs_obese.csv")
-
 mature_df <- read_csv("results/humanPVATsn/pathfindR/comparison1v3/mature_healthy_vs_obese.csv")
 
 # List of conditions
 conditions <- c("A only", "B only", "common")
-
-condition_labels <- list("A only" = "Healthy Only", "B only" = "Obese Only", "common" = "Both Healthy and Obese")
+condition_labels <- list("A only" = "healthy only", "B only" = "obese only", "common" = "both healthy and obese")
 
 ```
 
@@ -510,6 +520,13 @@ create_and_save_bar_plot <- function(df, category, title_label, output_file) {
   
   # Define sorting column
   sorting_col <- ifelse(category == "common", "combined_p", paste0("Fold_Enrichment_", substr(category, 1, 1)))
+
+  # Assign a color per condition
+  fill_col <- case_when(
+    category == "A only" ~ "#0072B2",
+    category == "B only" ~ "#E69F00",
+    category == "common" ~ "#009E73"
+  )
 
   # Filter top 20 enriched pathways
   if(category == "common") {
@@ -542,12 +559,12 @@ create_and_save_bar_plot <- function(df, category, title_label, output_file) {
   }
   
   # Create bar plot
-  plot <- ggplot(df_filtered, aes(x = .data[[sorting_col]], y = Term_Description, fill = Term_Description)) +
-    geom_bar(stat = "identity", color = "black") +
+  plot <- ggplot(df_filtered, aes(x = .data[[sorting_col]], y = Term_Description)) +
+    geom_bar(stat = "identity", color = "black", fill = fill_col) +
     labs(title = title_label, x = ifelse(category == "common", "Combined P Value", "Fold Enrichment"),
          y = "Pathway") +
     theme_minimal() +
-    theme(legend.position = "none")
+    theme(legend.position = "none", plot.margin = margin(10, 20, 10, 10))
   
   # Save plot
   ggsave(output_file, plot, width = 12, height = 6, device = "pdf")
@@ -566,23 +583,46 @@ Generate plots for each differentiation stage: early pre-adipocytes, intermediat
 for (condition in conditions) {
   
   # Early adipocytes
-  early_plot <- create_and_save_bar_plot(early_df, condition, paste("Early Pre-adipocytes: Enriched Pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/early_", gsub(" ", "_", condition), ".pdf"))
+  early_plot <- create_and_save_bar_plot(early_df, condition, paste("Early pre-adipocytes: enriched pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/early_", gsub(" ", "_", condition), ".pdf"))
   
   print(early_plot)
 
   # Intermediate adipocytes
-  inter_plot <- create_and_save_bar_plot(intermediate_df, condition, paste("Intermediate Pre-adipocytes: Enriched Pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/intermediate_", gsub(" ", "_", condition), ".pdf"))
+  inter_plot <- create_and_save_bar_plot(intermediate_df, condition, paste("Intermediate pre-adipocytes: enriched pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/intermediate_", gsub(" ", "_", condition), ".pdf"))
   
   print(inter_plot)
   
   # Mature adipocytes
-  mature_plot <- create_and_save_bar_plot(mature_df, condition, paste("Mature Adipocytes: Enriched Pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/mature_", gsub(" ", "_", condition), ".pdf"))
+  mature_plot <- create_and_save_bar_plot(mature_df, condition, paste("Mature adipocytes: enriched pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/mature_", gsub(" ", "_", condition), ".pdf"))
   
   print(mature_plot)
   
 }
 
 ```
+
+# Cluster enriched terms
+
+The function `cluster_enriched_terms` clusters enriched pathways into biologically relevant umbrella terms. This is helpful for the downstream biological interpretation. It uses pairwise kappa statistics to perform hierarchical clustering of enriched terms to determine the representative term.
+
+We load the previously saved RDS objects.
+
+```{r}
+
+# For healthy patient
+h_early_output <- readRDS(file = "data/analysis/pathfindR/h_early_output.rds")
+h_inter_output <- readRDS(file = "data/analysis/pathfindR/h_inter_output.rds")
+h_trans_output <- readRDS(file = "data/analysis/pathfindR/h_trans_output.rds")
+h_mature_output <- readRDS(file = "data/analysis/pathfindR/h_mature_output.rds")
+
+# For obese patient
+o_early_output <- readRDS(file = "data/analysis/pathfindR/o_early_output.rds")
+o_inter_output <- readRDS(file = "data/analysis/pathfindR/o_inter_output.rds")
+o_mature_output <- readRDS(file = "data/analysis/pathfindR/o_mature_output.rds")
+
+```
+
+The function 
 
 
 # Session info
@@ -592,3 +632,5 @@ for (condition in conditions) {
 sessionInfo()
 
 ```
+
+

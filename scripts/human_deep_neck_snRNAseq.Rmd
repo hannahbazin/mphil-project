@@ -1,6 +1,6 @@
 ---
 title: "SnRNA-sequencing analysis of human deep neck tissue"
-author: "Hannah Bazin"
+author: "Hannah M. L. Bazin"
 date: "r doc_date()"
 output: BiocStyle::html_document:
       toc: yes
