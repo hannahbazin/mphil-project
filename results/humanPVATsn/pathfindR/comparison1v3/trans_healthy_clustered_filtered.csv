@@ -1,0 +1,8 @@
+"ID","Term_Description","Fold_Enrichment","occurrence","support","lowest_p","highest_p","Up_regulated","Down_regulated","Cluster","Status"
+"GO:0032869","cellular response to insulin stimulus",32.1335227272727,10,0.0198039215686275,0.000187826995213847,0.00391048738663615,"PDE3B, PPARG, IRS2, ADIPOQ, SORBS1","",1,"Representative"
+"GO:0010891","negative regulation of sequestering of triglyceride",117.822916666667,10,0.0130718954248366,0.000608273745568044,0.000608273745568044,"PPARG, PNPLA2","",2,"Representative"
+"GO:2000480","negative regulation of cAMP-dependent protein kinase activity",58.9114583333333,10,0.0130718954248366,0.000608273745568044,0.000608273745568044,"PRKAR2B","",3,"Representative"
+"GO:0006739","NADP metabolic process",58.9114583333333,9,0.0065359477124183,0.00121640406998695,0.00121640406998695,"PC","",5,"Representative"
+"GO:1990379","lipid transport across blood-brain barrier",141.3875,10,0.0065359477124183,0.00135152024251826,0.00135152024251826,"CD36, SLC27A1","",6,"Representative"
+"GO:0030032","lamellipodium assembly",16.0667613636364,9,0.0065359477124183,0.0187149581727361,0.0187149581727361,"ARHGEF6","",9,"Representative"
+"GO:0007259","cell surface receptor signaling pathway via JAK-STAT",13.0914351851852,10,0.0065359477124183,0.028428629515464,0.028428629515464,"GHR","",10,"Representative"
