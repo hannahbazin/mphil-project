@@ -419,6 +419,8 @@ o_mature_output <- run_pathfindR(o_mature,
 
 ```
 
+### Save objects
+
 We save these objects as RDS for downstream analysis, as this is a time-consuming process.
 
 ```{r}
@@ -497,6 +499,8 @@ write.csv(combined_mature, "results/humanPVATsn/pathfindR/comparison1v3/mature_h
 
 ## Generate bar plots
 
+### Load data
+
 Load data and list patient conditions.
 
 ```{r}
@@ -512,6 +516,8 @@ condition_labels <- list("A only" = "healthy only", "B only" = "obese only", "co
 
 ```
 
+### Define function
+
 Define function to create and save bar plots.
 - For the A only and B only pathways, we rank them based on fold enrichment.
 - For the common pathways, we rank them based on the combined p-value; this helps identify pathways that are consistently significant in both datasets.
@@ -519,9 +525,6 @@ Define function to create and save bar plots.
 ```{r}
 
 create_and_save_bar_plot <- function(df, category, title_label, output_file) {
-  
-  # Define sorting column
-  sorting_col <- ifelse(category == "common", "combined_p", paste0("Fold_Enrichment_", substr(category, 1, 1)))
 
   # Assign a color per condition
   fill_col <- case_when(
@@ -530,40 +533,50 @@ create_and_save_bar_plot <- function(df, category, title_label, output_file) {
     category == "common" ~ "#009E73"
   )
 
-  # Filter top 20 enriched pathways
   if(category == "common") {
+    
+    sorting_col <- "combined_p"
     
     df_filtered <- df %>%
       filter(status == category) %>%
-      arrange(combined_p) %>%
-      slice_head(n = 20)
+      # Sort by descending combined p value
+      arrange(desc(combined_p)) %>%
+      # Keep only those with more than 5 occurrences
+      filter(occurrence_A > 5 & occurrence_B > 5) %>%
+      # Keep top 20 pathways for visualisation
+      slice_head(n = 20) %>%
+      # Ensure factor levels are correctly ordered for plotting
+      mutate(Term_Description = factor(Term_Description, levels = Term_Description))
+    
+    # Adjust x-axis for "common" category to ensure longest bars at the top
+    x_var <- -log10(df_filtered[[sorting_col]])  # Convert p-values for better visualisation
+    x_label <- "-log10(combined P value)"
     
   } else {
     
+    sorting_col <- paste0("Fold_Enrichment_", substr(category, 1, 1))
+    occurrence_col <- paste0("occurrence_", substr(category, 1, 1))
+    
     df_filtered <- df %>%
       filter(status == category) %>%
+      # Sort by descending fold enrichment
       arrange(desc(.data[[sorting_col]])) %>%
-      slice_head(n = 20)
-  }
-
-  # Ensure factor levels are correctly ordered for plotting
-  if(category == "common") {
-    
-     df_filtered <- df_filtered %>%
-       mutate(Term_Description = factor(Term_Description,
-                                        levels = Term_Description))
-     
-  } else {
-    
-    df_filtered <- df_filtered %>%
+      # Keep only those with more than 5 occurrences
+      filter(.data[[occurrence_col]] > 5) %>% 
+      # Keep top 20 pathways for visualisation
+      slice_head(n = 20) %>%
+      # Ensure factor levels are correctly ordered for plotting
       mutate(Term_Description = factor(Term_Description, levels = rev(Term_Description)))
-
-  }
+    
+    x_var <- df_filtered[[sorting_col]]
+    x_label <- "Fold enrichment"
+    
+    }
   
   # Create bar plot
-  plot <- ggplot(df_filtered, aes(x = .data[[sorting_col]], y = Term_Description)) +
+  plot <- ggplot(df_filtered, aes(x = x_var, y = Term_Description)) +
     geom_bar(stat = "identity", color = "black", fill = fill_col) +
-    labs(title = title_label, x = ifelse(category == "common", "Combined P Value", "Fold Enrichment"),
+    labs(title = title_label, x = x_label,
          y = "Pathway") +
     theme_minimal() +
     theme(legend.position = "none", plot.margin = margin(10, 20, 10, 10))
@@ -578,6 +591,8 @@ create_and_save_bar_plot <- function(df, category, title_label, output_file) {
 
 ```
 
+### Call function
+
 Generate plots for each differentiation stage: early pre-adipocytes, intermediate pre-adipocytes, and mature adipocytes.
 
 ```{r fig.width=12, fig.height=6}
@@ -585,17 +600,17 @@ Generate plots for each differentiation stage: early pre-adipocytes, intermediat
 for (condition in conditions) {
   
   # Early adipocytes
-  early_plot <- create_and_save_bar_plot(early_df, condition, paste("Early pre-adipocytes: enriched pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/early_", gsub(" ", "_", condition_labels[[condition]]), ".pdf"))
+  early_plot <- create_and_save_bar_plot(early_df, condition, paste("Early pre-adipocytes: top 20 enriched pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/early_", gsub(" ", "_", condition_labels[[condition]]), ".pdf"))
   
   print(early_plot)
 
   # Intermediate adipocytes
-  inter_plot <- create_and_save_bar_plot(intermediate_df, condition, paste("Intermediate pre-adipocytes: enriched pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/intermediate_", gsub(" ", "_", condition_labels[[condition]]), ".pdf"))
+  inter_plot <- create_and_save_bar_plot(intermediate_df, condition, paste("Intermediate pre-adipocytes: top 20 enriched pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/intermediate_", gsub(" ", "_", condition_labels[[condition]]), ".pdf"))
   
   print(inter_plot)
   
   # Mature adipocytes
-  mature_plot <- create_and_save_bar_plot(mature_df, condition, paste("Mature adipocytes: enriched pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/mature_", gsub(" ", "_", condition_labels[[condition]]), ".pdf"))
+  mature_plot <- create_and_save_bar_plot(mature_df, condition, paste("Mature adipocytes: top 20 enriched pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/mature_", gsub(" ", "_", condition_labels[[condition]]), ".pdf"))
   
   print(mature_plot)
   
@@ -607,7 +622,9 @@ for (condition in conditions) {
 
 The function `cluster_enriched_terms` clusters enriched pathways into biologically relevant umbrella terms. This is helpful for the downstream biological interpretation. It uses pairwise kappa statistics to perform hierarchical clustering of enriched terms to determine the representative term.
 
-We load the previously saved RDS objects.
+## Load data
+
+We load the previously saved RDS objects containing the `pathfindR` outputs.
 
 ```{r}
 
@@ -624,22 +641,26 @@ o_mature_output <- readRDS(file = "data/analysis/pathfindR/o_mature_output.rds")
 
 ```
 
-Cluster enriched terms. This will group enriched pathways into clusters, and each cluster will be given one "representative" pathway. It is common practice to filter this output as follows:
+## Define function
+
+Cluster enriched terms. This will group enriched pathways into clusters, and each cluster will be given a certain number of "representative" pathways. It is common practice to filter this output as follows:
 - Fold enrichment > 2: this is considered biologically meaningful, as the term is present at least twice as much as in the background
 - Occurrence >= 9: this ensures only terms present in over 9 out of 10 `pathfindR` iterations are kept, for high confidence
 - Lowest_p < 0.05: this ensures only statistically significant terms are kept
 
-This function clusters enriched terms, filters representative pathways based on robustness criteria, visualises them as a bar plot, and saves the result.
+This function `cluster_and_plot_pathways` clusters enriched terms, filters representative pathways based on robustness criteria, visualises them as a bar plot, and saves the result.
 
 ```{r fig.width=11, fig.height=7}
 
 cluster_and_plot_pathways <- function(pathfindR_output, output_prefix, title_label = NULL,
                                       output_dir = "results/humanPVATsn/pathfindR/comparison1v3/",
-                                      save_plot = TRUE, save_csv = TRUE) {
+                                      save_plot = TRUE, save_csv = TRUE,
+                                      colour_group = "#2166AC") {
   
   # Cluster enriched terms
   clustered <- cluster_enriched_terms(pathfindR_output, plot_dend = FALSE, plot_clusters_graph = FALSE)
   
+  # Filter to keep only robust representative terms
   clustered_rep <- clustered %>%
     filter(Status == "Representative",
            Fold_Enrichment > 2,
@@ -654,9 +675,9 @@ cluster_and_plot_pathways <- function(pathfindR_output, output_prefix, title_lab
   # Visualise with a barplot
   plot <- ggplot(clustered_rep,
                aes(x = Fold_Enrichment, y = reorder(Term_Description, Fold_Enrichment))) +
-          geom_bar(stat = "identity", color = "black") +
+          geom_bar(stat = "identity", color = "black", fill = colour_group) +
           labs(title = title_label,
-               x = "Fold Enrichment",
+               x = "Fold enrichment",
                y = "Pathway") +
           theme_minimal() +
           theme(legend.position = "none", plot.margin = margin(10, 20, 10, 10))
@@ -675,6 +696,8 @@ cluster_and_plot_pathways <- function(pathfindR_output, output_prefix, title_lab
 }
 
 ```
+
+## Call function
 
 This function is called on all pathway enrichment analyses.
 
@@ -708,6 +731,17 @@ run_labels <- list(
   mature_obese = "Mature adipocytes: clusters of enriched pathways for obese only"
 )
 
+# Define plot colours
+colour_lookup <- list(
+  early_healthy = "#0072B2",
+  early_obese = "#E69F00",
+  inter_healthy = "#0072B2",
+  inter_obese = "#E69F00",
+  trans_healthy = "#0072B2",
+  mature_healthy = "#0072B2",
+  mature_obese = "#E69F00"
+)
+
 # Run all analyses
 results_list <- list()
 
@@ -717,7 +751,8 @@ for (name in names(pathfindR_outputs)) {
   output <- cluster_and_plot_pathways(
     pathfindR_output = pathfindR_outputs[[name]],
     output_prefix = paste0(name),
-    title_label = run_labels[[name]]
+    title_label = run_labels[[name]],
+    colour_group = colour_lookup[[name]]
   )
   
   # Save results
@@ -729,7 +764,6 @@ for (name in names(pathfindR_outputs)) {
 }
 
 ```
-
 
 
 # Session info

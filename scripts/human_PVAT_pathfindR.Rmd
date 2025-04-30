@@ -9,7 +9,7 @@ output:
       toc_float: yes
 ---
 
-In this vignette, I run `pathfindR` on differentially expressed genes of single-nucleus RNA sequencing of human perivascular adipose tissue (PVAT). The aim is to identify enriched pathways in different steps of brown adipocyte development. The raw data is available on the Gene Expression Omnibus website under the accession number GSE164528, found [here](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE164528).
+In this vignette, I run `pathfindR` on differentially expressed genes of single-nucleus RNA sequencing of human perivascular adipose tissue (PVAT). The aim is to identify enriched pathways in each stage of brown adipocyte development. The raw data is available on the Gene Expression Omnibus website under the accession number GSE164528, found [here](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE164528).
 
 
 # Overview of `pathfindR` algorithm
@@ -84,7 +84,7 @@ anno_combined_adipo <- subset(anno_combined, idents = adipo_clusters)
 
 ## Scale data
 
-Subsetting a Seurat object may cause the loss of the scaled data in the object. We verify this and recompute the scaled data as needed. This is a time-consuming step, so it is best to save the R object.
+Subsetting a Seurat object can cause the loss of the scaled data in the object. We verify this and recompute the scaled data as needed. This is a time-consuming step, so it is best to save the R object.
 
 ```{r}
 
@@ -92,7 +92,7 @@ Subsetting a Seurat object may cause the loss of the scaled data in the object. 
 DefaultAssay(anno_combined_adipo) <- "RNA"
 
 # Check that scaled data was preserved - this can be lost while subsetting
-head(anno_combined_adipo@assays$RNA@scale.data) # NOT OK
+head(anno_combined_adipo@assays$RNA@scale.data) # <0 x 0 matrix>
 
 # Scale data if needed
   # This is a time-consuming step, save the object
@@ -116,7 +116,13 @@ if (file.exists("data/analysis/anno_combined_adipo_scaled.RData")) {
 
 # Find markers
 
-The Seurat `FindMarkers` function can identify differentially expressed genes by comparing one cluster with another cluster. To rerun the full analysis from scratch, be sure to delete any existing marker files in the folder `results/humanPVATsn/pathfindR/full/`.
+The Seurat `FindMarkers` function identifies differentially expressed genes by comparing one cluster with another. The output of this function is a dataframe with markers as rows with associated statistics. The columns are:
+- `avg_logFC`: log fold-change of the average expression between the groups. If positive, the gene is more highly expressed in the first group.
+- `pct.1`: percentage of cells expressing the gene in the first group
+- `pct.2`: percentage of cells expressing the gene in the second group
+- `p_val_adj`: adjusted p-value after Bonferroni correction
+
+To run the full analysis from scratch, be sure to delete any existing marker files in the folder `results/humanPVATsn/pathfindR/full/`.
 
 ### Set up
 
@@ -128,10 +134,13 @@ DefaultAssay(anno_combined_adipo_scaled) <- "RNA"
 marker_files <- c("results/humanPVATsn/pathfindR/full/early_vs_inter_markers.csv",
                   "results/humanPVATsn/pathfindR/full/inter_vs_trans_markers.csv",
                   "results/humanPVATsn/pathfindR/full/trans_vs_mature_markers.csv",
-                  "results/humanPVATsn/pathfindR/full/early_vs_mature_markers.csv"
+                  "results/humanPVATsn/pathfindR/full/early_vs_mature_markers.csv",
+                  "results/humanPVATsn/pathfindR/full/early_vs_mature_markers_inv.csv"
                   )
 
 ```
+
+The `FindMarkers` function is run on each stage of brown adipocyte development, including on the overall development (early vs mature).
 
 ### Early vs intermediate pre-adipocytes
 
@@ -216,6 +225,8 @@ if (!file.exists(marker_files[3])) {
 
 ### Early pre-adipocytes vs mature adipocytes
 
+This first analysis of the full differentiation process looks at what genes are upregulated in the early pre-adipocytes versus the mature adipocytes.
+
 ```{r}
 
 # Find differentially expressed genes
@@ -241,12 +252,40 @@ if (!file.exists(marker_files[4])) {
 
 ```
 
+### Mature adipocytes vs early pre-adipocytes
+
+This second analysis of the full differentiation process looks at what genes are upregulated in the mature adipocytes versus the early pre-adipocytes.
+
+```{r}
+
+# Find differentially expressed genes
+  # This is a time-consuming step, save the object
+if (!file.exists(marker_files[5])) {
+  
+  early_vs_mature_markers_inv <- FindMarkers(object = anno_combined_adipo_scaled,
+                                      ident.1 = "Mature adipocytes",
+                                      ident.2 = "Early pre-adipocytes",
+                                      min.pct = 0.3,
+                                      logfc.threshold = 0.3
+                                      )
+  
+  write.csv(early_vs_mature_markers_inv, marker_files[5], row.names = TRUE)
+  
+  message(paste0("Saved markers for mature adipocytes vs early pre-adipocytes to ", marker_files[5]))
+  
+} else {
+  
+  message("Marker file for mature adipocytes vs early pre-adipocytes already exists. Skipping FindMarkers.")
+  
+}
+
+```
 
 # Pathway enrichment analysis
 
 ## Load marker files
 
-To streamline the workflow we save the marker files as `csv` files in the folder `results/humanPVATsn/pathfindR/full/`. These marker files can be loaded into RStudio to save the user from running FindMarkers() again, which is a time-consuming step.
+To streamline the workflow the marker files are saved as `csv` files in the folder `results/humanPVATsn/pathfindR/full/`. These can be loaded into RStudio to save the user from running FindMarkers() again, which is a time-consuming step.
 
 ```{r}
 
@@ -254,7 +293,8 @@ To streamline the workflow we save the marker files as `csv` files in the folder
 marker_files <- c("results/humanPVATsn/pathfindR/full/early_vs_inter_markers.csv",
                   "results/humanPVATsn/pathfindR/full/inter_vs_trans_markers.csv",
                   "results/humanPVATsn/pathfindR/full/trans_vs_mature_markers.csv",
-                  "results/humanPVATsn/pathfindR/full/early_vs_mature_markers.csv"
+                  "results/humanPVATsn/pathfindR/full/early_vs_mature_markers.csv",
+                  "results/humanPVATsn/pathfindR/full/early_vs_mature_markers_inv.csv"
                   )
 
 # Load all relevant marker files
@@ -264,6 +304,7 @@ if (all(file.exists(marker_files))) {
   inter_vs_trans_markers <- read_csv(marker_files[2])
   trans_vs_mature_markers <- read_csv(marker_files[3])
   early_vs_mature_markers <- read_csv(marker_files[4])
+  early_vs_mature_markers_inv <- read_csv(marker_files[5])
   
 } else {
   
@@ -293,12 +334,13 @@ early_vs_inter_markers <- reformat_pathfindR(early_vs_inter_markers)
 inter_vs_trans_markers <- reformat_pathfindR(inter_vs_trans_markers)
 trans_vs_mature_markers <- reformat_pathfindR(trans_vs_mature_markers)
 early_vs_mature_markers <- reformat_pathfindR(early_vs_mature_markers)
+early_vs_mature_markers_inv <- reformat_pathfindR(early_vs_mature_markers_inv)
 
 ```
 
 ## Run `pathfindR`
 
-For early vs intermediate pre-adipocytes
+For early vs intermediate pre-adipocytes.
 
 ```{r}
 
@@ -310,7 +352,7 @@ step1_output <- run_pathfindR(early_vs_inter_markers,
 
 ```
 
-For intermediate pre-adipocytes vs transitional adipocytes
+For intermediate pre-adipocytes vs transitional adipocytes.
 
 ```{r}
 
@@ -322,7 +364,7 @@ step2_output <- run_pathfindR(inter_vs_trans_markers,
 
 ```
 
-For transitional vs mature adipocytes
+For transitional vs mature adipocytes.
 
 ```{r}
 
@@ -334,7 +376,9 @@ step3_output <- run_pathfindR(trans_vs_mature_markers,
 
 ```
 
-For early pre-adipocytes vs mature adipocytes
+For early pre-adipocytes vs mature adipocytes.
+
+In this output dataframe, a positive fold enrichment score indicates a pathway enriched in the early pre-adipocytes compared to the mature adipocytes.
 
 ```{r}
 
@@ -346,76 +390,101 @@ full_diff_output <- run_pathfindR(early_vs_mature_markers,
 
 ```
 
+In this output dataframe, a positive fold enrichment score indicates a pathway enriched in the mature adipocytes compared to the early pre-adipocytes.
+
+```{r}
+
+full_diff_output_inv <- run_pathfindR(early_vs_mature_markers_inv,
+                                  gene_sets = "GO-BP",
+                                  min_gset_size = 5,
+                                  max_gset_size = 300
+                                  )
+
+```
 
 ## Compare `pathfindR` results
 
 The `pathfindR` package provides a function to compare two different `pathfindR` output dataframes. More details can be found in [this vignette](https://cran.r-project.org/web/packages/pathfindR/vignettes/comparing_results.html).
 
-We can compare pathway activation between the first and second step of adipocyte differentiation: early pre-adipocytes to intermediate pre-adipocytes and intermediate pre-adipocytes to transitional adipocytes.
+We compare pathway activation between the first and second step of adipocyte differentiation: early pre-adipocytes to intermediate pre-adipocytes and intermediate pre-adipocytes to transitional adipocytes.
 
 ```{r}
 
 compare_steps1v2 <- combine_pathfindR_results(
   result_A = step1_output,
-  result_B = step2_output
+  result_B = step2_output,
+  plot_common = FALSE
 )
 
 ```
 
-We can compare pathway activation between the second and third (final) step of adipocyte differentiation: intermediate pre-adipocytes to transitional adipocytes and transitional adipocytes to mature adipocytes.
+We compare pathway activation between the second and third (final) step of adipocyte differentiation: intermediate pre-adipocytes to transitional adipocytes and transitional adipocytes to mature adipocytes.
 
 ```{r}
 
 compare_steps2v3 <- combine_pathfindR_results(
   result_A = step2_output,
-  result_B = step3_output
+  result_B = step3_output,
+  plot_common = FALSE
 )
 
 ```
 
-
 ## Save files
 
-We save the files to streamline the workflow, allowing for quick access when rerunning only the visualisation chunks.
+We save the files to streamline the workflow, as this is a time-consuming process.
 
 ```{r}
 
-# Save comparison dataframes as csv files
+# Step-specific enriched pathways - for running cluster_enriched_terms()
+saveRDS(step1_output, "results/humanPVATsn/pathfindR/full/step1.rds")
+saveRDS(step2_output, "results/humanPVATsn/pathfindR/full/step2.rds")
+saveRDS(step3_output, "results/humanPVATsn/pathfindR/full/step3.rds")
+saveRDS(full_diff_output, "results/humanPVATsn/pathfindR/full/full_diff.rds")
+saveRDS(full_diff_output_inv, "results/humanPVATsn/pathfindR/full/full_diff_inv.rds")
+
+# Comparison dataframes - for visualisation in bar plots
 write.csv(compare_steps1v2, "results/humanPVATsn/pathfindR/full/step1_vs_step2.csv", row.names = TRUE)
-
 write.csv(compare_steps2v3, "results/humanPVATsn/pathfindR/full/step2_vs_step3.csv", row.names = TRUE)
-
-write.csv(full_diff_output, "results/humanPVATsn/pathfindR/full/full_diff.csv", row.names = TRUE)
 
 ```
 
-
 # Visualisation
 
-We can create bar plots of the top 20 enriched pathways for each of the comparisons.
+Bar plots are generated to visualise the top 20 enriched pathways for each of the comparisons.
 
-### Load data
+## Load data
 
 ```{r}
 
 # Load data
 step1_vs_step2 <- read_csv("results/humanPVATsn/pathfindR/full/step1_vs_step2.csv")
-
 step2_vs_step3 <- read_csv("results/humanPVATsn/pathfindR/full/step2_vs_step3.csv")
-
-full_diff <- read_csv("results/humanPVATsn/pathfindR/full/full_diff.csv")
+full_diff <- readRDS("results/humanPVATsn/pathfindR/full/full_diff.rds")
+full_diff_inv <- readRDS("results/humanPVATsn/pathfindR/full/full_diff_inv.rds")
 
 ```
 
-### Create bar plots
+## Create bar plots
+
+### Define function
 
 Define function to create and save bar plots.
-- For the A only and B only pathways, we rank them based on fold enrichment.
-- For the common pathways, we rank them based on the combined p-value; this helps identify pathways that are consistently significant in both datasets.
+- For the A only and B only pathways, enriched terms are ranked based on fold enrichment.
+- For the common pathways, enriched terms are ranked based on the combined p-value; this helps identify pathways that are consistently significant in both datasets.
+
 
 ```{r}
 
-create_and_save_bar_plot <- function(df, category, title_label, output_file) {
+create_and_save_bar_plot <- function(df, category, title_label, output_file, enriched_step) {
+
+  # Assign a color per condition
+  fill_col <- case_when(
+    enriched_step == "step1" ~ "#FDD866",
+    enriched_step == "step2" ~ "#F46D43",
+    enriched_step == "step3" ~ "#D73027",
+    enriched_step == "common" ~ "#CC79A7"
+  )
 
   # Differentiate cases for common or A only and B only enriched pathways
   if(category == "common") {
@@ -425,14 +494,18 @@ create_and_save_bar_plot <- function(df, category, title_label, output_file) {
     # Filter top 20 enriched pathways
     df_filtered <- df %>% 
       filter(status == category) %>%
-      # Sort by ascending combined p value
-      arrange(combined_p) %>%
+      # Sort by descending combined p value
+      arrange(desc(combined_p)) %>%
       # Keep only those with more than 5 occurrences
       filter(occurrence_A > 5 & occurrence_B > 5) %>%
       # Keep top 20 enriched pathways
       slice_head(n = 20) %>%
       # Ensure factor levels are correctly ordered for plotting
       mutate(Term_Description = factor(Term_Description, levels = Term_Description))
+    
+    # Adjust x-axis for "common" category to ensure longest bars at the top
+    x_var <- -log10(df_filtered[[sorting_col]])  # Convert p-values for better visualisation
+    x_label <- "-log10(combined P value)"
     
   } else {
     
@@ -450,64 +523,73 @@ create_and_save_bar_plot <- function(df, category, title_label, output_file) {
       slice_head(n = 20) %>%
       # Ensure factor levels are correctly ordered for plotting
       mutate(Term_Description = factor(Term_Description, levels = rev(Term_Description)))
+        
+    x_var <- df_filtered[[sorting_col]]
+    x_label <- "Fold enrichment"
     
   }
   
-  # Adjust x-axis for "common" category to ensure longest bars at the top
-  if(category == "common") {
-    
-    x_var <- -log10(df_filtered[[sorting_col]])  # Convert p-values for better visualisation
-    x_label <- "-log10(Combined P Value)"
-    
-  } else {
-    
-    x_var <- df_filtered[[sorting_col]]
-    x_label <- "Fold Enrichment"
-    
-  }
-
   # Create bar plot
-  plot <- ggplot(df_filtered, aes(x = x_var,
-                                  y = Term_Description,
-                                  fill = Term_Description)) +
-    geom_bar(stat = "identity", color = "black") +
+  plot <- ggplot(df_filtered, aes(x = x_var, y = Term_Description)) +
+    geom_bar(stat = "identity", color = "black", fill = fill_col) +
     labs(title = title_label, x = x_label, y = "Pathway") +
     theme_minimal() +
     theme(legend.position = "none", plot.margin = margin(10, 20, 10, 10))
   
   # Save plot
-  ggsave(output_file, plot, width = 12, height = 6, device = "pdf")
+  ggsave(output_file, plot, width = 13, height = 6, device = "pdf")
 
   # Return plot
   return(plot)
   
 }
 
+# Define function to obtain enriched step for bar plot colour
+get_enriched_step <- function(category, comparison) {
+  if (category == "common") {
+    return("common")
+  } else if (comparison == "step1_vs_step2") {
+    return(ifelse(condition == "A only", "step1", "step2"))
+  } else if (comparison == "step2_vs_step3") {
+    return(ifelse(condition == "A only", "step2", "step3"))
+  }
+}
+
 ```
 
-Call bar plot function for each comparison. *TO DO: fix the common plot order of p values.*
+### Call function
 
-```{r fig.width=13, fig.height=6}
+Call bar plot function for each comparison.
+
+```{r fig.width=14, fig.height=6}
 
 # List of conditions
 conditions <- c("A only", "B only", "common")
 
 # Condition labels for each comparison
-condition_labels1 <- list("A only" = "Step 1 Only", "B only" = "Step 2 Only", "common" = "Both Steps")
-condition_labels2 <- list("A only" = "Step 2 Only", "B only" = "Step 3 Only", "common" = "Both Steps")
+condition_labels1 <- list("A only" = "step 1 only", "B only" = "step 2 only", "common" = "both steps")
+condition_labels2 <- list("A only" = "step 2 only", "B only" = "step 3 only", "common" = "both steps")
 
 # Create a bar plot for each condition defined above
 for (condition in conditions) {
   
+  # Define enriched step for bar plot colour
+  enriched_step1 <- get_enriched_step(condition, "step1_vs_step2")
+  enriched_step2 <- get_enriched_step(condition, "step2_vs_step3")
+  
   # Bar plot for comparing steps 1 and 2 of differentiation
   step1_vs_step2_plot <- create_and_save_bar_plot(step1_vs_step2, condition,
-                                                  paste("Step 1 vs Step 2 of Brown Adipocyte Differentiation: Enriched Pathways for", condition_labels1[[condition]]), paste0("results/humanPVATsn/pathfindR/full/step1_vs_step2_", gsub(" ", "_", condition_labels1[[condition]]), ".pdf"))
+                                                  paste("Step 1 vs 2 of brown adipocyte differentiation: top 20 enriched pathways for", condition_labels1[[condition]]),
+                                                  paste0("results/humanPVATsn/pathfindR/full/step1_vs_step2_", gsub(" ", "_", condition_labels1[[condition]]), ".pdf"),
+                                                  enriched_step1)
   
   print(step1_vs_step2_plot)
   
   # Bar plot for comparing steps 2 and 3 of differentiation
   step2_vs_step3_plot <- create_and_save_bar_plot(step2_vs_step3, condition,
-                                                    paste("Step 2 vs Step 3 of Brown Adipocyte Differentiation: Enriched Pathways for", condition_labels2[[condition]]), paste0("results/humanPVATsn/pathfindR/full/step2_vs_step3_", gsub(" ", "_", condition_labels2[[condition]]), ".pdf"))
+                                                    paste("Step 2 vs 3 of brown adipocyte differentiation: top 20 enriched pathways for", condition_labels2[[condition]]),
+                                                  paste0("results/humanPVATsn/pathfindR/full/step2_vs_step3_", gsub(" ", "_", condition_labels2[[condition]]), ".pdf"),
+                                                  enriched_step2)
   
   print(step2_vs_step3_plot)
   
@@ -515,7 +597,9 @@ for (condition in conditions) {
 
 ```
 
-Visualise results for differentially activated pathways for the full differentiation process. TO FINISH. TO DO. TO CHECK.
+Visualise results for differentially activated pathways for the full differentiation process.
+
+This shows the enriched pathways in the early pre-adipocytes compared to the mature adipocytes.
 
 ```{r fig.width=12, fig.height=6}
 
@@ -523,7 +607,7 @@ full_diff_filtered <- full_diff %>%
   # Sort by descending fold enrichment
   arrange(desc(.data[["Fold_Enrichment"]])) %>%
   # Keep only those with more than 5 occurences
-  filter(occurrence > 5) %>% 
+  filter(occurrence > 5) %>%
   # Keep top 20 enriched pathways
   slice_head(n = 20) %>%
   # Ensure factor levels are correctly ordered for plotting
@@ -531,12 +615,10 @@ full_diff_filtered <- full_diff %>%
                                    levels = rev(Term_Description)))
 
 plot <- ggplot(full_diff_filtered,
-                 aes(x = .data[["Fold_Enrichment"]],
-                     y = Term_Description,
-                     fill = Term_Description)) +
-    geom_bar(stat = "identity", color = "black") +
-    labs(title = "Enriched Pathways for Full Differentiation of Brown Adipocytes",
-         x = "Fold Enrichment",
+                 aes(x = .data[["Fold_Enrichment"]], y = Term_Description)) +
+    geom_bar(stat = "identity", color = "black", fill = "#2166AC") +
+    labs(title = "Top 20 enriched pathways for full differentiation: early pre-adipocytes vs mature adipocytes",
+         x = "Fold enrichment in early pre-adipocytes",
          y = "Pathway") +
     theme_minimal() +
     theme(legend.position = "none",
@@ -546,13 +628,46 @@ plot <- ggplot(full_diff_filtered,
 ggsave("results/humanPVATsn/pathfindR/full/full_diff.pdf", plot, width = 12, height = 6, device = "pdf")
 
 # Show plot
-plot
+print(plot)
 
 ```
 
-### Show up and downregulated genes
+This shows the enriched pathways in the mature adipocytes compared to the early pre-adipocytes.
 
-We create a table showing up and downregulated genes of the top 10 pathways for each step and each condition. TO FINISH. TO DO.
+```{r fig.width=12, fig.height=6}
+
+full_diff_inv_filtered <- full_diff_inv %>%
+  # Sort by descending fold enrichment
+  arrange(desc(.data[["Fold_Enrichment"]])) %>%
+  # Keep only those with more than 5 occurrences
+  filter(occurrence > 5) %>%
+  # Keep top 20 enriched pathways
+  slice_head(n = 20) %>%
+  # Ensure factor levels are correctly ordered for plotting
+  mutate(Term_Description = factor(Term_Description,
+                                   levels = rev(Term_Description)))
+
+plot <- ggplot(full_diff_inv_filtered,
+                 aes(x = .data[["Fold_Enrichment"]], y = Term_Description)) +
+    geom_bar(stat = "identity", color = "black", fill = "#2166AC") +
+    labs(title = "Top 20 enriched pathways for full differentiation: mature adipocytes vs early pre-adipocytes",
+         x = "Fold enrichment in mature adipocytes",
+         y = "Pathway") +
+    theme_minimal() +
+    theme(legend.position = "none",
+          plot.margin = margin(10, 20, 10, 10))
+  
+# Save plot
+ggsave("results/humanPVATsn/pathfindR/full/full_diff_inv.pdf", plot, width = 12, height = 6, device = "pdf")
+
+# Show plot
+print(plot)
+
+```
+
+### Tables
+
+Create a table showing up and downregulated genes of the top 10 pathways for each step and each condition. *TO FINISH. TO DO. MAYBE LATER?*
 
 ```{r}
 
@@ -567,9 +682,129 @@ step1_vs_step2 %>%
 
 ```
 
+# Cluster enriched terms
+
+The function `cluster_enriched_terms` from the `pathfindR` package clusters enriched pathways into biologically relevant umbrella terms. This is helpful for the downstream biological interpretation. It uses pairwise kappa statistics to perform hierarchical clustering of enriched terms to determine the representative term.
+
+## Load data
+
+We load the previously saved RDS objects.
+
+```{r}
+
+# Load data
+step1_output <- readRDS(file = "results/humanPVATsn/pathfindR/full/step1.rds")
+step2_output <- readRDS(file = "results/humanPVATsn/pathfindR/full/step2.rds")
+step3_output <- readRDS(file = "results/humanPVATsn/pathfindR/full/step3.rds")
+full_diff_output <- readRDS(file = "results/humanPVATsn/pathfindR/full/full_diff.rds")
+full_diff_inv_output <- readRDS(file = "results/humanPVATsn/pathfindR/full/full_diff_inv.rds")
+
+```
+
+## Define function
+
+*TO DO: THIS HAS NOT YET BEEN RUN. RUN THIS!!!*
+
+Cluster enriched terms. This will group enriched pathways into clusters, and each cluster will be given a certain number of "representative" pathways. It is common practice to filter this output as follows:
+- Fold enrichment > 2: this is considered biologically meaningful, as the term is present at least twice as much as in the background
+- Occurrence >= 9: this ensures only terms present in over 9 out of 10 `pathfindR` iterations are kept, for high confidence
+- Lowest_p < 0.05: this ensures only statistically significant terms are kept
+
+This function `cluster_and_plot_pathways` filters representative pathways based on robustness criteria, visualises them as a bar plot, and saves the result.
+
+```{r fig.width=11, fig.height=7}
+
+cluster_and_plot_pathways <- function(pathfindR_output, output_prefix, title_label = NULL,
+                                      output_dir = "results/humanPVATsn/pathfindR/full/",
+                                      save_plot = TRUE, save_csv = TRUE) {
+  
+  # Cluster enriched terms
+  clustered <- cluster_enriched_terms(pathfindR_output, plot_dend = FALSE, plot_clusters_graph = FALSE)
+  
+  # Filter to keep only robust representative terms
+  clustered_rep <- clustered %>%
+    filter(Status == "Representative",
+           Fold_Enrichment > 2,
+           occurrence >= 9,
+           lowest_p < 0.05)
+  
+  # Handle title if not provided
+  if (is.null(title_label)) {
+    title_label <- paste("Clusters of enriched pathways –", output_prefix)
+  }
+
+  # Visualise with a barplot
+  plot <- ggplot(clustered_rep,
+               aes(x = Fold_Enrichment, y = reorder(Term_Description, Fold_Enrichment))) +
+          geom_bar(stat = "identity", color = "black", fill = "#2166AC") +
+          labs(title = title_label,
+               x = "Fold enrichment",
+               y = "Pathway") +
+          theme_minimal() +
+          theme(legend.position = "none", plot.margin = margin(10, 20, 10, 10))
+  
+  # Define output file paths
+  pdf_file <- file.path(output_dir, paste0(output_prefix, "_clustered.pdf"))
+  csv_file <- file.path(output_dir, paste0(output_prefix, "_clustered_filtered.csv"))
+  
+  # Save outputs
+  if (save_plot) ggsave(pdf_file, plot, width = 12, height = 6, device = "pdf")
+  if (save_csv) write.csv(clustered_rep, csv_file, row.names = FALSE)
+
+  # Return table and plot
+  return(list(data = clustered_rep, plot = plot))
+
+}
+
+```
+
+## Call function
+
+This function is called on pathway enrichment analyses for each step of differentiation and also one on the full differentiation process.
+
+```{r fig.width=12, fig.height=10}
+
+# Define inputs
+pathfindR_outputs <- list(
+  step1 = step1_output,
+  step2 = step2_output,
+  step3 = step3_output,
+  full_diff = full_diff_output,
+  full_diff_inv = full_diff_inv_output
+)
+
+# Define matching labels and output names
+run_labels <- list(
+  step1 = "Step 1: clusters of pathways enriched in early vs intermediate pre-adipocytes",
+  step2 = "Step 2: clusters of pathways enriched in intermediate vs transitional adipocytes",
+  step3 = "Step 3: clusters of pathways enriched in transitional vs mature adipocytes",
+  full_diff = "Full differentiation: clusters of pathways enriched in early vs mature adipocytes",
+  full_diff_inv = "Full differentiation: clusters of pathways enriched in mature vs early adipocytes"
+)
+
+# Run all analyses
+results_list <- list()
+
+for (name in names(pathfindR_outputs)) {
+  
+  # Call the function on each adipocyte stage
+  output <- cluster_and_plot_pathways(
+    pathfindR_output = pathfindR_outputs[[name]],
+    output_prefix = paste0(name),
+    title_label = run_labels[[name]]
+  )
+  
+  # Save results
+  results_list[[name]] <- output
+  
+  # Print the plots
+  print(output$plot)
+
+}
+
+```
 
 
-TO DO: run cluster_enriched_terms()?? "The wrapper function cluster_enriched_terms() can be used to perform clustering of enriched terms and partitioning the terms into biologically-relevant groups. Clustering can be performed either via hierarchical or fuzzy method using the pairwise kappa statistics (a chance-corrected measure of co-occurrence between two sets of categorized data) matrix between all enriched terms."
 
 
 # Session info
