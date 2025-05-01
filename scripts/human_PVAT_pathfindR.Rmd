@@ -478,7 +478,7 @@ Define function to create and save bar plots.
 
 create_and_save_bar_plot <- function(df, category, title_label, output_file, enriched_step) {
 
-  # Assign a color per condition
+  # Assign colour based on step
   fill_col <- case_when(
     enriched_step == "step1" ~ "#FDD866",
     enriched_step == "step2" ~ "#F46D43",
@@ -733,10 +733,18 @@ cluster_and_plot_pathways <- function(pathfindR_output, output_prefix, title_lab
     title_label <- paste("Clusters of enriched pathways –", output_prefix)
   }
 
+  # Assign colour based on step
+  fill_col <- case_when(
+    output_prefix == "step1" ~ "#FDD866",
+    output_prefix == "step2" ~ "#F46D43",
+    output_prefix == "step3" ~ "#D73027",
+    output_prefix %in% c("full_diff", "full_diff_inv") ~ "#2166AC"
+  )
+  
   # Visualise with a barplot
   plot <- ggplot(clustered_rep,
                aes(x = Fold_Enrichment, y = reorder(Term_Description, Fold_Enrichment))) +
-          geom_bar(stat = "identity", color = "black", fill = "#2166AC") +
+          geom_bar(stat = "identity", color = "black", fill = fill_col) +
           labs(title = title_label,
                x = "Fold enrichment",
                y = "Pathway") +
@@ -793,6 +801,7 @@ for (name in names(pathfindR_outputs)) {
     output_prefix = paste0(name),
     title_label = run_labels[[name]]
   )
+  print(paste0(name))
   
   # Save results
   results_list[[name]] <- output
@@ -803,7 +812,6 @@ for (name in names(pathfindR_outputs)) {
 }
 
 ```
-
 
 
 
