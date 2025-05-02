@@ -703,8 +703,6 @@ full_diff_inv_output <- readRDS(file = "results/humanPVATsn/pathfindR/full/full_
 
 ## Define function
 
-*TO DO: THIS HAS NOT YET BEEN RUN. RUN THIS!!!*
-
 Cluster enriched terms. This will group enriched pathways into clusters, and each cluster will be given a certain number of "representative" pathways. It is common practice to filter this output as follows:
 - Fold enrichment > 2: this is considered biologically meaningful, as the term is present at least twice as much as in the background
 - Occurrence >= 9: this ensures only terms present in over 9 out of 10 `pathfindR` iterations are kept, for high confidence

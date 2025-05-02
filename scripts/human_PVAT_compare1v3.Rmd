@@ -639,6 +639,64 @@ o_early_output <- readRDS(file = "data/analysis/pathfindR/o_early_output.rds")
 o_inter_output <- readRDS(file = "data/analysis/pathfindR/o_inter_output.rds")
 o_mature_output <- readRDS(file = "data/analysis/pathfindR/o_mature_output.rds")
 
+# For pathways common to both patients (we will filter to keep only common pathways)
+early_df <- read_csv("results/humanPVATsn/pathfindR/comparison1v3/early_pre_healthy_vs_obese.csv")
+intermediate_df <- read_csv("results/humanPVATsn/pathfindR/comparison1v3/intermediate_pre_healthy_vs_obese.csv")
+mature_df <- read_csv("results/humanPVATsn/pathfindR/comparison1v3/mature_healthy_vs_obese.csv")
+
+```
+
+## Preprocess common data
+
+The three stage-specific dataframes need to be reformatted to serve as input to `cluster_enriched_terms`. The function requires the presence of the columns `Term_Description`, `Down_regulated`, and `Up_regulated`. The original dataframe has two columns for upregulated genes (`Up_regulated_A` and `Up_regulated_B`) and two columns for downregulated genes (`Down_regulated_A` and `Down_regulated_B`). I combine these two into one column named like `Up_regulated` and `Down_regulated`, which contains the upregulated and downregulated genes for both A and B combined. The lack of `lowest_p` column was causing errors so this was added to the dataframe as the lowest P value between A and B lowest P values, to highlight the best evidence. Similarly, for the added `highest_p` column, the highest value between the two patients was kept. For the added `Fold_Enrichment` and `occurence` columns, the mean between corresponding `A` and `B` columns was used to integrate data equally from both patients. However, for the added `support` column, which represents the fraction of significant input genes found to be involved in the pathway, the minimum was used to ensure the pathway is only seen as significant if well-supported in both patients. The remaining patient-specific columns are removed because they interfere with the `cluster_enriched_terms` function.
+
+```{r}
+
+# Define function for reformatting
+reformat_for_clustering <- function(df) {
+  
+  res <- df %>%
+      # Keep only enriched pathways common to both patients
+      filter(status == "common") %>%
+      # Ensure operations are carried out on rows
+      rowwise() %>%
+      # Add necessary columns
+      mutate(
+        Fold_Enrichment = rowMeans(cbind(Fold_Enrichment_A, Fold_Enrichment_B), na.rm = TRUE),
+        occurrence = rowMeans(cbind(occurrence_A, occurrence_B)),
+        support = pmin(support_A, support_B, na.rm = TRUE),
+        lowest_p = pmin(lowest_p_A, lowest_p_B, na.rm = TRUE),
+        highest_p = pmax(highest_p_A, highest_p_B, na.rm = TRUE),
+        Up_regulated = {
+          parts <- c(Up_regulated_A, Up_regulated_B)
+          genes <- unlist(strsplit(paste(na.omit(parts), collapse = ", "), ",\\s*"))
+          if (length(genes) == 0) NA_character_ else paste(unique(genes), collapse = ", ")
+        },
+        Down_regulated = {
+          parts <- c(Down_regulated_A, Down_regulated_B)
+          genes <- unlist(strsplit(paste(na.omit(parts), collapse = ", "), ",\\s*"))
+          if (length(genes) == 0) NA_character_ else paste(unique(genes), collapse = ", ")
+        }
+      ) %>%
+      # Revert the effect of rowwise()
+      ungroup() %>%
+      # Convert to data frame
+      as.data.frame() %>%
+      # Remove first column as it causes downstream errors and adds no meaningful information
+      select(-1) %>%
+      subset(select = -c(Fold_Enrichment_A, occurrence_A, support_A, lowest_p_A, highest_p_A, Up_regulated_A, Down_regulated_A,
+                         Fold_Enrichment_B, occurrence_B, support_B, lowest_p_B, highest_p_B, Up_regulated_B, Down_regulated_B,
+                         combined_p, status))
+  
+  return(res)
+
+}
+
+# Reformat all three dataframes
+early_df_filt <- reformat_for_clustering(early_df)
+inter_df_filt <- reformat_for_clustering(intermediate_df)
+mature_df_filt <- reformat_for_clustering(mature_df)
+
 ```
 
 ## Define function
@@ -656,7 +714,7 @@ cluster_and_plot_pathways <- function(pathfindR_output, output_prefix, title_lab
                                       output_dir = "results/humanPVATsn/pathfindR/comparison1v3/",
                                       save_plot = TRUE, save_csv = TRUE,
                                       colour_group = "#2166AC") {
-  
+
   # Cluster enriched terms
   clustered <- cluster_enriched_terms(pathfindR_output, plot_dend = FALSE, plot_clusters_graph = FALSE)
   
@@ -707,39 +765,48 @@ This function is called on all pathway enrichment analyses.
 pathfindR_outputs <- list(
   early_healthy = h_early_output,
   early_obese = o_early_output,
-  
+  early_common = early_df_filt,
+
   inter_healthy = h_inter_output,
   inter_obese = o_inter_output,
+  inter_common = inter_df_filt,
   
   trans_healthy = h_trans_output,
 
   mature_healthy = h_mature_output,
-  mature_obese = o_mature_output
+  mature_obese = o_mature_output,
+  mature_common = mature_df_filt
 )
 
 # Define matching labels and output names
 run_labels <- list(
   early_healthy = "Early pre-adipocytes: clusters of enriched pathways for healthy only",
   early_obese = "Early pre-adipocytes: clusters of enriched pathways for obese only",
+  early_common = "Early pre-adipocytes: clusters of enriched pathways for both patients",
 
   inter_healthy = "Intermediate pre-adipocytes: clusters of enriched pathways for healthy only",
   inter_obese = "Intermediate pre-adipocytes: clusters of enriched pathways for obese only",
+  inter_common = "Intermediate pre-adipocytes: clusters of enriched pathways for both patients",
 
   trans_healthy = "Transitional adipocytes: clusters of enriched pathways for healthy only",
   
   mature_healthy = "Mature adipocytes: clusters of enriched pathways for healthy only",
-  mature_obese = "Mature adipocytes: clusters of enriched pathways for obese only"
+  mature_obese = "Mature adipocytes: clusters of enriched pathways for obese only",
+  mature_common = "Mature adipocytes: clusters of enriched pathways for both patients"
 )
 
 # Define plot colours
 colour_lookup <- list(
   early_healthy = "#0072B2",
   early_obese = "#E69F00",
+  early_common = "#009E73",
   inter_healthy = "#0072B2",
   inter_obese = "#E69F00",
+  inter_common = "#009E73",
   trans_healthy = "#0072B2",
   mature_healthy = "#0072B2",
-  mature_obese = "#E69F00"
+  mature_obese = "#E69F00",
+  mature_common = "#009E73"
 )
 
 # Run all analyses
