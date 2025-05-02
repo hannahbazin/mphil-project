@@ -1,5 +1,5 @@
 ---
-title: "Comparing pathway enrichment in healthy and obese snRNA-sequencing samples of human perivascular adipose tissue (PVAT)"
+title: "Comparing pathway enrichment in healthy and obese snRNA-sequencing samples of human perivascular adipose tissue (PVAT) - by health status"
 author: "Hannah M. L. Bazin"
 date: "`r doc_date()`"
 output:
@@ -52,7 +52,7 @@ library(pathfindR)
 
 ## Load data
 
-For consistency we reload the integrated Seurat object generated previously in the notebook titled `human_PVAT_snRNAseq.Rmd`.
+For consistency we reload the integrated Seurat object generated previously in the notebook titled `human_PVAT_snRNAseq.Rmd`. We then subset the object into one healthy and one obese object with the corresponding data.
 
 ```{r}
 
@@ -142,9 +142,9 @@ if (file.exists("data/analysis/obese_scaled.RData")) {
 
 ## Find markers
 
-The `FindAllMarkers()` function finds markers (i.e. differentially expressed genes) for each of the clusters in a dataset. By default, it uses a Wilcoxon Rank Sum test to identify differentially expressed genes between two groups. The function compares one cluster to all other clusters, therefore it may identify pathways reflecting differences between adipocytes and non-adipocytes rather than differences between adipocyte developmental stages.
+The `FindAllMarkers` function finds markers (i.e. differentially expressed genes) for each of the clusters in a dataset. By default, it uses a Wilcoxon Rank Sum test to identify differentially expressed genes between two groups. The function compares one cluster to all other clusters, therefore it may identify pathways reflecting differences between adipocytes and non-adipocytes rather than differences between adipocyte developmental stages.
 
-For this reason, we use the `FindMarkers` function instead. This function finds differentially expressed genes in adipocyte clusters by comparing them only to the three other adipocyte clusters. Seurat combines all the clusters in `ident.2` into a single reference group.
+For this reason, we use the `FindMarkers` function instead. This function is called to identify differentially expressed genes in adipocyte clusters by comparing them only to the three other adipocyte clusters. Seurat combines all the clusters in `ident.2` into a single reference group.
 
 The parameters are set as follows:
 - `min.pct = 0.3` only tests genes detected in 30% of either of the two populations being compared. This speeds up the function and allows us to focus on more biologically relevant genes.

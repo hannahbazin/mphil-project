@@ -1,0 +1,245 @@
+---
+title: "Differential expression analysis in healthy and obese of human perivascular adipose tissue (PVAT) by adipocyte lineage cluster using snRNA-Seq"
+author: "Hannah M. L. Bazin"
+date: "`r doc_date()`"
+output:
+  BiocStyle::html_document:
+      toc: yes
+      toc_depth: 3
+      toc_float: yes
+---
+
+In this vignette, I compare healthy and obese snRNA-seq data from human perivascular adipose tissue (PVAT), by separating based on adipocyte lineage cluster and comparing gene expression between a healthy patient and an obese patient for each cluster. The two samples are taken from an original collection of three samples. We are only interested in two patients in this analysis:
+
+-   Patient 1: 65 years old, BMI of 23.5 (healthy weight)
+-   Patient 3: 61 years old, BMI of 35.3 (obese)
+
+There are 12,657 and 6,456 cells in samples 1 and 3 respectively that were sequenced on the Illumina NovaSeq 6000. The raw data can be found on the Gene Expression Omnibus website [at this link](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE164528).
+
+# Set up
+
+## Set working directory
+
+The working directory can be set by running the following command in the terminal: `setwd("/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project")`
+
+## Set seed
+
+Because `pathfindR` includes a heuristic search algorithm to identify active subnetworks, we set a random seed for reproducibility.
+
+```{r}
+
+# Set random seed for reproducibility
+set.seed(42)
+
+```
+
+## Load libraries
+
+```{r}
+
+library(GEOquery)
+library(Seurat)
+library(dplyr)
+library(patchwork)
+library(ggplot2)
+library(ggpubr)
+library(tidyverse)
+library(pathfindR)
+
+```
+
+# Seurat analysis
+
+## Load data
+
+For consistency we reload the integrated Seurat object generated previously in the notebook titled `human_PVAT_snRNAseq.Rmd`. We then subset the object into four Seurat objects - one for each adipocyte lineage cluster - containing the corresponding data.
+
+```{r}
+
+# Load integrated Seurat object from previous analysis
+load(file = "data/analysis/anno_combined.RData")
+
+# Subset by adipocyte lineage cluster
+early <- subset(anno_combined, idents = "Early pre-adipocytes")
+inter <- subset(anno_combined, idents = "Intermediate pre-adipocytes")
+trans <- subset(anno_combined, idents = "Transitional adipocytes")
+mature <- subset(anno_combined, idents = "Mature adipocytes")
+
+```
+
+
+## Find markers
+
+The `FindMarkers` function identifies differentially expressed genes in a given gene set (`ident.1`) by comparing gene expression to another gene set (`ident.2`). A positive `avg_log2FC` in the resulting dataframe signifies that the gene is upregulated in the gene set specified by `ident.1` (i.e., positive values indicate higher expression in the healthy sample).
+
+The parameters are set as follows:
+- `min.pct = 0.3` only tests genes detected in 30% of either of the two populations being compared. This speeds up the function and allows us to focus on more biologically relevant genes.
+- `logfc.threshold = 0.3` limits testing to genes that show at least 0.3-fold difference (log-scale) between the two groups (removes weaker signals).
+
+
+```{r}
+
+# Set sample type as identity
+Idents(early) <- "sampleType"
+Idents(inter) <- "sampleType"
+Idents(trans) <- "sampleType"
+Idents(mature) <- "sampleType"
+
+# Create function to run FindMarkers
+run_find_markers <- function(df) {
+  
+  FindMarkers(
+        object = df,
+        ident.1 = "GSM5068996", # Healthy
+        ident.2 = "GSM5068998", # Obese
+        min.pct = 0.3, # Min fraction of cells expressing the genes
+        logfc.threshold = 0.3, # Min log fold change
+        verbose = TRUE
+      )
+  
+}
+
+# Call function on each adipocyte cluster
+early_healthy_vs_obese <- run_find_markers(early)
+inter_healthy_vs_obese <- run_find_markers(inter)
+trans_healthy_vs_obese <- run_find_markers(trans)
+mature_healthy_vs_obese <- run_find_markers(mature)
+
+```
+
+## Save marker files
+
+```{r}
+
+# Define output folder
+output_dir <- "results/humanPVATsn/pathfindR/comparison1v3/per_adipo_cluster/"
+
+# Save marker tables as CSV
+write.csv(early_healthy_vs_obese, file = paste0(output_dir, "early_healthy_vs_obese_markers.csv"))
+write.csv(inter_healthy_vs_obese, file = paste0(output_dir, "inter_healthy_vs_obese_markers.csv"))
+write.csv(trans_healthy_vs_obese, file = paste0(output_dir, "trans_healthy_vs_obese_markers.csv"))
+write.csv(mature_healthy_vs_obese, file = paste0(output_dir, "mature_healthy_vs_obese_markers.csv"))
+
+```
+
+
+# Visualisation
+
+## Define function
+
+This function shows upregulated genes in each condition (healthy and obese).
+
+```{r}
+
+plot_top_DE_genes <- function(marker_df, top_n = 10, title = "Top differentially expressed genes") {
+  
+  # Reformat dataframe for plotting
+  marker_df <- marker_df %>%
+    rownames_to_column("gene") %>%
+    filter(p_val_adj < 0.05) %>%  # Only significant genes
+    arrange(desc(avg_log2FC)) %>%
+    mutate(direction = "Up in healthy") %>%
+    bind_rows(
+      marker_df %>%
+        rownames_to_column("gene") %>%
+        filter(p_val_adj < 0.05) %>%
+        arrange(avg_log2FC) %>%
+        mutate(direction = "Up in obese")
+    ) %>%
+    group_by(direction) %>%
+    slice_head(n = top_n) %>%
+    ungroup() %>%
+    mutate(direction = factor(direction, levels = c("Up in obese", "Up in healthy"))) %>%
+    arrange(direction, desc(abs(avg_log2FC))) %>%
+    mutate(gene = factor(gene, levels = rev(unique(gene))))
+
+  # Compute axis limit
+  axis_limit <- max(abs(marker_df$avg_log2FC), na.rm = TRUE)
+  
+  # Plot
+  ggplot(marker_df, aes(x = gene, y = avg_log2FC, fill = direction)) +
+    geom_col() +
+    coord_flip() +
+    labs(title = title, y = expression("log"[2]*" fold change"), x = "Gene") +
+    scale_y_continuous(limits = c(-axis_limit, axis_limit)) +
+    scale_fill_manual(values = c("Up in obese" = "#E69F00", "Up in healthy" = "#0072B2"),
+                      labels = c("Up in obese" = "Upregulated in obese", "Up in healthy" = "Upregulated in healthy")
+                      ) +
+    theme_minimal(base_size = 12)
+}
+
+```
+
+## Call function
+
+In the plots, genes with positive log₂ fold change are upregulated in healthy, while negative values are upregulated in obese.
+
+```{r fig.width=9, fig.height=6}
+
+# Create bar plots for each adipocyte cluster showing the top 10 
+early_healthy_vs_obese_plot <- plot_top_DE_genes(early_healthy_vs_obese, top_n = 10, title = "Early pre-adipocytes: 10 most significant genes in healthy vs obese")
+inter_healthy_vs_obese_plot <- plot_top_DE_genes(inter_healthy_vs_obese, top_n = 10, title = "Intermediate pre-adipocytes: 10 most significant genes in healthy vs obese")
+trans_healthy_vs_obese_plot <- plot_top_DE_genes(trans_healthy_vs_obese, top_n = 10, title = "Transitional adipocytes: 10 most significant genes in healthy vs obese")
+mature_healthy_vs_obese_plot <- plot_top_DE_genes(mature_healthy_vs_obese, top_n = 10, title = "Mature adipocytes: 10 most significant genes in healthy vs obese")
+
+# Print bar plots
+print(early_healthy_vs_obese_plot)
+print(inter_healthy_vs_obese_plot)
+print(trans_healthy_vs_obese_plot)
+print(mature_healthy_vs_obese_plot)
+
+# Save bar plots
+ggsave("results/humanPVATsn/pathfindR/comparison1v3/per_adipo_cluster/early_healthy_vs_obese.pdf", early_healthy_vs_obese_plot, width = 9, height = 6, device = "pdf")
+ggsave("results/humanPVATsn/pathfindR/comparison1v3/per_adipo_cluster/inter_healthy_vs_obese.pdf", inter_healthy_vs_obese_plot, width = 9, height = 6, device = "pdf")
+ggsave("results/humanPVATsn/pathfindR/comparison1v3/per_adipo_cluster/trans_healthy_vs_obese.pdf", trans_healthy_vs_obese_plot, width = 9, height = 6, device = "pdf")
+ggsave("results/humanPVATsn/pathfindR/comparison1v3/per_adipo_cluster/mature_healthy_vs_obese.pdf", mature_healthy_vs_obese_plot, width = 9, height = 6, device = "pdf")
+
+```
+
+
+# Sanity check
+
+This is to verify that the most significantly up- and down-regulated genes match expectations in terms of expression and directionality.
+
+```{r}
+
+plot_data <- early_healthy_vs_obese %>%
+  rownames_to_column("gene") %>%
+  filter(p_val_adj < 0.05) %>%
+  arrange(desc(avg_log2FC)) %>%
+  mutate(direction = "Up in healthy") %>%
+  bind_rows(
+    early_healthy_vs_obese %>%
+      rownames_to_column("gene") %>%
+      filter(p_val_adj < 0.05) %>%
+      arrange(avg_log2FC) %>%
+      mutate(direction = "Up in obese")
+  ) %>%
+  group_by(direction) %>%
+  slice_head(n = 10) %>%
+  ungroup() %>%
+  mutate(direction = factor(direction, levels = c("Up in obese", "Up in healthy")))
+
+print(plot_data)
+
+
+```
+
+
+
+# Session info
+
+```{r}
+
+sessionInfo()
+
+```
+
+
+
+
+
+
+
+
+
