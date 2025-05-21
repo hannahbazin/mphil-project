@@ -29,7 +29,7 @@ The `pathfindR` workflow consists of the following steps:
 
 ## Set working directory
 
-The working directory can be set by running the following command in the terminal: `setwd("/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project")`
+The working directory can be set by running the following command in the console: `setwd("/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project")`
 
 ## Load libraries
 
@@ -38,6 +38,10 @@ The working directory can be set by running the following command in the termina
 library(Seurat)
 library(pathfindR)
 library(tidyverse)
+library(enrichplot)
+library(dplyr)
+library(ggtext)
+library(patchwork)
 
 ```
 
@@ -446,6 +450,7 @@ saveRDS(full_diff_output_inv, "results/humanPVATsn/pathfindR/full/full_diff_inv.
 # Comparison dataframes - for visualisation in bar plots
 write.csv(compare_steps1v2, "results/humanPVATsn/pathfindR/full/step1_vs_step2.csv", row.names = TRUE)
 write.csv(compare_steps2v3, "results/humanPVATsn/pathfindR/full/step2_vs_step3.csv", row.names = TRUE)
+write.csv(full_diff_output, "results/humanPVATsn/pathfindR/full/full_diff.csv", row.names = TRUE)
 
 ```
 
@@ -461,7 +466,6 @@ Bar plots are generated to visualise the top 20 enriched pathways for each of th
 step1_vs_step2 <- read_csv("results/humanPVATsn/pathfindR/full/step1_vs_step2.csv")
 step2_vs_step3 <- read_csv("results/humanPVATsn/pathfindR/full/step2_vs_step3.csv")
 full_diff <- readRDS("results/humanPVATsn/pathfindR/full/full_diff.rds")
-full_diff_inv <- readRDS("results/humanPVATsn/pathfindR/full/full_diff_inv.rds")
 
 ```
 
@@ -606,7 +610,7 @@ This shows the enriched pathways in the early pre-adipocytes compared to the mat
 full_diff_filtered <- full_diff %>%
   # Sort by descending fold enrichment
   arrange(desc(.data[["Fold_Enrichment"]])) %>%
-  # Keep only those with more than 5 occurences
+  # Keep only those with more than 5 occurrences
   filter(occurrence > 5) %>%
   # Keep top 20 enriched pathways
   slice_head(n = 20) %>%
@@ -617,7 +621,7 @@ full_diff_filtered <- full_diff %>%
 plot <- ggplot(full_diff_filtered,
                  aes(x = .data[["Fold_Enrichment"]], y = Term_Description)) +
     geom_bar(stat = "identity", color = "black", fill = "#2166AC") +
-    labs(title = "Top 20 enriched pathways for full differentiation: early pre-adipocytes vs mature adipocytes",
+    labs(title = "Full differentiation: top 20 enriched pathways",
          x = "Fold enrichment in early pre-adipocytes",
          y = "Pathway") +
     theme_minimal() +
@@ -632,11 +636,14 @@ print(plot)
 
 ```
 
-This shows the enriched pathways in the mature adipocytes compared to the early pre-adipocytes.
+### Colour bars by theme
+
+After manually sorting the pathways into biological themes, the plots are coloured by theme to improve interpretability. This was to see how it looked, but I chose to visualise the plots in the next way, by facet wrapping them - see code block below.
+
 
 ```{r fig.width=12, fig.height=6}
 
-full_diff_inv_filtered <- full_diff_inv %>%
+full_diff_filtered <- full_diff %>%
   # Sort by descending fold enrichment
   arrange(desc(.data[["Fold_Enrichment"]])) %>%
   # Keep only those with more than 5 occurrences
@@ -647,40 +654,338 @@ full_diff_inv_filtered <- full_diff_inv %>%
   mutate(Term_Description = factor(Term_Description,
                                    levels = rev(Term_Description)))
 
-plot <- ggplot(full_diff_inv_filtered,
-                 aes(x = .data[["Fold_Enrichment"]], y = Term_Description)) +
-    geom_bar(stat = "identity", color = "black", fill = "#2166AC") +
-    labs(title = "Top 20 enriched pathways for full differentiation: mature adipocytes vs early pre-adipocytes",
-         x = "Fold enrichment in mature adipocytes",
-         y = "Pathway") +
-    theme_minimal() +
-    theme(legend.position = "none",
-          plot.margin = margin(10, 20, 10, 10))
-  
-# Save plot
-ggsave("results/humanPVATsn/pathfindR/full/full_diff_inv.pdf", plot, width = 12, height = 6, device = "pdf")
+# Biological themes
+full_diff_filtered$Theme <- c(
+  "Signal transduction & cell communication",  # 1
+  "Metabolic activation",                      # 2
+  "Metabolic activation",                      # 3
+  "Cellular restructuring & vesicle dynamics", # 4
+  "Metabolic activation",                      # 5
+  "Cellular restructuring & vesicle dynamics", # 6
+  "Metabolic activation",                      # 7
+  "Differentiation & tissue remodelling",      # 8
+  "Differentiation & tissue remodelling",      # 9
+  "Cellular restructuring & vesicle dynamics", # 10
+  "Cellular restructuring & vesicle dynamics", # 11
+  "Cellular restructuring & vesicle dynamics", # 12
+  "Metabolic activation",                      # 13
+  "Signal transduction & cell communication",  # 14
+  "Signal transduction & cell communication",  # 15
+  "Signal transduction & cell communication",  # 16
+  "Differentiation & tissue remodelling",      # 17
+  "Signal transduction & cell communication",  # 18
+  "Metabolic activation",                      # 19
+  "Differentiation & tissue remodelling"       # 20
+)
 
-# Show plot
+# Count number of pathways per theme
+theme_counts <- full_diff_filtered %>%
+  count(Theme) %>%
+  arrange(desc(n))
+
+# Reorder Theme levels based on size (most pathways first)
+full_diff_filtered$Theme <- factor(full_diff_filtered$Theme,
+                                   levels = theme_counts$Theme)
+
+# Sort data frame first by Theme (ordered by count), then by Term_Description
+full_diff_filtered <- full_diff_filtered %>%
+  arrange(Theme, Term_Description) %>%
+  mutate(Term_Description = factor(Term_Description, levels = Term_Description))
+
+# Plot coloured by biological theme
+plot <- ggplot(full_diff_filtered,
+               aes(x = Fold_Enrichment, y = Term_Description, fill = Theme)) +
+  geom_bar(stat = "identity", color = "black") +
+  labs(title = "Full differentiation: top 20 enriched pathways",
+       x = "Fold enrichment in early preadipocytes",
+       y = "Pathway",
+       fill = "Biological theme") +  # add legend title
+  theme_minimal() +
+  theme(plot.margin = margin(10, 20, 10, 10))
+
+# Optional: Uncomment to use predefined color palette (e.g., "Set3")
+# plot <- plot + scale_fill_brewer(palette = "Set3")
+
+# Optional: Uncomment to use custom colors
+# plot <- plot + scale_fill_manual(values = c("Theme1" = "#E41A1C", "Theme2" = "#377EB8", "Theme3" = "#4DAF4A"))
+
+# Save and show plot
+ggsave("results/humanPVATsn/pathfindR/full/full_diff_colored.pdf", plot, width = 12, height = 6)
+print(plot)
+
+
+```
+
+### Split pathways by theme
+
+Step 1
+
+```{r fig.width=12, fig.height=10}
+
+# Filter pathfindR output
+step1_filtered <- step1_output %>%
+  # Sort by descending fold enrichment
+  arrange(desc(.data[["Fold_Enrichment"]])) %>%
+  # Keep only significantly enriched pathways
+  filter(lowest_p < 0.05) %>%
+  # Keep only those with more than 5 occurrences
+  filter(occurrence > 5) %>%
+  # Keep top 20 enriched pathways
+  slice_head(n = 20) %>%
+  # Ensure factor levels are correctly ordered for plotting
+  mutate(Term_Description = factor(Term_Description,
+                                   levels = rev(Term_Description)))
+
+# Biological theme list
+theme_list <- c(
+  "Cellular & tissue \n remodelling",
+  "Cell signalling",
+  "Neurogenic priming",
+  "Metabolic & transport \n processes"
+)
+
+# Assign themes
+step1_filtered$Theme <- c(
+  theme_list[2],
+  theme_list[3],
+  theme_list[3],
+  theme_list[1],
+  theme_list[3],
+  theme_list[2],
+  theme_list[4],
+  theme_list[1],
+  theme_list[1],
+  theme_list[2],
+  theme_list[1],
+  theme_list[1],
+  theme_list[1],
+  theme_list[4],
+  theme_list[2],
+  theme_list[1],
+  theme_list[4],
+  theme_list[4],
+  theme_list[2],
+  theme_list[1]
+)
+
+# Set Theme factor levels to control facet order
+step1_filtered$Theme <- factor(step1_filtered$Theme, levels = theme_list)
+
+# Reorder by theme and pathway name
+step1_filtered <- step1_filtered %>%
+  arrange(Theme, Term_Description) %>%
+  mutate(Term_Description = factor(Term_Description, levels = Term_Description))
+
+# Create facetted bar plot
+plot_base <- ggplot(step1_filtered,
+               aes(x = Fold_Enrichment, y = Term_Description)) +
+  geom_col(fill = "#FDD866", color = "black") +
+  facet_wrap(~ Theme, scales = "free_y", ncol = 1, strip.position = "left") +
+  labs(x = "Fold enrichment", y = NULL) +
+  theme_minimal(base_size = 12) +
+  coord_cartesian(clip = "off") + 
+  theme(
+    strip.text = element_text(size = 12, face = "bold"),
+    strip.placement = "outside",
+    strip.background = element_blank(),
+    panel.spacing = unit(1.5, "lines"),
+    axis.text.y = element_text(size = 10),
+    plot.margin = margin(10, 50, 10, 50),
+    plot.title = element_text(hjust = 0.5)
+  )
+
+# Use patchwork for plot title
+plot <- plot_base + 
+  plot_annotation(
+    title = "Top pathways enriched in step 1 (early to intermediate preadipocytes)",
+    theme = theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"))
+  )
+
+# Save and show plot
+ggsave("results/humanPVATsn/pathfindR/full/step1_split.pdf", plot, width = 12, height = 9)
+print(plot)
+
+
+```
+
+Step 2
+
+```{r fig.width=12, fig.height=10}
+
+# Filter pathfindR output
+step2_filtered <- step2_output %>%
+  # Sort by descending fold enrichment
+  arrange(desc(.data[["Fold_Enrichment"]])) %>%
+  # Keep only significantly enriched pathways
+  filter(lowest_p < 0.05) %>%
+  # Keep only those with more than 5 occurrences
+  filter(occurrence > 5) %>%
+  # Keep top 20 enriched pathways
+  slice_head(n = 20) %>%
+  # Ensure factor levels are correctly ordered for plotting
+  mutate(Term_Description = factor(Term_Description,
+                                   levels = rev(Term_Description)))
+
+# Biological theme list
+theme_list <- c(
+  "Metabolic \n priming",
+  "Cell signalling & \n tissue remodelling",
+  "Neurogenic \n priming",
+  "Developmental \n origins",
+  "Amyloid-beta \n processing"
+)
+
+
+# Assign themes
+step2_filtered$Theme <- c(
+  theme_list[1],
+  theme_list[1],
+  theme_list[4],
+  theme_list[1],
+  theme_list[2],
+  theme_list[1],
+  theme_list[2],
+  theme_list[2],
+  theme_list[4],
+  theme_list[1],
+  theme_list[1],
+  theme_list[1],
+  theme_list[1],
+  theme_list[5],
+  theme_list[1],
+  theme_list[2],
+  theme_list[3],
+  theme_list[3],
+  theme_list[3],
+  theme_list[1]
+)
+
+# Set Theme factor levels to control facet order
+step2_filtered$Theme <- factor(step2_filtered$Theme, levels = theme_list)
+
+# Reorder by theme and pathway name
+step2_filtered <- step2_filtered %>%
+  arrange(Theme, Term_Description) %>%
+  mutate(Term_Description = factor(Term_Description, levels = Term_Description))
+
+# Create facetted bar plot
+plot_base <- ggplot(step2_filtered,
+               aes(x = Fold_Enrichment, y = Term_Description)) +
+  geom_col(fill = "#F46D43", color = "black") +
+  facet_wrap(~ Theme, scales = "free_y", ncol = 1, strip.position = "left") +
+  labs(x = "Fold enrichment", y = NULL) +
+  theme_minimal(base_size = 12) +
+  coord_cartesian(clip = "off") + 
+  theme(
+    strip.text = element_text(size = 12, face = "bold"),
+    strip.placement = "outside",
+    strip.background = element_blank(),
+    panel.spacing = unit(1.5, "lines"),
+    axis.text.y = element_text(size = 10),
+    plot.margin = margin(10, 50, 10, 50),
+    plot.title = element_text(hjust = 0.5)
+  )
+
+# Use patchwork for plot title
+plot <- plot_base + 
+  plot_annotation(
+    title = "Top pathways enriched in step 2 (intermediate preadipocytes to transitional adipocytes)",
+    theme = theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"))
+  )
+
+# Save and show plot
+ggsave("results/humanPVATsn/pathfindR/full/step2_split.pdf", plot, width = 12, height = 9)
 print(plot)
 
 ```
 
-### Tables
 
-Create a table showing up and downregulated genes of the top 10 pathways for each step and each condition. *TO FINISH. TO DO. MAYBE LATER?*
+Full differentiation
 
-```{r}
+```{r fig.width=12, fig.height=9}
 
-# Step 1 vs step 2
-  ## Step 1 only
-step1_vs_step2 %>% 
-  filter(status == "A only") %>%
-  arrange(desc("Fold_Enrichment_A")) %>%  # arrange in descending order
-  slice(1:10) %>%
-  select("Up_regulated_A", "Down_regulated_A")
+full_diff_filtered <- full_diff %>%
+  # Sort by descending fold enrichment
+  arrange(desc(.data[["Fold_Enrichment"]])) %>%
+  # Keep only those with more than 5 occurrences
+  filter(occurrence > 5) %>%
+  # Keep top 20 enriched pathways
+  slice_head(n = 20) %>%
+  # Ensure factor levels are correctly ordered for plotting
+  mutate(Term_Description = factor(Term_Description,
+                                   levels = rev(Term_Description)))
 
+# Biological theme list
+theme_list <- c(
+  "Metabolic activation",
+  "Cellular restructuring \n & vesicle dynamics",
+  "Signal transduction \n & cell communication",
+  "Differentiation \n & tissue remodelling"
+)
+
+# Assign themes using numeric indexing
+full_diff_filtered$Theme <- c(
+  theme_list[3],
+  theme_list[1],
+  theme_list[1],
+  theme_list[2],
+  theme_list[1],
+  theme_list[2],
+  theme_list[1],
+  theme_list[4],
+  theme_list[4],
+  theme_list[2],
+  theme_list[2],
+  theme_list[2],
+  theme_list[1],
+  theme_list[3],
+  theme_list[3],
+  theme_list[3],
+  theme_list[4],
+  theme_list[3],
+  theme_list[1],
+  theme_list[4]
+)
+
+# Set Theme factor levels to control facet order
+full_diff_filtered$Theme <- factor(full_diff_filtered$Theme, levels = theme_list)
+
+# Reorder by theme and pathway name
+full_diff_filtered <- full_diff_filtered %>%
+  arrange(Theme, Term_Description) %>%
+  mutate(Term_Description = factor(Term_Description, levels = Term_Description))
+
+# Create facetted bar plot
+plot1 <- ggplot(full_diff_filtered,
+               aes(x = Fold_Enrichment, y = Term_Description)) +
+  geom_col(fill = "#2166AC", color = "black") +
+  facet_wrap(~ Theme, scales = "free_y", ncol = 1, strip.position = "left") +
+  labs(x = "Fold enrichment", y = NULL) +
+  theme_minimal(base_size = 12) +
+  coord_cartesian(clip = "off") + 
+  theme(
+    strip.text = element_text(size = 12, face = "bold"),
+    strip.placement = "outside",
+    strip.background = element_blank(),
+    panel.spacing = unit(1.5, "lines"),
+    axis.text.y = element_text(size = 10),
+    plot.margin = margin(10, 50, 10, 50),
+    plot.title = element_text(hjust = 0.5)
+  )
+
+# Use patchwork for plot title
+plot <- plot1 + 
+  plot_annotation(
+    title = "Top pathways enriched from early to mature brown adipocytes",
+    theme = theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"))
+  )
+
+# Save and show plot
+ggsave("results/humanPVATsn/pathfindR/full/full_diff_split.pdf", plot, width = 12, height = 9)
+print(plot)
 
 ```
+
 
 # Cluster enriched terms
 
@@ -697,15 +1002,122 @@ step1_output <- readRDS(file = "results/humanPVATsn/pathfindR/full/step1.rds")
 step2_output <- readRDS(file = "results/humanPVATsn/pathfindR/full/step2.rds")
 step3_output <- readRDS(file = "results/humanPVATsn/pathfindR/full/step3.rds")
 full_diff_output <- readRDS(file = "results/humanPVATsn/pathfindR/full/full_diff.rds")
-full_diff_inv_output <- readRDS(file = "results/humanPVATsn/pathfindR/full/full_diff_inv.rds")
 
 ```
 
-## Define function
+
+## visualisation from pathfindR
+
+Reload marker files
+
+```{r}
+
+# Redefine marker files if starting code from this chunk
+marker_files <- c("results/humanPVATsn/pathfindR/full/early_vs_inter_markers.csv",
+                  "results/humanPVATsn/pathfindR/full/inter_vs_trans_markers.csv",
+                  "results/humanPVATsn/pathfindR/full/trans_vs_mature_markers.csv",
+                  "results/humanPVATsn/pathfindR/full/early_vs_mature_markers.csv"
+                  )
+
+# Load all relevant marker files
+if (all(file.exists(marker_files))) {
+  
+  early_vs_inter_markers <- read_csv(marker_files[1])
+  inter_vs_trans_markers <- read_csv(marker_files[2])
+  trans_vs_mature_markers <- read_csv(marker_files[3])
+  early_vs_mature_markers <- read_csv(marker_files[4])
+
+} else {
+  
+  stop("One or more marker files are missing. Run FindMarkers first.")
+  
+}
+
+# Make function to reformat to pathfindR input
+reformat_pathfindR <- function(input) {
+  
+  input %>%
+    dplyr::select(Gene.symbol = ...1, logFC = avg_log2FC, adj.P.Val = p_val_adj) %>% 
+    as.data.frame()
+
+}
+
+early_vs_inter_markers <- reformat_pathfindR(early_vs_inter_markers)
+inter_vs_trans_markers <- reformat_pathfindR(inter_vs_trans_markers)
+trans_vs_mature_markers <- reformat_pathfindR(trans_vs_mature_markers)
+early_vs_mature_markers <- reformat_pathfindR(early_vs_mature_markers)
+
+```
+
+
+```{r  fig.width=16, fig.height=6}
+term_gene_heatmap(step1_output, use_description = TRUE, sort_terms_by_p = TRUE)
+```
+
+
+```{r  fig.width=16, fig.height=6}
+term_gene_heatmap(step2_output, use_description = TRUE, sort_terms_by_p = TRUE)
+```
+
+
+```{r  fig.width=16, fig.height=6}
+term_gene_heatmap(step3_output, use_description = TRUE, sort_terms_by_p = TRUE)
+```
+
+
+```{r}
+term_gene_heatmap(full_diff_output, use_description = TRUE, sort_terms_by_p = TRUE, num_terms = 20, genes_df = example_pathfindR_input))
+```
+
+```{r}
+
+UpSet_plot(full_diff_output, use_description = TRUE)
+
+```
+
+
+```{r}
+enrichment_chart(step1_output)
+```
+
+
+
+## chat attempt
+
+```{r}
+
+library(simplifyEnrichment)
+
+# Provide GO IDs
+go_ids <- step1_output$ID
+
+# Compute semantic similarity matrix
+sim_mat <- GO_similarity(go_ids)
+
+# Convert similarity matrix to distance matrix
+dist_mat <- as.dist(1 - sim_mat)
+
+# Run base R hierarchical clustering
+hc <- hclust(dist_mat, method = "ward.D2")
+
+# Cut tree into desired number of clusters
+clusters <- cutree(hc, k = 5)
+
+# Visualise using simplifyEnrichment with manual clustering
+simplifyEnrichment(sim_mat, cluster_by = clusters)
+
+```
+
+
+
+
+## pathfindR
+
+### Define function
 
 Cluster enriched terms. This will group enriched pathways into clusters, and each cluster will be given a certain number of "representative" pathways. It is common practice to filter this output as follows:
 - Fold enrichment > 2: this is considered biologically meaningful, as the term is present at least twice as much as in the background
-- Occurrence >= 9: this ensures only terms present in over 9 out of 10 `pathfindR` iterations are kept, for high confidence
+- Occurrence >= 9: this ensures only terms present in over 8 out of 10 `pathfindR` iterations are kept, for high confidence
 - Lowest_p < 0.05: this ensures only statistically significant terms are kept
 
 This function `cluster_and_plot_pathways` filters representative pathways based on robustness criteria, visualises them as a bar plot, and saves the result.
@@ -723,7 +1135,7 @@ cluster_and_plot_pathways <- function(pathfindR_output, output_prefix, title_lab
   clustered_rep <- clustered %>%
     filter(Status == "Representative",
            Fold_Enrichment > 2,
-           occurrence >= 9,
+           occurrence >= 8,
            lowest_p < 0.05)
   
   # Handle title if not provided
@@ -754,7 +1166,7 @@ cluster_and_plot_pathways <- function(pathfindR_output, output_prefix, title_lab
   csv_file <- file.path(output_dir, paste0(output_prefix, "_clustered_filtered.csv"))
   
   # Save outputs
-  if (save_plot) ggsave(pdf_file, plot, width = 12, height = 6, device = "pdf")
+  if (save_plot) ggsave(pdf_file, plot, width = 13, height = 6, device = "pdf")
   if (save_csv) write.csv(clustered_rep, csv_file, row.names = FALSE)
 
   # Return table and plot
@@ -764,28 +1176,26 @@ cluster_and_plot_pathways <- function(pathfindR_output, output_prefix, title_lab
 
 ```
 
-## Call function
+### Call function
 
 This function is called on pathway enrichment analyses for each step of differentiation and also one on the full differentiation process.
 
-```{r fig.width=12, fig.height=10}
+```{r fig.width=13, fig.height=6}
 
 # Define inputs
 pathfindR_outputs <- list(
   step1 = step1_output,
   step2 = step2_output,
   step3 = step3_output,
-  full_diff = full_diff_output,
-  full_diff_inv = full_diff_inv_output
+  full_diff = full_diff_output
 )
 
 # Define matching labels and output names
 run_labels <- list(
-  step1 = "Step 1: clusters of pathways enriched in early vs intermediate pre-adipocytes",
-  step2 = "Step 2: clusters of pathways enriched in intermediate vs transitional adipocytes",
-  step3 = "Step 3: clusters of pathways enriched in transitional vs mature adipocytes",
-  full_diff = "Full differentiation: clusters of pathways enriched in early vs mature adipocytes",
-  full_diff_inv = "Full differentiation: clusters of pathways enriched in mature vs early adipocytes"
+  step1 = "Step 1: enriched pathway clusters across the early-to-intermediate adipocyte transition",
+  step2 = "Step 2: enriched pathway clusters across the intermediate-to-transitional adipocyte transition",
+  step3 = "Step 3: enriched pathway clusters across the transitional-to-mature adipocyte transition",
+  full_diff = "Full differentiation: enriched pathway clusters across the early-to-mature adipocyte transition"
 )
 
 # Run all analyses
@@ -811,7 +1221,433 @@ for (name in names(pathfindR_outputs)) {
 
 ```
 
+# Final plots
 
+These contain the umbrella terms as y-axis titles and the heights of the facet wrapped plots are proportional to the number of pathways the umbrella term contains.
+
+Load data
+
+```{r}
+
+step1_output <- readRDS("results/humanPVATsn/pathfindR/full/step1.rds")
+step2_output <- readRDS("results/humanPVATsn/pathfindR/full/step2.rds")
+step3_output <- readRDS("results/humanPVATsn/pathfindR/full/step3.rds")
+full_diff <- readRDS("results/humanPVATsn/pathfindR/full/full_diff.rds")
+
+```
+
+
+## Step 1
+
+```{r fig.width=9, fig.height=7}
+
+# Filter pathfindR output
+step1_filtered <- step1_output %>%
+  # Sort by descending fold enrichment
+  arrange(desc(.data[["Fold_Enrichment"]])) %>%
+  # Keep only significantly enriched pathways
+  filter(lowest_p < 0.05) %>%
+  # Keep only those with more than 5 occurrences
+  filter(occurrence > 5) %>%
+  # Keep top 20 enriched pathways
+  slice_head(n = 20) %>%
+  # Ensure factor levels are correctly ordered for plotting
+  mutate(Term_Description = factor(Term_Description,
+                                   levels = rev(Term_Description)))
+
+# Biological theme list
+theme_list <- c(
+  "Cellular & tissue \n remodelling",
+  "Cell signalling",
+  "Neurogenic \n priming",
+  "Metabolic priming \n & gene regulation"
+)
+
+# Assign themes
+step1_filtered$Theme <- c(
+  theme_list[2],  # Roundabout signaling pathway
+  theme_list[3],  # positive regulation of axonogenesis
+  theme_list[3],  # axon extension involved in axon guidance
+  theme_list[1],  # negative regulation of cardiac muscle hypertrophy
+  theme_list[3],  # dentate gyrus development
+  theme_list[2],  # interleukin-11-mediated signaling pathway
+  theme_list[4],  # aspartate transmembrane transport
+  theme_list[1],  # regulation of cell junction assembly
+  theme_list[1],  # positive regulation of T cell migration
+  theme_list[1],  # negative chemotaxis
+  theme_list[1],  # negative regulation of cell size
+  theme_list[1],  # apical junction assembly
+  theme_list[1],  # pulmonary valve morphogenesis
+  theme_list[4],  # positive regulation of glycolytic process
+  theme_list[2],  # calcineurin-NFAT signaling cascade
+  theme_list[1],  # substrate adhesion-dependent cell spreading
+  theme_list[4],  # P-body assembly
+  theme_list[4],  # heterochromatin organization
+  theme_list[2],  # regulation of Cdc42 protein signal transduction
+  theme_list[1]   # positive regulation of stress fiber assembly
+)
+
+
+# Set Theme factor levels to control facet order
+step1_filtered$Theme <- factor(step1_filtered$Theme, levels = theme_list)
+
+# Reorder by theme and pathway name
+step1_filtered <- step1_filtered %>%
+  arrange(Theme, Term_Description) %>%
+  mutate(Term_Description = factor(Term_Description, levels = Term_Description))
+
+# Split data by Theme
+data_by_theme <- split(step1_filtered, step1_filtered$Theme)
+
+# Compute relative heights based on pathway counts
+relative_heights <- sapply(data_by_theme, nrow)
+
+# Generate plots for each theme with theme label as y-axis title
+max_value <- max(step1_filtered$Fold_Enrichment)
+
+plots_by_theme <- lapply(names(data_by_theme), function(theme) {
+  df <- data_by_theme[[theme]]
+  ggplot(df, aes(x = Fold_Enrichment, y = Term_Description)) +
+    geom_col(width = 1, fill = "#FDD866", color = "black") +
+    xlim(0, max_value) +
+    labs(x = NULL, y = theme) +
+    theme_minimal() +
+    theme(
+      axis.title.y = element_text(angle = 90, hjust = 0.5, face = "bold", size = 9),
+      axis.text.y = element_text(size = 8),
+      plot.margin = margin(5, 5, 5, 5)
+    )
+})
+
+# Combine plots with proportional heights
+combined_plot <- wrap_plots(plots_by_theme, ncol = 1, heights = relative_heights) +
+  plot_layout(guides = 'collect', heights = relative_heights + 0.5, ncol = 1) & 
+  theme(plot.margin = margin(10, 10, 20, 10))
+
+# Add global title and x-axis
+final_plot <- combined_plot + plot_annotation(
+  title = "Top pathways enriched in step 1 (early to intermediate preadipocytes)",
+  caption = "Fold enrichment",
+  theme = theme(
+    plot.title = element_text(hjust = 0.5, size = 13, face = "bold"),
+    plot.caption = element_text(hjust = 0.8, size = 9))
+)
+
+# Save and display
+ggsave("results/humanPVATsn/pathfindR/full/step1_split.pdf", final_plot, width = 9, height = 7)
+print(final_plot)
+
+```
+
+
+## Step 2
+
+```{r fig.width=9, fig.height=7}
+
+# Filter pathfindR output
+step2_filtered <- step2_output %>%
+  # Sort by descending fold enrichment
+  arrange(desc(.data[["Fold_Enrichment"]])) %>%
+  # Keep only significantly enriched pathways
+  filter(lowest_p < 0.05) %>%
+  # Keep only those with more than 5 occurrences
+  filter(occurrence > 5) %>%
+  # Keep top 20 enriched pathways
+  slice_head(n = 20) %>%
+  # Ensure factor levels are correctly ordered for plotting
+  mutate(Term_Description = factor(Term_Description,
+                                   levels = rev(Term_Description)))
+
+# Biological theme list
+theme_list <- c(
+  "Metabolic \n priming",
+  "Cell signalling & \n tissue remodelling",
+  "Neurogenic \n priming",
+  "Developmental \n origins",
+  "Amyloid-\n beta \n processing"
+)
+
+
+# Assign themes
+step2_filtered$Theme <- c(
+  theme_list[1],
+  theme_list[1],
+  theme_list[4],
+  theme_list[1],
+  theme_list[2],
+  theme_list[1],
+  theme_list[2],
+  theme_list[2],
+  theme_list[4],
+  theme_list[1],
+  theme_list[1],
+  theme_list[1],
+  theme_list[1],
+  theme_list[5],
+  theme_list[1],
+  theme_list[2],
+  theme_list[3],
+  theme_list[3],
+  theme_list[3],
+  theme_list[1]
+)
+
+# Set Theme factor levels to control facet order
+step2_filtered$Theme <- factor(step2_filtered$Theme, levels = theme_list)
+
+# Reorder by theme and pathway name
+step2_filtered <- step2_filtered %>%
+  arrange(Theme, Term_Description) %>%
+  mutate(Term_Description = factor(Term_Description, levels = Term_Description))
+
+# Split data by Theme
+data_by_theme <- split(step2_filtered, step2_filtered$Theme)
+
+# Compute relative heights based on pathway counts
+relative_heights <- sapply(data_by_theme, nrow)
+
+# Generate plots for each theme with theme label as y-axis title
+max_value <- max(step2_filtered$Fold_Enrichment)
+
+plots_by_theme <- lapply(names(data_by_theme), function(theme) {
+  df <- data_by_theme[[theme]]
+  ggplot(df, aes(x = Fold_Enrichment, y = Term_Description)) +
+    geom_col(width = 1, fill = "#F46D43", color = "black") +
+    xlim(0, max_value) +
+    labs(x = NULL, y = theme) +
+    theme_minimal() +
+    theme(
+      axis.title.y = element_text(angle = 90, hjust = 0.5, face = "bold", size = 9),
+      axis.text.y = element_text(size = 8),
+      plot.margin = margin(5, 5, 5, 5)
+    )
+})
+
+# Combine plots with proportional heights
+combined_plot <- wrap_plots(plots_by_theme, ncol = 1, heights = relative_heights) +
+  plot_layout(guides = 'collect', heights = relative_heights + 0.5, ncol = 1) & 
+  theme(plot.margin = margin(10, 10, 20, 10))
+
+# Add global title and x-axis
+final_plot <- combined_plot + plot_annotation(
+  title = "Top pathways enriched in step 2 (intermediate preadipocytes to transitional adipocytes)",
+  caption = "Fold enrichment",
+  theme = theme(
+    plot.title = element_text(hjust = 0.5, size = 13, face = "bold"),
+    plot.caption = element_text(hjust = 0.8, size = 9))
+)
+
+# Save and display
+ggsave("results/humanPVATsn/pathfindR/full/step2_split.pdf", final_plot, width = 9, height = 7)
+print(final_plot)
+
+
+```
+
+
+## Step 3
+
+```{r fig.width=9, fig.height=7}
+
+# Filter pathfindR output
+step3_filtered <- step3_output %>%
+  # Sort by descending fold enrichment
+  arrange(desc(.data[["Fold_Enrichment"]])) %>%
+  # Keep only significantly enriched pathways
+  filter(lowest_p < 0.05) %>%
+  # Keep only those with more than 5 occurrences
+  filter(occurrence > 5) %>%
+  # Keep top 20 enriched pathways
+  slice_head(n = 20) %>%
+  # Ensure factor levels are correctly ordered for plotting
+  mutate(Term_Description = factor(Term_Description,
+                                   levels = rev(Term_Description)))
+
+# Biological theme list
+theme_list <- c(
+  "Metabolic \n maturation",
+  "Cell & tissue \n remodelling",
+  "Cell signalling",
+  "Sympathetic \n interaction",
+  "Amyloid-beta \n processing"
+)
+
+# Assign themes
+step3_filtered$Theme <- c(
+  theme_list[3],  # negative regulation of cardiac muscle hypertrophy
+  theme_list[1],  # intracellular distribution of mitochondria
+  theme_list[2],  # sequestering of actin monomers
+  theme_list[1],  # white fat cell differentiation
+  theme_list[4],  # axon extension involved in axon guidance
+  theme_list[4],  # synaptic membrane adhesion
+  theme_list[4],  # negative regulation of excitatory postsynaptic potential
+  theme_list[2],  # regulation of vesicle size
+  theme_list[3],  # lncRNA-mediated post-transcriptional gene silencing
+  theme_list[2],  # establishment of epithelial cell polarity
+  theme_list[4],  # hindbrain development
+  theme_list[2],  # endoplasmic reticulum tubular network organisation
+  theme_list[4],  # locomotor rhythm
+  theme_list[3],  # regulation of smooth muscle cell proliferation
+  theme_list[3],  # cellular response to fibroblast growth factor stimulus
+  theme_list[3],  # positive regulation of phospholipase C activity
+  theme_list[4],  # dendritic spine maintenance
+  theme_list[5],  # amyloid-beta clearance
+  theme_list[3],  # positive regulation of miRNA catabolic process
+  theme_list[4]   # astrocyte activation
+)
+
+# Set Theme factor levels to control facet order
+step3_filtered$Theme <- factor(step3_filtered$Theme, levels = theme_list)
+
+# Reorder by theme and pathway name
+step3_filtered <- step3_filtered %>%
+  arrange(Theme, Term_Description) %>%
+  mutate(Term_Description = factor(Term_Description, levels = Term_Description))
+
+# Split data by Theme
+data_by_theme <- split(step3_filtered, step3_filtered$Theme)
+
+# Compute relative heights based on pathway counts
+relative_heights <- sapply(data_by_theme, nrow)
+
+# Generate plots for each theme with theme label as y-axis title
+max_value <- max(step3_filtered$Fold_Enrichment)
+
+plots_by_theme <- lapply(names(data_by_theme), function(theme) {
+  df <- data_by_theme[[theme]]
+  ggplot(df, aes(x = Fold_Enrichment, y = Term_Description)) +
+    geom_col(width = 1, fill = "#D73027", color = "black") +
+    xlim(0, max_value) +
+    labs(x = NULL, y = theme) +
+    theme_minimal() +
+    theme(
+      axis.title.y = element_text(angle = 90, hjust = 0.5, face = "bold", size = 9),
+      axis.text.y = element_text(size = 8),
+      plot.margin = margin(5, 5, 5, 5)
+    )
+})
+
+# Combine plots with proportional heights
+combined_plot <- wrap_plots(plots_by_theme, ncol = 1, heights = relative_heights) +
+  plot_layout(guides = 'collect', heights = relative_heights + 0.5, ncol = 1) & 
+  theme(plot.margin = margin(10, 10, 20, 10))
+
+# Add global title and x-axis
+final_plot <- combined_plot + plot_annotation(
+  title = "Top pathways enriched in step 3 (transitional to mature adipocytes)",
+  caption = "Fold enrichment",
+  theme = theme(
+    plot.title = element_text(hjust = 0.5, size = 13, face = "bold"),
+    plot.caption = element_text(hjust = 0.8, size = 9))
+)
+
+# Save and display
+ggsave("results/humanPVATsn/pathfindR/full/step3_split.pdf", final_plot, width = 9, height = 7)
+print(final_plot)
+
+```
+
+
+## Full differentiation
+
+```{r fig.width=12, fig.height=9}
+
+# Filter pathfindR output
+full_diff_filtered <- full_diff %>%
+  # Sort by descending fold enrichment
+  arrange(desc(.data[["Fold_Enrichment"]])) %>%
+  # Keep only significantly enriched pathways
+  filter(lowest_p < 0.05) %>%
+  # Keep only those with more than 5 occurrences
+  filter(occurrence > 5) %>%
+  # Keep top 20 enriched pathways
+  slice_head(n = 20) %>%
+  # Ensure factor levels are correctly ordered for plotting
+  mutate(Term_Description = factor(Term_Description,
+                                   levels = rev(Term_Description)))
+
+# Biological theme list
+theme_list <- c(
+  "Metabolic activation",
+  "Cellular restructuring \n & vesicle dynamics",
+  "Cell communication \n & signal transduction",
+  "Differentiation \n & tissue remodelling"
+)
+
+# Assign themes
+full_diff_filtered$Theme <- c(
+  theme_list[3],
+  theme_list[1],
+  theme_list[1],
+  theme_list[2],
+  theme_list[1],
+  theme_list[2],
+  theme_list[1],
+  theme_list[4],
+  theme_list[4],
+  theme_list[2],
+  theme_list[2],
+  theme_list[2],
+  theme_list[1],
+  theme_list[3],
+  theme_list[3],
+  theme_list[3],
+  theme_list[4],
+  theme_list[3],
+  theme_list[1],
+  theme_list[4]
+)
+
+# Set Theme factor levels to control facet order
+full_diff_filtered$Theme <- factor(full_diff_filtered$Theme, levels = theme_list)
+
+# Reorder by theme and pathway name
+full_diff_filtered <- full_diff_filtered %>%
+  arrange(Theme, Term_Description) %>%
+  mutate(Term_Description = factor(Term_Description, levels = Term_Description))
+
+# Split data by Theme
+data_by_theme <- split(full_diff_filtered, full_diff_filtered$Theme)
+
+# Compute relative heights based on pathway counts
+relative_heights <- sapply(data_by_theme, nrow)
+
+# Generate plots for each theme with theme label as y-axis title
+max_value <- max(full_diff_filtered$Fold_Enrichment)
+
+plots_by_theme <- lapply(names(data_by_theme), function(theme) {
+  df <- data_by_theme[[theme]]
+  ggplot(df, aes(x = Fold_Enrichment, y = Term_Description)) +
+    geom_col(width = 1, fill = "#2166AC", color = "black") +
+    xlim(0, max_value) +
+    labs(x = NULL, y = theme) +
+    theme_minimal() +
+    theme(
+      axis.title.y = element_text(angle = 90, hjust = 0.5, face = "bold", size = 9),
+      axis.text.y = element_text(size = 8),
+      plot.margin = margin(5, 5, 5, 5)
+    )
+})
+
+# Combine plots with proportional heights
+combined_plot <- wrap_plots(plots_by_theme, ncol = 1, heights = relative_heights) +
+  plot_layout(guides = 'collect', heights = relative_heights + 0.5, ncol = 1) & 
+  theme(plot.margin = margin(10, 10, 20, 10))
+
+# Add global title and x-axis
+final_plot <- combined_plot + plot_annotation(
+  title = "Top pathways enriched in full differentiation (early preadipocytes to mature adipocytes)",
+  caption = "Fold enrichment",
+  theme = theme(
+    plot.title = element_text(hjust = 0.5, size = 13, face = "bold"),
+    plot.caption = element_text(hjust = 0.8, size = 9))
+)
+
+# Save and display
+ggsave("results/humanPVATsn/pathfindR/full/full_diff_split.pdf", final_plot, width = 9, height = 7)
+print(final_plot)
+
+```
 
 # Session info
 

@@ -20,7 +20,7 @@ There are 12,657 and 6,456 cells in samples 1 and 3 respectively that were seque
 
 ## Set working directory
 
-The working directory can be set by running the following command in the terminal: `setwd("/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project")`
+The working directory can be set by running the following command in the console: `setwd("/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project")`
 
 ## Set seed
 

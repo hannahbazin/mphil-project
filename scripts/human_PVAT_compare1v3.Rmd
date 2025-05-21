@@ -20,7 +20,7 @@ There are 12,657 and 6,456 cells in samples 1 and 3 respectively that were seque
 
 ## Set working directory
 
-The working directory can be set by running the following command in the terminal: `setwd("/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project")`
+The working directory can be set by running the following command in the console: `setwd("/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project")`
 
 ## Set seed
 
@@ -365,6 +365,7 @@ h_trans_output <- run_pathfindR(h_transitional,
                                 min_gset_size = 5,
                                 max_gset_size = 300
                                 )
+
 ```
 
 For mature adipocytes.
@@ -780,18 +781,18 @@ pathfindR_outputs <- list(
 
 # Define matching labels and output names
 run_labels <- list(
-  early_healthy = "Early pre-adipocytes: clusters of enriched pathways for healthy only",
-  early_obese = "Early pre-adipocytes: clusters of enriched pathways for obese only",
+  early_healthy = "Early pre-adipocytes: clusters of enriched pathways for healthy",
+  early_obese = "Early pre-adipocytes: clusters of enriched pathways for obese",
   early_common = "Early pre-adipocytes: clusters of enriched pathways for both patients",
 
-  inter_healthy = "Intermediate pre-adipocytes: clusters of enriched pathways for healthy only",
-  inter_obese = "Intermediate pre-adipocytes: clusters of enriched pathways for obese only",
+  inter_healthy = "Intermediate pre-adipocytes: clusters of enriched pathways for healthy",
+  inter_obese = "Intermediate pre-adipocytes: clusters of enriched pathways for obese",
   inter_common = "Intermediate pre-adipocytes: clusters of enriched pathways for both patients",
-
-  trans_healthy = "Transitional adipocytes: clusters of enriched pathways for healthy only",
   
-  mature_healthy = "Mature adipocytes: clusters of enriched pathways for healthy only",
-  mature_obese = "Mature adipocytes: clusters of enriched pathways for obese only",
+  trans_healthy = "Transitional adipocytes: clusters of enriched pathways for healthy",
+  
+  mature_healthy = "Mature adipocytes: clusters of enriched pathways for healthy",
+  mature_obese = "Mature adipocytes: clusters of enriched pathways for obese",
   mature_common = "Mature adipocytes: clusters of enriched pathways for both patients"
 )
 
@@ -829,6 +830,17 @@ for (name in names(pathfindR_outputs)) {
   print(output$plot)
 
 }
+
+```
+
+# Final plots
+
+## Early preadipocytes
+
+```{r fig.width=15, fig.height=20}
+
+test <- cluster_enriched_terms(h_early_output, plot_dend = FALSE, plot_clusters_graph = FALSE)
+enrichment_chart(test, plot_by_cluster = TRUE)
 
 ```
 

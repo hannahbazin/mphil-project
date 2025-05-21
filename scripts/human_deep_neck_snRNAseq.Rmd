@@ -9,7 +9,10 @@ output: BiocStyle::html_document:
       code_folding: "hide" 
 ---
 
-In this vignette, I analyse 9 datasets of single-nucleus RNA sequencing of human deep neck tissue. There are X, X and X cells in 9 samples respectively that were sequenced on the X. The raw data can be found on the BioStudies ArrayExpress website [at this link](https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-8564). I am building on code from Holly A. R. Giles.
+In this vignette, I integrate 9 snRNA-seq libraries of human deep neck tissue. I am building on code from Holly A. R. Giles.
+
+!!! BEFORE RUNNING THIS AGAIN, DELETE ALL GENERATED FILES (FROM RUNNING WITH NORMALIZEDATA) !!!
+
 
 # Set up
 
@@ -27,26 +30,25 @@ set.seed(1996)
 library(GEOquery)
 library(Seurat)
 library(dplyr)
-library(patchwork)
 library(ggplot2)
 library(ggpubr)
 library(tidyverse)
+library(patchwork)
 
 ```
 
 ## Set working directory
 
-The working directory can be set by running the following command in the terminal: `setwd("/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project")`
+The working directory can be set by running the following command in the console: `setwd("/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project")`
 
 ## Load data
 
-The data stems from single-nucleus RNA sequencing experiments of human deep neck tissue from nine different healthy donors, sequenced with Illumina Nextseq 500 and Novaseq 6000. The raw data can be found [here](https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-8564). It was first published by Sun et al. on 28 October 2020 in Nature in the paper titled "snRNA-seq reveals a subpopulation of adipocytes that regulates thermogenesis" ([link](https://www.nature.com/articles/s41586-020-2856-x)).
+The data stems from snRNA-seq of samples from the lower third of the neck of 16 individuals undergoing surgery. Tissue samples were pooled for snRNAseq, and 10x sequencing was run 9 times, i.e. there are 9 technical replicates containing all samples from 16 individuals. Four of the patients were male and 12 female, with a mean age of 49.2 (22-77 years) and mean BMI of 24.8 kg/m2 (16.9–35.2 kg/m2). Sequencing was done with Illumina Novaseq 6000. The raw data can be found [here](https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-8564). It was first published by Sun et al. on 28 October 2020 in Nature in the paper titled "snRNA-seq reveals a subpopulation of adipocytes that regulates thermogenesis" ([link](https://www.nature.com/articles/s41586-020-2856-x)).
 
-We read in the data using the `Read10X()` function which takes in three files (barcodes.tsv, genes.tsv, and matrix.mtx) and returns a UMI sparse count matrix representing the gene expression data. This function can be used because the data was generated using CellRanger.
+I read in the data using the `Read10X` function which takes in three files (barcodes.tsv, genes.tsv, and matrix.mtx) and returns a UMI sparse count matrix representing the gene expression data. This function can be used because the data was generated using CellRanger.
 
 ```{r}
-
-# List names of all libraries and their corresponding replicates
+# List names of all libraries and corresponding replicates
 libs <- c("H-BAT_F_1",
           "H-BAT_F_5",
           "H-BAT_F_6",
@@ -72,7 +74,7 @@ replicate_map <- setNames(replicates, libs)
 
 # Loop through each of the folder names and load in the data
 lib_list <- 
-  lapply(libs, function(x){
+  lapply(libs, function(x) {
     
     # Get file path
     filename <- paste0("data/H-BAT/", x, "/")
@@ -91,6 +93,7 @@ lib_list <-
     obj$replicate <- replicate_map[x]
     
     obj
+    
   })
 
 # Assign names to lib_list to retain library names
@@ -98,17 +101,817 @@ names(lib_list) <- libs
 
 ```
 
-# Pre-processing workflow
+```{r}
 
-## Visualise QC metrics
+library(Matrix)
+mat <- readMM("data/H-BAT/H-BAT_F_5/matrix.mtx")
+summary(mat)
 
-do i need to run NormalizeData() ?? it has already been normalised ?
-
-
-
-
+```
 
 
+# Quality control
+
+-   Filter cells that have unique feature counts greater than 1'000
+-   Filter cells that have RNA counts over 30'000 and below 500.
+-   Filter cells that have \>15% mitochondrial counts
+
+```{r fig.height=7, fig.width=13}
+
+# Use the set of all genes starting with `MT-` as a set of mitochondrial genes
+lib_list <- lapply(lib_list, function(seuset) {
+  
+  seuset[["percent.mt"]] <- PercentageFeatureSet(seuset, pattern = "^MT-")
+  seuset
+  
+})
+
+# Visualise QC metrics as a violin plot
+lapply(lib_list, function(x){
+  
+  VlnPlot(x, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+  
+})
+
+# Filter based on QC metrics
+lib_list_filtered <- 
+  lapply(lib_list, function(x){
+    
+    subset(x, subset = nFeature_RNA > 1000  & nCount_RNA > 500 & nCount_RNA < 30000 & percent.mt < 15)
+  
+})
+
+```
+
+Count number of cells per library before and after filtering
+
+```{r}
+
+# Count number of cells per library before and after filtering
+cell_counts <- data.frame(
+  Library = names(lib_list),
+  Before_QC = sapply(lib_list, ncol),
+  After_QC = sapply(lib_list_filtered, ncol)
+)
+
+# Add a column showing the percentage of cells retained
+cell_counts$Percent_Retained <- round(100 * cell_counts$After_QC / cell_counts$Before_QC, 1)
+
+# View the table
+print(cell_counts)
+
+```
+
+The F1 library shows quality issues and is excluded form downstream analysis.
+
+```{r}
+
+# Exclude cells from the H-BAT_F_1 library
+lib_list_filtered <- lib_list_filtered[!names(lib_list_filtered) %in% "H-BAT_F_1"]
+
+```
+
+
+# Seurat steps
+
+## Find variable features
+
+*do i need to run NormalizeData() ?? it has already been normalised ? I think no need, check with Holly*
+
+Identify features that have high cell-to-cell variation, these are likely to have the most biological significance.
+
+
+```{r}
+
+# Find variable features
+lib_list_filtered <- lapply(X = lib_list_filtered, FUN = function(x) {
+  
+  x <- FindVariableFeatures(x, selection.method = "vst", nfeatures = 2000)
+
+  })
+
+# Select features that are repeatedly variable across datasets for integration
+features <- SelectIntegrationFeatures(object.list = lib_list_filtered)
+
+```
+
+Visualise variable features
+
+```{r fig.height=5, fig.width=11, message=FALSE, warning=FALSE}
+
+lapply(1:length(lib_list_filtered), function(i) {
+ 
+   x <- lib_list_filtered[[i]]
+  
+   # Identify the 10 most highly variable genes
+  top10 <- head(VariableFeatures(x), 10)
+
+  # Plot variable features with and without labels
+  plot1 <- VariableFeaturePlot(x)
+  plot2 <- LabelPoints(plot = plot1, points = top10, repel = TRUE)
+  plot1 + plot2 + plot_annotation(title = names(lib_list_filtered[i]))
+  
+})
+
+
+```
+
+## Data integration
+
+Integration of data from technical replicates is an important step to ensure cells cluster based on biological state and not on sample origin. Details can be found in [this vignette](https://satijalab.org/seurat/archive/v4.3/integration_introduction).
+
+## Find integration anchors
+
+```{r}
+
+# Find integration anchors
+  # This is a time-consuming step, save the object
+
+if (file.exists("data/analysis/neck_anchors.RData")) {
+  
+  message("Loading existing anchors file.")
+  
+  load(file = "data/analysis/neck_anchors.RData")
+  
+} else {
+  
+  message("Missing anchors file. Finding integration anchors.")
+  
+  anchors <- FindIntegrationAnchors(object.list = lib_list_filtered, anchor.features = features)
+  
+  save(anchors, file = "data/analysis/neck_anchors.RData")
+
+}
+
+```
+
+## Perform integration
+
+```{r}
+
+# Use anchors to generate an integrated data assay
+  # This is a time-consuming step, save the object
+  # Delete objects before running if new changes to code
+
+if (file.exists("data/analysis/neck_libs_combined.RData")) {
+  
+  load(file = "data/analysis/neck_libs_combined.RData")
+  
+} else {
+  
+  neck_libs_combined <- IntegrateData(anchorset = anchors)
+  
+  save(neck_libs_combined, file = "data/analysis/neck_libs_combined.RData")
+  
+}
+
+# Check dimensions of libs_combined
+neck_libs_combined
+
+# Rename to libs_combined
+libs_combined <- neck_libs_combined
+
+```
+
+## Scale data 
+
+I scale the data so that highly expressed genes do not dominate in the downstream analyses. `ScaleData` ensures the mean expression across cells becomes 0, and the variance becomes 1. I also regress out unwanted sources of variation such as mitochondrial reads.
+
+```{r}
+
+# Ensure default assay is integrated data
+DefaultAssay(libs_combined) <- "integrated"
+
+# Scale data and regress out unwanted variation due to mitochondrial reads 
+libs_combined <- ScaleData(libs_combined, vars.to.regress = 'percent.mt')
+
+```
+
+## PCA
+
+```{r}
+
+# By default, only the previously determined variable features are used as input.
+libs_combined <- RunPCA(libs_combined, npcs = 30, verbose = FALSE)
+
+```
+
+An elbow plot can help determine the dimensionality of the dataset (estimated at 12 based on this plot).
+
+```{r elbow_plot, fig.height=6, fig.width=10}
+
+elbow_plot <- ElbowPlot(libs_combined, ndims = 25)
+
+# Save elbow plot as PDF
+if (!dir.exists("results/humanPVATsn")) dir.create("results/humanDeepNecksn")
+
+pdf("results/humanDeepNecksn/elbow_plot.pdf", width = 8, height = 6)
+print(elbow_plot)
+invisible(dev.off())
+
+elbow_plot
+
+```
+
+Visualise PCA results
+
+```{r}
+
+DimPlot(libs_combined, reduction = "pca",
+              group.by = "orig.ident")
+
+FeaturePlot(object = libs_combined, reduction = "pca", features = "percent.mt")
+
+```
+
+
+## UMAP
+
+```{r, fig.width=8, fig.height=6}
+
+# Generate UMAP reduction
+libs_combined <- RunUMAP(libs_combined, reduction = "pca", dims = 1:12)
+
+# Plot UMAP coloured by library
+p1 <- DimPlot(libs_combined,
+              reduction = "umap", 
+              group.by = "orig.ident") + 
+  ggtitle("UMAP coloured by library")
+
+# Plot UMAP split by library
+p2 <- DimPlot(libs_combined,
+              reduction = "umap",
+              split.by = "orig.ident",
+              group.by = "orig.ident",
+              ncol = 3) + 
+  ggtitle("UMAP split by library")
+
+# Save plots as PDFs
+if (!dir.exists("results/humanDeepNecksn")) dir.create("results/humanDeepNecksn")
+
+pdf("results/humanDeepNecksn/UMAP_coloured_by_library.pdf", width = 8, height = 6)
+print(p1)
+invisible(dev.off())
+
+pdf("results/humanDeepNecksn/UMAP_split_by_library.pdf", width = 12, height = 6)
+print(p2)
+invisible(dev.off())
+
+p1 
+p2
+
+```
+
+Visualise distribution of mitochondrial genes across libraries
+
+```{r fig.width=6, fig.height=5}
+
+mito_plot <- FeaturePlot(object = libs_combined, reduction = "umap", features = "percent.mt") +
+  ggtitle("UMAP coloured by percentage of mitochondrial genes")
+
+pdf("results/humanDeepNecksn/UMAP_mt_percent.pdf", width = 12, height = 6)
+print(mito_plot)
+invisible(dev.off())
+
+# Display plots
+mito_plot
+
+```
+
+
+## Find neighbours and Find clusters
+
+```{r}
+
+libs_combined <- FindNeighbors(libs_combined, reduction = "pca", dims = 1:12)
+
+libs_combined <- FindClusters(libs_combined, resolution = 0.35, random.seed = 1996)
+
+# Look at cluster IDs of the first 5 cells
+head(Idents(libs_combined), 5)
+
+```
+
+Visualise clusters with numbers
+
+```{r fig.width=8, fig.height=6}
+
+# Plot UMAP with cluster numbers
+umap_with_numbers <- DimPlot(libs_combined,
+                            reduction = "umap",
+                            label = TRUE) +
+  ggtitle("UMAP with cluster numbers")
+
+# Save plot
+pdf("results/humanDeepNecksn/UMAP_with_cluster_numbers.pdf", width = 12, height = 6)
+print(umap_with_numbers)
+invisible(dev.off())
+
+# Show plot
+umap_with_numbers
+
+```
+
+
+## Find markers
+
+For differential expression analysis the RNA assay must be used (not integrated).
+
+```{r}
+
+DefaultAssay(libs_combined) <- "RNA"
+
+# Find markers
+  # This is a time-consuming step, save the object
+if(file.exists("data/analysis/neck_cluster_markers.RData")){
+  
+  load(file = "data/analysis/neck_cluster_markers.RData")
+
+  }else{
+    
+    markers <- FindAllMarkers(libs_combined, min.pct = 0.3, logfc.threshold = 0.3)
+    
+    save(markers, file = "data/analysis/neck_cluster_markers.RData")
+
+  }
+
+# Show the top ten markers in each cluster
+top8 <- markers %>% group_by(cluster) %>% slice_max(n = 8, order_by = avg_log2FC)
+
+top10 <- markers %>% group_by(cluster) %>% slice_max(n = 10, order_by = avg_log2FC)
+
+top20 <- markers %>% group_by(cluster) %>% slice_max(n = 20, order_by = avg_log2FC)
+
+top10
+
+```
+
+Tables of cluster markers
+
+```{r warning = FALSE}
+
+# Determine number of clusters
+num_clusters <- max(as.numeric(as.character(libs_combined@meta.data$seurat_clusters)))
+
+lapply(0:num_clusters, function(i) {
+  
+  # Select relevant information
+  tab <- filter(markers, cluster == i) %>%select(gene, p_val, p_val_adj, avg_log2FC, cluster)
+  
+  # Export as csv for Excel
+  write.csv(tab, file = paste0("results/humanDeepNecksn/markersCluster", i, ".csv"))
+  
+})
+
+```
+
+## Plot markers
+
+Top 8 marker genes 
+
+```{r fig.height=20, fig.width=15}
+
+DefaultAssay(libs_combined) <- "RNA"
+
+# Determine number of clusters
+num_clusters <- max(as.numeric(as.character(libs_combined@meta.data$seurat_clusters)))
+
+violinPlots <-
+  lapply(0:num_clusters, function(i){
+    
+    # Get a list of genes
+    features_to_plot <- filter(top8, cluster == i)$gene
+    
+    # Get a list of violin plots, 8 for each cluster
+    violinList <- VlnPlot(libs_combined, features = features_to_plot)
+    
+    # Plot a set of 8 violin plots for each cluster
+    violinList[[1]] + violinList[[2]] + violinList[[3]] +
+    violinList[[4]] + violinList[[5]] + violinList[[6]] +
+    violinList[[7]] + violinList[[8]] + 
+    
+    # Add cluster number as title 
+    plot_annotation(title = paste("Cluster", i, sep = " "))
+    
+  })
+
+violinPlots
+
+```
+
+## Marker dot plots
+
+Dot plots help identify which clusters correspond to which cell types.
+
+```{r fig.width=8, fig.height=6}
+
+DotPlot(libs_combined,
+        features = c(
+          # Early markers
+          "DCN", "FBLN1", "COL3A1", "COL1A1", "COL1A2", "FSTL1", "GSN", "FBLN5",
+          "MFAP5", "ADAMTSL3", "IGFBP6", "SEMA3C", "CREB5"
+          )) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  ggtitle("Early pre-adipocyte marker expression")
+
+```
+
+```{r fig.width=8, fig.height=6}
+
+DotPlot(libs_combined,
+        features = c(
+          # Pre-adipocyte markers
+          "PDGFRA", "LAMA2", "FBLN1", "FBN1", "FSTL1", "NEGR1", "EBF2", "DCN", "MGP", "PPARG"
+          )) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  ggtitle("Literature pre-adipocyte markers")
+
+```
+
+
+```{r fig.width=8, fig.height=6}
+
+DotPlot(libs_combined,
+        features = c(
+          # Intermediate markers
+          "COL15A1", "APOD", "EBF1"
+          )) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  ggtitle("Intermediate pre-adipocyte marker expression")
+
+```
+
+```{r  fig.height=7, fig.width=10}
+
+DotPlot(libs_combined,
+        features = c(# Pre-adipocytes
+          "NEGR1", "EBF2", "DCN", "MGP", "PDGFRA", "FBLN1", "FBLN2", "FBLN5", "COL3A1", "COL1A1", "COL1A2", "FSTL1", "GSN", "ADAMTSL3", "CREB5", "PPARG")) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+
+DotPlot(libs_combined,
+        features = c("ADIPOQ", "PLIN1", "PLIN4", "PLIN5", "CIDEA", "CIDEC", "LPL", "UCP1", "GHR")) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  ggtitle("Intermediate pre-adipocyte marker expression")
+          
+
+```
+
+
+
+```{r fig.height=7, fig.width=10}
+
+DotPlot(libs_combined,
+        features = c(
+          # Early markers
+          "DCN", "FBLN1", "COL3A1", "COL1A1", "COL1A2", "FSTL1", "GSN", "FBLN5", "MFAP5", "ADAMTSL3", "IGFBP6", "SEMA3C", "CREB5",
+      
+          # Intermediate markers
+          "COL15A1", "APOD", "EBF1",
+          
+          # Pre-adipocyte
+          "NEGR1","EBF2","MGP", "PPARG",
+          # "DCN"
+          
+          # Mature adipocyte
+          "CD3D","GHR","CIDEC", "PLIN1", "CIDEA", "ADIPOQ", "LPL", "LIPE", "UCP1",
+          
+          # T cell
+          "PTPRC","CD3G",
+          
+          # Macrophages (until CD69)
+          "FRMD4B","CD68","ITGAM","LPAR1","SOX9",
+         
+           # Endothelial
+          "VWF", "PECAM1", "ANO2","FLT4",
+          
+          # SMC
+          "MYH11", "MYO1D", "RYR2", "ACTA2",
+          
+          # Circadian rhythm
+          "CRY2", "CSNK1E",
+          
+          # Other
+          "CD14","FCGR3A",
+          
+          # Other
+          "BCL11A","MS4A1","CD79A","IGHM",
+
+          # Other
+          "LAMP3","ITGAX","VIM","CCR7","SELL","CREM","CD69", "GATA6",
+          
+          "DPP4", "ICAM1"
+          
+          )) +
+  
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+```
+Known cell type markers
+
+```{r fig.height=20, fig.width=15}
+
+DefaultAssay(libs_combined) <- "RNA"
+
+list_of_celltypes <- c("Pre_adipocyte", "Transitional_Adipocyte", "Mature_Adipocyte", "T_Cell", "B_Cell", "Macrophage", "Endothelial_Cell", "Dendritic_Cell", "Smooth_Muscle_Cell")
+
+
+list_of_cellmarkers <- list(Pre_adipocyte = c("DCN", "ABCA10", "FBLN1", "COL3A1", "COL1A1", "COL1A2",
+                                              "FSTL1", "GSN", "FBLN5", "MFAP5", "ADAMTSL3",
+                                              "IGFBP6", "SEMA3C", "CREB5", "COL15A1", "APOD",
+                                              "EBF1", "NEGR1","EBF2","MGP", "PPARG"),
+                            Transitional_Adipocyte = c("NEGR1", "EBF2", "ABCA10", "CREB5", "PPARG",
+                                                       "PLIN1", "PLIN4", "PLIN5", "CIDEA", "CIDEC",
+                                                       "LPL", "GHR"),
+                            Mature_Adipocyte = c("PPARG", "PLIN1", "PLIN4", "PLIN5", "CIDEA", "CIDEC",
+                                                 "LPL", "GHR"),
+                            T_Cell = c("BCL11B", "LCK", "PTPRC"),
+                            B_Cell = c("CD19", "CD79A", "CD79B"),
+                            Macrophage = c("MRC1", "F13A1", "CD163", "LYVE1", "SIGLEC1", "FRMD4B"),
+                            Endothelial_Cell = c("VWF", "PECAM1", "CDH5", "ANO2"),
+                            Dendritic_Cell = c("ITGAX", "LAMP3"),
+                            Smooth_Muscle_Cell = c("PDGFRB", "NOTCH3", "GUCY1A2", "MYH11",
+                                                   "MYO1D", "RYR2", "TRPC6", "ACTA2", "CNN1")
+                            )
+
+
+cellViolins <- 
+  lapply(list_of_celltypes, function(celltype){
+      
+      # Get a list of genes
+      features_to_plot <- list_of_cellmarkers[[celltype]]
+    
+      # Get a list of violin plots, 8 for each cluster
+      violinList <- VlnPlot(libs_combined, features = features_to_plot)
+    
+      # Plot a set of violin plots for each cell type
+      wrap_plots(plots = violinList, ncol = 1) +
+    
+      # Add cluster number as title 
+      violinList + plot_annotation(title = paste("Cell Type", celltype, sep = " "))
+    
+  })
+
+
+```
+
+
+
+
+
+```{r}
+library(Seurat)
+library(ggplot2)
+library(patchwork)
+
+DefaultAssay(libs_combined) <- "RNA"
+
+list_of_celltypes <- c("Pre_adipocyte", "Transitional_Adipocyte", "Mature_Adipocyte", 
+                       "T_Cell", "B_Cell", "Macrophage", "Endothelial_Cell", 
+                       "Dendritic_Cell", "Smooth_Muscle_Cell")
+
+list_of_cellmarkers <- list(
+  Pre_adipocyte = c("DCN", "ABCA10", "FBLN1", "COL3A1", "COL1A1", "COL1A2",
+                    "FSTL1", "GSN", "FBLN5", "MFAP5", "ADAMTSL3",
+                    "IGFBP6", "SEMA3C", "CREB5", "COL15A1", "APOD",
+                    "EBF1", "NEGR1","EBF2","MGP", "PPARG"),
+  Transitional_Adipocyte = c("NEGR1", "EBF2", "ABCA10", "CREB5", "PPARG",
+                             "PLIN1", "PLIN4", "PLIN5", "CIDEA", "CIDEC",
+                             "LPL", "GHR"),
+  Mature_Adipocyte = c("PPARG", "PLIN1", "PLIN4", "PLIN5", "CIDEA", "CIDEC",
+                       "LPL", "GHR"),
+  T_Cell = c("BCL11B", "LCK", "PTPRC"),
+  B_Cell = c("CD19", "CD79A", "CD79B"),
+  Macrophage = c("MRC1", "F13A1", "CD163", "LYVE1", "SIGLEC1", "FRMD4B"),
+  Endothelial_Cell = c("VWF", "PECAM1", "CDH5", "ANO2"),
+  Dendritic_Cell = c("ITGAX", "LAMP3"),
+  Smooth_Muscle_Cell = c("PDGFRB", "NOTCH3", "GUCY1A2", "MYH11",
+                         "MYO1D", "RYR2", "TRPC6", "ACTA2", "CNN1")
+)
+
+# Loop over each cell type and print plots individually
+for (celltype in list_of_celltypes) {
+  genes <- list_of_cellmarkers[[celltype]]
+  
+  plots <- lapply(genes, function(gene) {
+    VlnPlot(libs_combined, features = gene, pt.size = 0.1) + ggtitle(gene)
+  })
+  
+  combined <- wrap_plots(plots, ncol = 3) &
+              plot_layout(guides = "collect") &
+              theme(legend.position = "right")
+  
+  print(combined + plot_annotation(title = paste("Marker Genes –", celltype)))
+}
+
+```
+
+
+
+
+```{r}
+
+FeaturePlot(libs_combined,
+                            features = c(
+                              # Pre-adipocyte
+                              "ABCA10","PDGFRA", "EBF2", 
+                              # Mature adipocyte
+                              "PLIN4", "CIDEA", "ADIPOQ",
+                              # vSMC
+                              "MYH11",
+                              # Endothelial
+                              "PECAM1",
+                              # Macrophages
+                              "MRC1"
+                              ),
+                            min.cutoff = 1)
+
+```
+
+
+## Cluster annotation
+
+I name the clusters with the corresponding cell type based on the marker gene expression visualised above.
+
+
+```{r}
+
+anno_combined <- RenameIdents(libs_combined, 
+                              "0" = "", 
+                              "1" = "", 
+                              "2" = "",
+                              "3" = "",
+                              "4" = "",
+                              "5" = "", 
+                              "6" = "" , 
+                              "7" = "Macropohages", 
+                              "8" = "",
+                              "9" = "",  
+                              "10" = "", 
+                              "11" = "",
+                              "12" = "",
+                              "13" = "",
+                              "14" = "",
+                              "15" = ""
+                              )
+
+```
+
+
+
+
+
+# Final plots
+
+## UMAP
+
+### Unannotated UMAP
+
+Coloured by library
+
+```{r fig.height=8, fig.width=12}
+
+# Plot UMAP coloured by library
+umap_plot <- DimPlot(libs_combined,
+              reduction = "umap",
+              group.by = "orig.ident") +
+  ggtitle("Unannotated UMAP coloured by library (snRNA-seq)") +
+  theme(plot.title = element_text(hjust = 0, face = "bold", size = 16))
+
+# Save and display plot
+if (!dir.exists("results/humanDeepNecksn/final_figs")) dir.create("results/humanDeepNecksn/final_figs")
+
+pdf("results/humanDeepNecksn/final_figs/final_umap_integration.pdf", width = 12, height = 8)
+print(umap_plot)
+invisible(dev.off())
+
+umap_plot
+
+```
+Split by library
+
+```{r fig.height=8, fig.width=10}
+
+# Plot UMAP split by library
+plot1 <- DimPlot(libs_combined,
+              reduction = "umap",
+              split.by = "orig.ident",
+              group.by = "orig.ident",
+              ncol = 3) +
+  ggtitle("Unannotated UMAP of deep neck BAT split by library (snRNA-seq)") +
+  theme(plot.title = element_text(hjust = 0, face = "bold", size = 18))
+
+# Save and display plot
+if (!dir.exists("results/humanDeepNecksn/final_figs")) dir.create("results/humanDeepNecksn/final_figs")
+
+pdf("results/humanDeepNecksn/final_figs/final_umap_by_library.pdf", width = 10, height = 8)
+print(plot1)
+invisible(dev.off())
+
+plot1
+
+```
+
+Integrated and numbered
+
+```{r fig.height=5, fig.width=10}
+
+unnannot_umap <- DimPlot(libs_combined, reduction = "umap", ncol = 3, label = TRUE) +
+  ggtitle("Unannotated UMAP of deep neck BAT (snRNA-seq)") +
+  theme(plot.title = element_text(face = "bold", size = 16))
+
+# Save and display plot
+if (!dir.exists("results/humanDeepNecksn/final_figs")) dir.create("results/humanDeepNecksn/final_figs")
+
+pdf("results/humanDeepNecksn/final_figs/final_umap_nbs.pdf", width = 12, height = 8)
+print(unnannot_umap)
+invisible(dev.off())
+
+unnannot_umap
+
+```
+
+### Annotated UMAP
+
+TO DO.
+
+
+
+
+## Dot plot
+
+- Dot size: percent expressed, i.e. how many cells in the given cluster express the gene.
+- Dot colour: average expression, i.e. the expression level in cells that do express the given gene.
+
+```{r fig.height=7, fig.width=16}
+
+# Set the theme
+t4 <- theme(                              
+  plot.background = element_blank(), 
+  panel.grid.major = element_line(linetype = "dotted", colour = "grey"),
+  panel.grid.minor = element_blank(), 
+  panel.border = element_blank(), 
+  panel.background = element_blank(),
+  axis.line = element_line(linewidth = .4),
+  axis.line.x = element_line(),
+  axis.line.y = element_line(),
+  axis.text.x  = element_text(angle = 90, size = 15, hjust = 1, vjust = 0.5),
+  axis.text.y = element_text(size = 15),
+  axis.ticks.x = element_line(linetype = "dotted"),
+  axis.ticks.length = unit(0.3,"cm"),
+  axis.title.x = element_text(face="bold", size=18), 
+  axis.title.y = element_text(face="bold", size=18),
+  plot.title = element_text(face="bold", size=20),
+  strip.text = element_text(size = 10),
+  legend.title = element_text(size = 18),
+  legend.text = element_text(size = 15)
+)
+
+# Set factor levels of cellular identities
+anno_combined2 <- anno_combined
+Idents(anno_combined2) <- factor(Idents(anno_combined2),
+                                 levels = c(""))
+
+# Set default assay
+DefaultAssay(anno_combined2) <- "RNA"
+
+# Define marker genes to plot
+markers_to_plot <- c(
+          ## Adipocyte clusters
+          
+          # Pre-adipocytes
+         
+          # Mature brown adipocytes
+          
+          
+          ## Non-adipocyte clusters
+          
+          # Endothelial cells
+  
+          # Macrophages
+          "MRC1", "F13A1",
+          
+          # T cells
+
+          # vSMCs
+        )
+
+# Generate dot plot
+final_dotplot <- DotPlot(anno_combined2, features = markers_to_plot, dot.scale = 7, cols = "PiYG") +
+  ggtitle("Expression of marker genes across deep neck BAT cell types (snRNA-seq)") + 
+  t4 +
+  xlab("Marker Gene") + ylab("Cell Type")
+
+# Save and display plot
+if (!dir.exists("results/humanDeepNecksn/final_figs")) dir.create("results/humanDeepNecksn/final_figs")
+
+pdf("results/humanDeepNecksn/final_figs/final_marker_dot_plot.pdf", width = 17, height = 8)
+print(final_dotplot)
+invisible(dev.off())
+
+final_dotplot
+
+```
 
 
 
