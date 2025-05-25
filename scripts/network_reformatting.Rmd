@@ -1,0 +1,94 @@
+---
+title: "Reformatting STRING PPI interaction data from ENSP to HGNC gene names"
+author: "Hannah M. L. Bazin"
+date: "`r doc_date()`"
+output:
+  BiocStyle::html_document:
+      toc: yes
+      toc_depth: 3
+      toc_float: yes
+---
+
+# Set up
+
+## Set working directory
+
+Run this command in the console: `setwd("/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project")`
+
+## Load libraries
+
+```{r}
+
+library(biomaRt)
+library(tidyverse)
+library(dplyr)
+
+```
+
+# Reformat data
+
+```{r}
+
+# Load data
+string_PPI <- read_tsv("../data/networks/STRING_9606.protein.physical.links.v12.0.min400.onlyAB.tsv")
+
+# Remove score column
+string_PPI <- string_PPI[1:(length(string_PPI) - 1)]
+
+# Remove human taxonomy ID
+string_PPI$protein1 <- sub("^9606\\.", "", string_PPI$protein1)
+string_PPI$protein2 <- sub("^9606\\.", "", string_PPI$protein2)
+
+```
+
+# Convert to HGNC gene names using biomaRt
+
+```{r}
+
+ensembl <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")
+
+# Collect the ID's we need
+ensp_ids <- unique(c(string_PPI$protein1, string_PPI$protein2))
+length(ensp_ids)
+
+# Query Ensembl
+mapping <- getBM(
+  attributes = c("ensembl_peptide_id", "hgnc_symbol"),
+  filters = "ensembl_peptide_id",
+  values = ensp_ids,
+  mart = ensembl
+)
+head(mapping)
+
+# Merge back to PPI
+string_PPI <- string_PPI %>%
+  left_join(mapping, by = c("protein1" = "ensembl_peptide_id")) %>%
+  rename(GeneA = hgnc_symbol) %>%
+  left_join(mapping, by = c("protein2" = "ensembl_peptide_id")) %>%
+  rename(GeneB = hgnc_symbol)
+
+# Remove ENSP columns
+string_PPI <- string_PPI[3:length(string_PPI)]
+dim(string_PPI)
+
+# Save file
+write_csv(string_PPI, "data/networks/string_PPI.csv", col_names = TRUE)
+
+```
+
+
+```{r}
+
+structured_drug_interactions <- read_csv("data/networks/file/structured_drug_interactions.csv")
+
+
+```
+
+
+
+
+
+
+
+
+

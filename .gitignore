@@ -6,3 +6,6 @@
 *.rds
 .DS_Store
 data/
+*.zip
+*.csv
+*.gz

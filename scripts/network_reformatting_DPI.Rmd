@@ -1,0 +1,104 @@
+---
+title: "Reformatting ChEMBL DPI interaction data from UniProt IDs to HGNC gene names"
+author: "Hannah M. L. Bazin"
+date: "`r doc_date()`"
+output:
+  BiocStyle::html_document:
+      toc: yes
+      toc_depth: 3
+      toc_float: yes
+---
+
+# Set up
+
+## Set working directory
+
+Run this command in the console: `setwd("/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project")`
+
+## Load libraries
+
+```{r}
+
+library(biomaRt)
+library(tidyverse)
+library(dplyr)
+
+```
+
+
+# Reformat data
+
+```{r}
+
+# Load data
+chembl_dpi <- read_csv("../data/networks/inter_chembl_DPI.csv")
+
+# Make list of unique UniProt IDs for lookup
+uniprot_ids <- unique(chembl_dpi$target_uniprot_id)
+
+# Query biomaRt
+mart <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")
+mapping <- getBM(
+  attributes = c("uniprotswissprot", "hgnc_symbol"),
+  filters = "uniprotswissprot",
+  values = uniprot_ids,
+  mart = mart
+)
+
+colnames(mapping) <- c("target_uniprot_id", "gene_name")
+
+# Merge into original dataframe
+chembl_dpi_annotated <- left_join(chembl_dpi, mapping, by = "target_uniprot_id")
+chembl_dpi_annotated <- chembl_dpi_annotated %>% drop_na()
+
+# Save
+write_csv(chembl_dpi_annotated, "../data/networks/annotated_chembl_dpi.csv", col_names = TRUE)
+
+```
+
+
+# Quality check
+
+```{r}
+
+x1 <- sum(is.na(chembl_dpi_annotated$gene_name))
+x2 <- dim(chembl_dpi_annotated)[1]
+
+x1
+x2
+
+x1/x2
+
+chembl_dpi_annotated %>%
+  filter(is.na(gene_name)) %>%
+  distinct(target_uniprot_id) %>%
+  head(10)
+
+
+```
+
+```{r}
+library(httr)
+library(jsonlite)
+
+ids <- c("P14842", "P49652", "Q9EPX4", "P49653", "P47824")
+
+for (id in ids) {
+  res <- GET(paste0("https://rest.uniprot.org/uniprotkb/", id, ".json"))
+  if (status_code(res) == 200) {
+    info <- fromJSON(content(res, as = "text"))
+    cat(id, ":", info$organism$scientificName, "\n")
+  } else {
+    cat(id, ": not found\n")
+  }
+}
+
+```
+
+
+
+
+
+
+
+
