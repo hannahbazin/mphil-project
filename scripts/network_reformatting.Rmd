@@ -77,12 +77,6 @@ write_csv(string_PPI, "data/networks/string_PPI.csv", col_names = TRUE)
 ```
 
 
-```{r}
-
-structured_drug_interactions <- read_csv("data/networks/file/structured_drug_interactions.csv")
-
-
-```
 
 
 

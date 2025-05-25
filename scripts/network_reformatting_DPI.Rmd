@@ -77,6 +77,9 @@ chembl_dpi_annotated %>%
 
 ```
 
+
+
+
 ```{r}
 library(httr)
 library(jsonlite)
@@ -92,6 +95,37 @@ for (id in ids) {
     cat(id, ": not found\n")
   }
 }
+
+```
+
+
+```{r}
+library(biomaRt)
+
+# Connect to live Ensembl site
+ensembl <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
+
+# Get Ensembl version by querying the version of Ensembl used in the dataset
+listEnsemblArchives()[1:5, ]  # Optional: see available archives
+
+# Get version info from dataset
+version_info <- listDatasets(ensembl)
+head(version_info)
+
+```
+
+
+```{r}
+
+library(biomaRt)
+
+# Connect to Ensembl live site
+ensembl <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
+
+# List all datasets and filter for human
+datasets <- listDatasets(ensembl)
+human_dataset <- datasets[datasets$dataset == "hsapiens_gene_ensembl", ]
+print(human_dataset)
 
 ```
 
