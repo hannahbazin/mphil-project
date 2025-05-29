@@ -45,6 +45,7 @@ mapping <- getBM(
   mart = mart
 )
 
+
 colnames(mapping) <- c("target_uniprot_id", "gene_name")
 
 # Merge into original dataframe

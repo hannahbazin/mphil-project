@@ -1,0 +1,292 @@
+[2025-05-28 14:10:37] ===== Processing step3 =====
+[2025-05-28 14:10:37] 56 disease genes in step3
+[2025-05-28 14:10:37] 56 disease genes in step3 after filtering for PPI graph
+[2025-05-28 14:10:37] Generated 1000 sets of random disease genes
+[2025-05-28 14:10:37] Processing drug: (R)-Rolipram
+[2025-05-28 14:18:03] 0/3336 drugs processed
+[2025-05-28 14:18:03] Runtime for (R)-Rolipram: 445.59 sec
+[2025-05-28 14:18:03] Processing drug: (S)-camphor
+[2025-05-28 14:25:31] Runtime for (S)-camphor: 448.26 sec
+[2025-05-28 14:25:31] Processing drug: 1,4-Butanediol
+[2025-05-28 14:33:11] Runtime for 1,4-Butanediol: 459.87 sec
+[2025-05-28 14:33:11] Processing drug: 2-Amino-1-methyl-6-phenylimidazo(4,5-b)pyridine
+[2025-05-28 14:41:08] Runtime for 2-Amino-1-methyl-6-phenylimidazo(4,5-b)pyridine: 477.24 sec
+[2025-05-28 14:41:08] Processing drug: 2-Methoxyestradiol
+[2025-05-28 14:48:51] Runtime for 2-Methoxyestradiol: 463.25 sec
+[2025-05-28 14:48:51] Processing drug: 3,4-Dihydroxycinnamic Acid
+[2025-05-28 14:56:06] Runtime for 3,4-Dihydroxycinnamic Acid: 434.61 sec
+[2025-05-28 14:56:06] Processing drug: ABACAVIR
+[2025-05-28 15:03:42] Runtime for ABACAVIR: 455.87 sec
+[2025-05-28 15:03:42] Processing drug: ABALOPARATIDE
+[2025-05-28 15:11:54] Runtime for ABALOPARATIDE: 491.63 sec
+[2025-05-28 15:11:54] Processing drug: ABAMETAPIR
+[2025-05-28 15:19:50] Runtime for ABAMETAPIR: 476.13 sec
+[2025-05-28 15:19:50] Processing drug: ABARELIX
+[2025-05-28 15:27:55] Runtime for ABARELIX: 485.69 sec
+[2025-05-28 15:27:55] Processing drug: ABEMACICLIB
+[2025-05-28 15:35:53] Runtime for ABEMACICLIB: 477.53 sec
+[2025-05-28 15:35:53] Processing drug: ABIRATERONE
+[2025-05-28 15:43:26] Runtime for ABIRATERONE: 453.47 sec
+[2025-05-28 15:43:26] Processing drug: ABIRATERONE ACETATE
+[2025-05-28 15:53:57] Runtime for ABIRATERONE ACETATE: 630.41 sec
+[2025-05-28 15:53:57] Processing drug: ABROCITINIB
+[2025-05-28 16:04:57] Runtime for ABROCITINIB: 659.85 sec
+[2025-05-28 16:04:57] Processing drug: ACALABRUTINIB
+[2025-05-28 16:16:00] Runtime for ACALABRUTINIB: 662.93 sec
+[2025-05-28 16:16:00] Processing drug: ACEBUTOLOL
+[2025-05-28 16:25:21] Runtime for ACEBUTOLOL: 561.45 sec
+[2025-05-28 16:25:21] Processing drug: ACECLOFENAC
+[2025-05-28 16:33:26] Runtime for ACECLOFENAC: 485.23 sec
+[2025-05-28 16:33:26] Processing drug: ACEFYLLINE
+[2025-05-28 16:41:24] Runtime for ACEFYLLINE: 477.98 sec
+[2025-05-28 16:41:24] Processing drug: ACEMETACIN
+[2025-05-28 16:49:17] Runtime for ACEMETACIN: 472.87 sec
+[2025-05-28 16:49:17] Processing drug: ACETAMINOPHEN
+[2025-05-28 16:56:57] Runtime for ACETAMINOPHEN: 460.13 sec
+[2025-05-28 16:56:57] Processing drug: ACETARSONE
+[2025-05-28 17:04:24] Runtime for ACETARSONE: 446.62 sec
+[2025-05-28 17:04:24] Processing drug: ACETAZOLAMIDE
+[2025-05-28 17:12:20] Runtime for ACETAZOLAMIDE: 475.84 sec
+[2025-05-28 17:12:20] Processing drug: ACETOHYDROXAMIC ACID
+[2025-05-28 17:19:59] Runtime for ACETOHYDROXAMIC ACID: 459.37 sec
+[2025-05-28 17:19:59] Processing drug: ACETYLCHOLINE
+[2025-05-28 17:27:24] Runtime for ACETYLCHOLINE: 444.60 sec
+[2025-05-28 17:27:24] Processing drug: ACETYLCHOLINE CHLORIDE
+[2025-05-28 17:35:11] Runtime for ACETYLCHOLINE CHLORIDE: 466.90 sec
+[2025-05-28 17:35:11] Processing drug: ACIPIMOX
+[2025-05-28 17:43:16] Runtime for ACIPIMOX: 484.84 sec
+[2025-05-28 17:43:16] Processing drug: ACITRETIN
+[2025-05-28 17:51:34] Runtime for ACITRETIN: 498.60 sec
+[2025-05-28 17:51:34] Processing drug: ACLIDINIUM
+[2025-05-28 17:58:35] Runtime for ACLIDINIUM: 421.04 sec
+[2025-05-28 17:58:35] Processing drug: ACLIDINIUM BROMIDE
+[2025-05-28 18:05:46] Runtime for ACLIDINIUM BROMIDE: 430.68 sec
+[2025-05-28 18:05:46] Processing drug: ACYCLOVIR
+[2025-05-28 18:12:51] Runtime for ACYCLOVIR: 425.46 sec
+[2025-05-28 18:12:52] Processing drug: ADAGRASIB
+[2025-05-28 18:20:25] Runtime for ADAGRASIB: 453.92 sec
+[2025-05-28 18:20:25] Processing drug: ADAPALENE
+[2025-05-28 18:28:13] Runtime for ADAPALENE: 467.52 sec
+[2025-05-28 18:28:13] Processing drug: ADEFOVIR DIPIVOXIL
+[2025-05-28 18:35:38] Runtime for ADEFOVIR DIPIVOXIL: 445.21 sec
+[2025-05-28 18:35:38] Processing drug: ADEMETIONINE
+[2025-05-28 18:43:05] Runtime for ADEMETIONINE: 447.08 sec
+[2025-05-28 18:43:05] Processing drug: ADENOSINE
+[2025-05-28 18:50:46] Runtime for ADENOSINE: 461.00 sec
+[2025-05-28 18:50:46] Processing drug: AFAMELANOTIDE
+[2025-05-28 18:58:27] Runtime for AFAMELANOTIDE: 461.09 sec
+[2025-05-28 18:58:27] Processing drug: AFATINIB
+[2025-05-28 19:06:02] Runtime for AFATINIB: 454.11 sec
+[2025-05-28 19:06:02] Processing drug: AFATINIB DIMALEATE
+[2025-05-28 19:14:24] Runtime for AFATINIB DIMALEATE: 502.46 sec
+[2025-05-28 19:14:24] Processing drug: AGOMELATINE
+[2025-05-28 19:22:04] Runtime for AGOMELATINE: 460.09 sec
+[2025-05-28 19:22:04] Processing drug: ALBUTEROL
+[2025-05-28 19:31:13] Runtime for ALBUTEROL: 549.39 sec
+[2025-05-28 19:31:14] Processing drug: ALECTINIB
+[2025-05-28 19:39:35] Runtime for ALECTINIB: 501.49 sec
+[2025-05-28 19:39:35] Processing drug: ALENDRONATE SODIUM
+[2025-05-28 19:48:03] Runtime for ALENDRONATE SODIUM: 507.72 sec
+[2025-05-28 19:48:03] Processing drug: ALENDRONIC ACID
+[2025-05-28 19:57:55] Runtime for ALENDRONIC ACID: 592.45 sec
+[2025-05-28 19:57:55] Processing drug: ALFACALCIDOL
+[2025-05-28 20:11:51] Runtime for ALFACALCIDOL: 836.07 sec
+[2025-05-28 20:11:51] Processing drug: ALFENTANIL
+[2025-05-28 20:21:30] Runtime for ALFENTANIL: 578.61 sec
+[2025-05-28 20:21:30] Processing drug: ALFENTANIL HYDROCHLORIDE
+[2025-05-28 20:30:59] Runtime for ALFENTANIL HYDROCHLORIDE: 569.06 sec
+[2025-05-28 20:30:59] Processing drug: ALFUZOSIN
+[2025-05-28 20:39:21] Runtime for ALFUZOSIN: 501.70 sec
+[2025-05-28 20:39:21] Processing drug: ALISKIREN
+[2025-05-28 20:48:58] Runtime for ALISKIREN: 577.53 sec
+[2025-05-28 20:48:58] Processing drug: ALISKIREN FUMARATE
+[2025-05-28 20:58:23] Runtime for ALISKIREN FUMARATE: 564.97 sec
+[2025-05-28 20:58:23] Processing drug: ALITRETINOIN
+[2025-05-28 21:07:41] Runtime for ALITRETINOIN: 557.37 sec
+[2025-05-28 21:07:41] Processing drug: ALLOPURINOL
+[2025-05-28 21:17:59] 50/3336 drugs processed
+[2025-05-28 21:17:59] Runtime for ALLOPURINOL: 617.97 sec
+[2025-05-28 21:17:59] Processing drug: ALOGLIPTIN
+[2025-05-28 21:27:21] Runtime for ALOGLIPTIN: 561.96 sec
+[2025-05-28 21:27:21] Processing drug: ALOSETRON
+[2025-05-28 21:54:06] Runtime for ALOSETRON: 1605.47 sec
+[2025-05-28 21:54:06] Processing drug: ALPELISIB
+[2025-05-28 22:01:21] Runtime for ALPELISIB: 434.84 sec
+[2025-05-28 22:01:21] Processing drug: ALPRAZOLAM
+[2025-05-28 22:09:13] Runtime for ALPRAZOLAM: 472.23 sec
+[2025-05-28 22:09:13] Processing drug: ALPROSTADIL
+[2025-05-28 22:18:40] Runtime for ALPROSTADIL: 566.80 sec
+[2025-05-28 22:18:40] Processing drug: ALTRETAMINE
+[2025-05-28 22:34:41] Runtime for ALTRETAMINE: 960.74 sec
+[2025-05-28 22:34:41] Processing drug: ALVIMOPAN
+[2025-05-28 22:41:46] Runtime for ALVIMOPAN: 425.68 sec
+[2025-05-28 22:41:46] Processing drug: AMANTADINE
+[2025-05-28 22:49:52] Runtime for AMANTADINE: 485.91 sec
+[2025-05-28 22:49:52] Processing drug: AMBRISENTAN
+[2025-05-28 22:57:40] Runtime for AMBRISENTAN: 468.04 sec
+[2025-05-28 22:57:40] Processing drug: AMIFOSTINE
+[2025-05-28 23:04:51] Runtime for AMIFOSTINE: 430.99 sec
+[2025-05-28 23:04:51] Processing drug: AMILORIDE
+[2025-05-28 23:12:17] Runtime for AMILORIDE: 445.19 sec
+[2025-05-28 23:12:17] Processing drug: AMILORIDE HYDROCHLORIDE
+[2025-05-28 23:19:49] Runtime for AMILORIDE HYDROCHLORIDE: 451.92 sec
+[2025-05-28 23:19:49] Processing drug: AMINOBENZOIC ACID
+[2025-05-28 23:27:29] Runtime for AMINOBENZOIC ACID: 460.05 sec
+[2025-05-28 23:27:29] Processing drug: AMINOCAPROIC ACID
+[2025-05-28 23:35:37] Runtime for AMINOCAPROIC ACID: 488.52 sec
+[2025-05-28 23:35:37] Processing drug: AMINOGLUTETHIMIDE
+[2025-05-28 23:44:25] Runtime for AMINOGLUTETHIMIDE: 528.26 sec
+[2025-05-28 23:44:25] Processing drug: AMINOLEVULINIC ACID
+[2025-05-28 23:53:22] Runtime for AMINOLEVULINIC ACID: 536.92 sec
+[2025-05-28 23:53:22] Processing drug: AMINOPHYLLINE
+[2025-05-29 00:01:52] Runtime for AMINOPHYLLINE: 509.93 sec
+[2025-05-29 00:01:52] Processing drug: AMINOSALICYLIC ACID
+[2025-05-29 00:10:00] Runtime for AMINOSALICYLIC ACID: 487.33 sec
+[2025-05-29 00:10:00] Processing drug: AMIODARONE
+[2025-05-29 00:18:57] Runtime for AMIODARONE: 537.20 sec
+[2025-05-29 00:18:57] Processing drug: AMISULPRIDE
+[2025-05-29 00:27:45] Runtime for AMISULPRIDE: 528.60 sec
+[2025-05-29 00:27:45] Processing drug: AMITRIPTYLINE
+[2025-05-29 00:37:42] Runtime for AMITRIPTYLINE: 596.11 sec
+[2025-05-29 00:37:42] Processing drug: AMITRIPTYLINE HYDROCHLORIDE
+[2025-05-29 00:47:15] Runtime for AMITRIPTYLINE HYDROCHLORIDE: 572.99 sec
+[2025-05-29 00:47:15] Processing drug: AMLEXANOX
+[2025-05-29 00:56:34] Runtime for AMLEXANOX: 559.44 sec
+[2025-05-29 00:56:34] Processing drug: AMLODIPINE
+[2025-05-29 01:05:49] Runtime for AMLODIPINE: 555.15 sec
+[2025-05-29 01:05:49] Processing drug: AMLODIPINE BESYLATE
+[2025-05-29 01:15:46] Runtime for AMLODIPINE BESYLATE: 596.85 sec
+[2025-05-29 01:15:46] Processing drug: AMODIAQUINE
+[2025-05-29 01:25:43] Runtime for AMODIAQUINE: 596.49 sec
+[2025-05-29 01:25:43] Processing drug: AMOXAPINE
+[2025-05-29 01:33:53] Runtime for AMOXAPINE: 490.33 sec
+[2025-05-29 01:33:53] Processing drug: AMOXICILLIN
+[2025-05-29 01:41:51] Runtime for AMOXICILLIN: 477.78 sec
+[2025-05-29 01:41:51] Processing drug: AMPHETAMINE
+[2025-05-29 01:50:13] Runtime for AMPHETAMINE: 502.75 sec
+[2025-05-29 01:50:13] Processing drug: AMPHOTERICIN B
+[2025-05-29 01:58:40] Runtime for AMPHOTERICIN B: 507.00 sec
+[2025-05-29 01:58:40] Processing drug: AMPICILLIN
+[2025-05-29 02:07:05] Runtime for AMPICILLIN: 504.98 sec
+[2025-05-29 02:07:05] Processing drug: AMPRENAVIR
+[2025-05-29 02:15:32] Runtime for AMPRENAVIR: 506.50 sec
+[2025-05-29 02:15:32] Processing drug: AMSACRINE
+[2025-05-29 02:23:59] Runtime for AMSACRINE: 506.73 sec
+[2025-05-29 02:23:59] Processing drug: AN-9
+[2025-05-29 02:32:18] Runtime for AN-9: 498.97 sec
+[2025-05-29 02:32:18] Processing drug: ANAGRELIDE
+[2025-05-29 02:40:41] Runtime for ANAGRELIDE: 503.77 sec
+[2025-05-29 02:40:41] Processing drug: ANASTROZOLE
+[2025-05-29 02:49:30] Runtime for ANASTROZOLE: 528.33 sec
+[2025-05-29 02:49:30] Processing drug: ANGIOTENSIN II
+[2025-05-29 02:58:55] Runtime for ANGIOTENSIN II: 565.07 sec
+[2025-05-29 02:58:55] Processing drug: ANIDULAFUNGIN
+[2025-05-29 03:07:07] Runtime for ANIDULAFUNGIN: 492.32 sec
+[2025-05-29 03:07:07] Processing drug: ANTAZOLINE HYDROCHLORIDE
+[2025-05-29 03:15:11] Runtime for ANTAZOLINE HYDROCHLORIDE: 483.46 sec
+[2025-05-29 03:15:11] Processing drug: ANTHRALIN
+[2025-05-29 03:23:26] Runtime for ANTHRALIN: 495.14 sec
+[2025-05-29 03:23:26] Processing drug: ANTIPYRINE
+[2025-05-29 03:31:42] Runtime for ANTIPYRINE: 496.32 sec
+[2025-05-29 03:31:42] Processing drug: APALUTAMIDE
+[2025-05-29 03:40:14] Runtime for APALUTAMIDE: 511.69 sec
+[2025-05-29 03:40:14] Processing drug: APIXABAN
+[2025-05-29 03:49:08] Runtime for APIXABAN: 533.84 sec
+[2025-05-29 03:49:08] Processing drug: APOMORPHINE
+[2025-05-29 03:57:38] Runtime for APOMORPHINE: 510.30 sec
+[2025-05-29 03:57:38] Processing drug: APOMORPHINE HYDROCHLORIDE
+[2025-05-29 04:06:05] Runtime for APOMORPHINE HYDROCHLORIDE: 506.64 sec
+[2025-05-29 04:06:05] Processing drug: APRACLONIDINE
+[2025-05-29 04:14:25] Runtime for APRACLONIDINE: 500.85 sec
+[2025-05-29 04:14:25] Processing drug: APREMILAST
+[2025-05-29 04:22:35] Runtime for APREMILAST: 489.37 sec
+[2025-05-29 04:22:35] Processing drug: APREPITANT
+[2025-05-29 04:31:21] Runtime for APREPITANT: 526.32 sec
+[2025-05-29 04:31:21] Processing drug: AR-9281
+[2025-05-29 04:39:23] Runtime for AR-9281: 481.91 sec
+[2025-05-29 04:39:23] Processing drug: ARFORMOTEROL
+[2025-05-29 04:47:40] 100/3336 drugs processed
+[2025-05-29 04:47:40] Runtime for ARFORMOTEROL: 497.37 sec
+[2025-05-29 04:47:40] Processing drug: ARGATROBAN
+[2025-05-29 04:55:58] Runtime for ARGATROBAN: 497.75 sec
+[2025-05-29 04:55:58] Processing drug: ARIPIPRAZOLE
+[2025-05-29 05:04:16] Runtime for ARIPIPRAZOLE: 497.98 sec
+[2025-05-29 05:04:16] Processing drug: ARMODAFINIL
+[2025-05-29 05:12:37] Runtime for ARMODAFINIL: 500.83 sec
+[2025-05-29 05:12:37] Processing drug: ARSENIC TRIOXIDE
+[2025-05-29 05:20:54] Runtime for ARSENIC TRIOXIDE: 497.28 sec
+[2025-05-29 05:20:54] Processing drug: ARTICAINE
+[2025-05-29 05:29:17] Runtime for ARTICAINE: 503.02 sec
+[2025-05-29 05:29:17] Processing drug: ASCIMINIB
+[2025-05-29 05:37:52] Runtime for ASCIMINIB: 514.62 sec
+[2025-05-29 05:37:52] Processing drug: ASENAPINE
+[2025-05-29 05:46:02] Runtime for ASENAPINE: 490.39 sec
+[2025-05-29 05:46:02] Processing drug: ASENAPINE MALEATE
+[2025-05-29 05:53:57] Runtime for ASENAPINE MALEATE: 474.61 sec
+[2025-05-29 05:53:57] Processing drug: ASPIRIN
+[2025-05-29 06:01:37] Runtime for ASPIRIN: 460.17 sec
+[2025-05-29 06:01:37] Processing drug: ASTEMIZOLE
+[2025-05-29 06:09:39] Runtime for ASTEMIZOLE: 482.22 sec
+[2025-05-29 06:09:39] Processing drug: AT-7519
+[2025-05-29 06:18:07] Runtime for AT-7519: 508.06 sec
+[2025-05-29 06:18:07] Processing drug: ATALUREN
+[2025-05-29 06:26:38] Runtime for ATALUREN: 511.00 sec
+[2025-05-29 06:26:38] Processing drug: ATAZANAVIR
+[2025-05-29 06:35:04] Runtime for ATAZANAVIR: 505.76 sec
+[2025-05-29 06:35:04] Processing drug: ATENOLOL
+[2025-05-29 06:43:30] Runtime for ATENOLOL: 506.15 sec
+[2025-05-29 06:43:30] Processing drug: ATOGEPANT
+[2025-05-29 06:52:18] Runtime for ATOGEPANT: 527.43 sec
+[2025-05-29 06:52:18] Processing drug: ATOMOXETINE
+[2025-05-29 07:01:45] Runtime for ATOMOXETINE: 567.11 sec
+[2025-05-29 07:01:45] Processing drug: ATOMOXETINE HYDROCHLORIDE
+[2025-05-29 07:11:24] Runtime for ATOMOXETINE HYDROCHLORIDE: 579.13 sec
+[2025-05-29 07:11:24] Processing drug: ATORVASTATIN
+[2025-05-29 07:19:32] Runtime for ATORVASTATIN: 487.55 sec
+[2025-05-29 07:19:32] Processing drug: ATORVASTATIN CALCIUM
+[2025-05-29 07:27:14] Runtime for ATORVASTATIN CALCIUM: 461.97 sec
+[2025-05-29 07:27:14] Processing drug: ATOSIBAN
+[2025-05-29 07:34:34] Runtime for ATOSIBAN: 440.02 sec
+[2025-05-29 07:34:34] Processing drug: ATOVAQUONE
+[2025-05-29 07:41:37] Runtime for ATOVAQUONE: 423.82 sec
+[2025-05-29 07:41:37] Processing drug: ATROPINE
+[2025-05-29 08:27:42] Runtime for ATROPINE: 2764.17 sec
+[2025-05-29 08:27:42] Processing drug: AURANOFIN
+[2025-05-29 08:53:38] Runtime for AURANOFIN: 1555.93 sec
+[2025-05-29 08:53:38] Processing drug: AVANAFIL
+[2025-05-29 09:01:22] Runtime for AVANAFIL: 464.25 sec
+[2025-05-29 09:01:22] Processing drug: AVAPRITINIB
+[2025-05-29 09:08:58] Runtime for AVAPRITINIB: 456.60 sec
+[2025-05-29 09:08:58] Processing drug: AXITINIB
+[2025-05-29 09:17:28] Runtime for AXITINIB: 509.18 sec
+[2025-05-29 09:17:28] Processing drug: AZACITIDINE
+[2025-05-29 09:26:09] Runtime for AZACITIDINE: 521.12 sec
+[2025-05-29 09:26:09] Processing drug: AZATHIOPRINE
+[2025-05-29 09:35:31] Runtime for AZATHIOPRINE: 562.49 sec
+[2025-05-29 09:35:31] Processing drug: AZD-2066
+[2025-05-29 09:45:02] Runtime for AZD-2066: 570.71 sec
+[2025-05-29 09:45:02] Processing drug: AZD-7325
+[2025-05-29 09:54:48] Runtime for AZD-7325: 586.21 sec
+[2025-05-29 09:54:48] Processing drug: AZD8630
+[2025-05-29 10:03:38] Runtime for AZD8630: 530.00 sec
+[2025-05-29 10:03:38] Processing drug: AZELASTINE
+[2025-05-29 10:11:27] Runtime for AZELASTINE: 468.31 sec
+[2025-05-29 10:11:27] Processing drug: AZELASTINE HYDROCHLORIDE
+[2025-05-29 10:21:02] Runtime for AZELASTINE HYDROCHLORIDE: 575.11 sec
+[2025-05-29 10:21:02] Processing drug: Abaloparatide
+[2025-05-29 10:30:24] Runtime for Abaloparatide: 562.21 sec
+[2025-05-29 10:30:24] Processing drug: Abatacept
+[2025-05-29 10:40:01] Runtime for Abatacept: 577.26 sec
+[2025-05-29 10:40:01] Processing drug: Abemaciclib
+[2025-05-29 10:49:50] Runtime for Abemaciclib: 588.33 sec
+[2025-05-29 10:49:50] Processing drug: Abiraterone
+[2025-05-29 11:00:02] Runtime for Abiraterone: 611.99 sec
+[2025-05-29 11:00:02] Processing drug: Acalabrutinib
+[2025-05-29 11:09:14] Runtime for Acalabrutinib: 552.48 sec
+[2025-05-29 11:09:14] Processing drug: Acamprosate
+[2025-05-29 11:18:18] Runtime for Acamprosate: 543.86 sec
+[2025-05-29 11:18:18] Processing drug: Acarbose
+[2025-05-29 11:32:19] Runtime for Acarbose: 841.44 sec
+[2025-05-29 11:32:19] Processing drug: Acebutolol
+[2025-05-29 11:41:23] Runtime for Acebutolol: 543.36 sec
+[2025-05-29 11:41:23] Processing drug: Aceclofenac

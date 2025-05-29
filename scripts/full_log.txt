@@ -1,0 +1,36 @@
+[2025-05-28 14:10:39] ===== Processing full =====
+[2025-05-28 14:10:39] 168 disease genes in full
+[2025-05-28 14:10:39] 166 disease genes in full after filtering for PPI graph
+[2025-05-28 14:10:41] Generated 1000 sets of random disease genes
+[2025-05-28 14:10:41] Processing drug: (R)-Rolipram
+[2025-05-28 15:19:24] 0/3336 drugs processed
+[2025-05-28 15:19:24] Runtime for (R)-Rolipram: 4122.96 sec
+[2025-05-28 15:19:24] Processing drug: (S)-camphor
+[2025-05-28 16:40:24] Runtime for (S)-camphor: 4860.53 sec
+[2025-05-28 16:40:24] Processing drug: 1,4-Butanediol
+[2025-05-28 17:50:23] Runtime for 1,4-Butanediol: 4199.25 sec
+[2025-05-28 17:50:23] Processing drug: 2-Amino-1-methyl-6-phenylimidazo(4,5-b)pyridine
+[2025-05-28 18:56:54] Runtime for 2-Amino-1-methyl-6-phenylimidazo(4,5-b)pyridine: 3990.34 sec
+[2025-05-28 18:56:54] Processing drug: 2-Methoxyestradiol
+[2025-05-28 20:18:19] Runtime for 2-Methoxyestradiol: 4885.36 sec
+[2025-05-28 20:18:19] Processing drug: 3,4-Dihydroxycinnamic Acid
+[2025-05-28 21:58:05] Runtime for 3,4-Dihydroxycinnamic Acid: 5985.56 sec
+[2025-05-28 21:58:05] Processing drug: ABACAVIR
+[2025-05-28 23:16:15] Runtime for ABACAVIR: 4690.62 sec
+[2025-05-28 23:16:15] Processing drug: ABALOPARATIDE
+[2025-05-29 00:32:58] Runtime for ABALOPARATIDE: 4602.80 sec
+[2025-05-29 00:32:58] Processing drug: ABAMETAPIR
+[2025-05-29 01:54:21] Runtime for ABAMETAPIR: 4882.36 sec
+[2025-05-29 01:54:21] Processing drug: ABARELIX
+[2025-05-29 03:11:05] Runtime for ABARELIX: 4604.64 sec
+[2025-05-29 03:11:05] Processing drug: ABEMACICLIB
+[2025-05-29 04:26:43] Runtime for ABEMACICLIB: 4537.72 sec
+[2025-05-29 04:26:43] Processing drug: ABIRATERONE
+[2025-05-29 05:41:57] Runtime for ABIRATERONE: 4514.36 sec
+[2025-05-29 05:41:57] Processing drug: ABIRATERONE ACETATE
+[2025-05-29 06:56:18] Runtime for ABIRATERONE ACETATE: 4460.67 sec
+[2025-05-29 06:56:18] Processing drug: ABROCITINIB
+[2025-05-29 09:04:29] Runtime for ABROCITINIB: 7691.27 sec
+[2025-05-29 09:04:29] Processing drug: ACALABRUTINIB
+[2025-05-29 10:24:23] Runtime for ACALABRUTINIB: 4793.34 sec
+[2025-05-29 10:24:23] Processing drug: ACEBUTOLOL
