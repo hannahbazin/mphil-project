@@ -5,6 +5,7 @@ import random
 import numpy
 import datetime
 from multiprocessing import Process
+import concurrent.futures
 
 print("Script started...")
 
@@ -152,7 +153,6 @@ def calculate_proximity(network, drug, nodes_from, nodes_to, nodes_from_random=N
     Calculate proximity from nodes_from to nodes_to
     If degree binning or random nodes are not given, they are generated
     """
-
     nodes_network = set(network.nodes())
     nodes_from = set(nodes_from) & nodes_network # select only nodes_from (drug targets) that are located in the network
     nodes_to = set(nodes_to) & nodes_network # select only nodes_to (disease targets) that are located in the network
@@ -245,34 +245,36 @@ def run_proximity_analysis(step_name, deg_file_path, output_csv_path, ppi_graph,
 
     # ========== RUN PROXIMITY ANALYSIS ==========
     results = []
-    # Iterate over each drug and calculate proximity to disease genes
-    for i, (drug, targets) in enumerate(drug_to_targets.items()):
-        start = time.time()
-        log(f"Processing drug: {drug}")
 
-        # Calculate proximity to disease genes
-        result = calculate_proximity(
-            ppi_graph,
-            drug,
-            targets,
-            disease_genes,
-            nodes_from_random=random_disease_genes,
-            bins=bins,
-            n_random=n_random,
-            min_bin_size=min_bin_size,
-            seed=seed
-        )
+    with concurrent.futures.ProcessPoolExecutor(max_workers=8) as executor:
+        futures = []
+        for drug, targets in drug_to_targets.items():
+            futures.append(executor.submit(
+                calculate_proximity,
+                network=ppi_graph,
+                drug=drug,
+                nodes_from=targets,
+                nodes_to=disease_genes,
+                nodes_from_random=random_disease_genes,
+                nodes_to_random=None,
+                bins=bins,
+                n_random=n_random,
+                min_bin_size=min_bin_size,
+                seed=seed
+            ))
+            
+        for i, (drug, future) in enumerate(zip(drug_to_targets.keys(), futures)):
+            start_time = datetime.datetime.now()
+            result = future.result()
+            duration = (datetime.datetime.now() - start_time).total_seconds() / 60
 
-        if result is not None:
-            results.append(result)
-        else:
-            log(f"No proximity data for drug: {drug}")
+            if result is not None:
+                results.append(result)
+                log(f"{drug} completed in {duration:.2f} minutes.")
 
-        if i % 50 == 0:
-            log(f"{i}/{len(drug_to_targets)} drugs processed")
-        
-        end = time.time()
-        log(f"Runtime for {drug}: {end - start:.2f} sec")
+            if i % 50 == 0:
+                log(f"{i}/{len(futures)} drugs processed")
+
 
     # Save and display
     results_df = pd.DataFrame(results)
