@@ -11,3 +11,4 @@ data/
 *.gz
 .venv/
 bat_proximity_analysis/
+.vscode/
