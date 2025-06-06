@@ -1,0 +1,8 @@
+# Count Jupyter notebooks as Python
+*.ipynb linguist-language=Python
+
+# Count R Markdown files as R
+*.Rmd linguist-language=R
+
+# Ignore auto-generated HTML files (e.g., from knitting)
+*.html linguist-detectable=false
