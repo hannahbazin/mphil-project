@@ -10,3 +10,4 @@ data/
 *.csv
 *.gz
 .venv/
+bat_proximity_analysis/
