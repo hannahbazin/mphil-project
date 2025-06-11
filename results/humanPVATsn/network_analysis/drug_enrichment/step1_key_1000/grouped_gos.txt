@@ -1,0 +1,1486 @@
+# Versions:
+#    go-basic.obo: fmt(1.2) rel(2025-06-01) 43,448 Terms; optional_attrs(relationship)
+#    goslim_generic.obo: fmt(1.2) rel(go/2025-06-01/subsets/goslim_generic.owl) 206 Terms
+
+SECTION: Metabolic processes
+**GO:0030163  # BP   19 uGOs    39  15 L05 D05 R05 C     .... prdu protein catabolic process
+  GO:0051603  # BP    . uGOs    61   8 L06 D06 R06 C     P... .rdu proteolysis involved in protein catabolic process
+  GO:0042176  # BP    . uGOs    40  11 L06 D07 R07 BC    .R.. .... regulation of protein catabolic process
+  GO:0010498  # BP    . uGOs    35   4 L06 D07 R07 C     .... .rdu proteasomal protein catabolic process
+  GO:0043161  # BP    . uGOs    21  10 L07 D09 R09 C     .... .rdu proteasome-mediated ubiquitin-dependent protein catabolic process
+  GO:0019941  # BP    . uGOs    14   3 L06 D07 R07 C     .... .... modification-dependent protein catabolic process
+  GO:0061136  # BP    . uGOs    14   4 L07 D09 R09 BC    .R.. .... regulation of proteasomal protein catabolic process
+  GO:0045732  # BP    . uGOs    12   7 L07 D08 R08 BC    ...U .... positive regulation of protein catabolic process
+  GO:0006511  # BP    . uGOs    11   2 L07 D08 R08 C     .... prdu ubiquitin-dependent protein catabolic process
+  GO:1903050  # BP    . uGOs     8   5 L08 D08 R08 BC    .R.. .... regulation of proteolysis involved in protein catabolic process
+  GO:0032434  # BP    . uGOs     8   4 L07 D10 R10 BC    .R.. .... regulation of proteasomal ubiquitin-dependent protein catabolic process
+  GO:0036503  # BP    . uGOs     7   1 L04 D08 R08 CH    .... prdu ERAD pathway
+  GO:0030970  # BP    . uGOs     4   0 L05 D09 R09 CEH   P... prdu retrograde protein transport, ER to cytosol
+  GO:1901800  # BP    . uGOs     4   2 L08 D10 R10 BC    ...U .... positive regulation of proteasomal protein catabolic process
+  GO:2000058  # BP    . uGOs     3   3 L06 D09 R09 BC    .R.. .... regulation of ubiquitin-dependent protein catabolic process
+  GO:1903052  # BP    . uGOs     3   3 L09 D09 R09 BC    ...U .... positive regulation of proteolysis involved in protein catabolic process
+  GO:0031146  # BP    . uGOs     3   0 L08 D10 R10 C     .... .rdu SCF-dependent proteasomal ubiquitin-dependent protein catabolic process
+  GO:0031145  # BP    . uGOs     3   0 L08 D10 R10 C     .... .rdu anaphase-promoting complex-dependent catabolic process
+  GO:2000060  # BP    . uGOs     1   1 L07 D10 R10 BC    ...U .... positive regulation of ubiquitin-dependent protein catabolic process
+**GO:0042592  # BP   17 uGOs     4   3 L01 D01 R01 N     .... p... homeostatic process
+  GO:0048878  # BP    . uGOs   124   7 L02 D02 R02 N     .... .... chemical homeostasis
+  GO:0048871  # BP    . uGOs    69   7 L02 D02 R02 AN    .... p... multicellular organismal-level homeostasis
+  GO:0055082  # BP    . uGOs    37  19 L03 D03 R03 N     .... .... intracellular chemical homeostasis
+  GO:0006874  # BP    . uGOs    16   5 L05 D06 R06 N     .... p... intracellular calcium ion homeostasis
+  GO:0019725  # BP    . uGOs    14   7 L02 D02 R02 N     .... .... cellular homeostasis
+  GO:0055088  # BP    . uGOs    12   8 L03 D03 R03 N     .... .... lipid homeostasis
+  GO:0048872  # BP    . uGOs     9   9 L03 D03 R03 AN    .... .... homeostasis of number of cells
+  GO:0055090  # BP    . uGOs     2   1 L04 D04 R04 N     .... .... acylglycerol homeostasis
+  GO:0055078  # BP    . uGOs     2   1 L04 D05 R05 N     .... p... sodium ion homeostasis
+  GO:0055092  # BP    . uGOs     1   1 L04 D04 R04 N     .... .... sterol homeostasis
+  GO:0055075  # BP    . uGOs     1   1 L04 D05 R05 N     .... .... potassium ion homeostasis
+  GO:0055074  # BP    . uGOs     1   1 L04 D05 R05 N     .... .... calcium ion homeostasis
+  GO:0070328  # BP    . uGOs     1   1 L05 D05 R05 N     .... .... triglyceride homeostasis
+  GO:0006883  # BP    . uGOs     1   0 L05 D06 R06 N     .... p... intracellular sodium ion homeostasis
+  GO:0042632  # BP    . uGOs     0   0 L05 D05 R05 N     .... .... cholesterol homeostasis
+  GO:0030007  # BP    . uGOs     0   0 L05 D06 R06 N     .... .... intracellular potassium ion homeostasis
+
+SECTION: ECM oganisation
+**GO:0007155  # BP   26 uGOs    94   7 L02 D02 R02 C     .... .rdu cell adhesion
+  GO:0022407  # BP    . uGOs    81  16 L05 D05 R05 BC    .R.. .... regulation of cell-cell adhesion
+  GO:0098609  # BP    . uGOs    78  20 L03 D03 R03 C     .... .rdu cell-cell adhesion
+  GO:0031589  # BP    . uGOs    34   7 L03 D03 R03 C     .... .rdu cell-substrate adhesion
+  GO:0050870  # BP    . uGOs    30   9 L07 D08 R08 ABCG  ...U .... positive regulation of T cell activation
+  GO:0010810  # BP    . uGOs    23   6 L05 D05 R05 BC    .R.. .... regulation of cell-substrate adhesion
+  GO:0007159  # BP    . uGOs    20   3 L04 D04 R04 C     .... .rdu leukocyte cell-cell adhesion
+  GO:1903037  # BP    . uGOs    19   7 L06 D06 R06 BC    .R.. .... regulation of leukocyte cell-cell adhesion
+  GO:0007160  # BP    . uGOs    18   7 L04 D04 R04 C     .... prdu cell-matrix adhesion
+  GO:0022409  # BP    . uGOs    18  11 L06 D06 R06 BC    ...U .... positive regulation of cell-cell adhesion
+  GO:0034109  # BP    . uGOs    16   5 L04 D04 R04 C     .... .rdu homotypic cell-cell adhesion
+  GO:0030155  # BP    . uGOs    12   9 L04 D04 R04 BC    .R.. .... regulation of cell adhesion
+  GO:0034113  # BP    . uGOs    12   6 L04 D04 R04 C     .... .rdu heterotypic cell-cell adhesion
+  GO:0061756  # BP    . uGOs    10   4 L05 D05 R05 C     .... .rdu leukocyte adhesion to vascular endothelial cell
+  GO:0001952  # BP    . uGOs     9   5 L06 D06 R06 BC    .R.. .... regulation of cell-matrix adhesion
+  GO:0045582  # BP    . uGOs     9   8 L08 D10 R11 ABCDG ...U .... positive regulation of T cell differentiation
+  GO:0033627  # BP    . uGOs     7   1 L03 D03 R03 C     .... .rdu cell adhesion mediated by integrin
+  GO:0007162  # BP    . uGOs     7   6 L05 D05 R05 BC    ..D. .... negative regulation of cell adhesion
+  GO:0010811  # BP    . uGOs     7   4 L06 D06 R06 BC    ...U .... positive regulation of cell-substrate adhesion
+  GO:1903039  # BP    . uGOs     7   5 L07 D07 R07 BC    ...U .... positive regulation of leukocyte cell-cell adhesion
+  GO:0031295  # BP    . uGOs     7   1 L03 D09 R09 ABCG  .... .rdu T cell costimulation
+  GO:0045785  # BP    . uGOs     5   4 L05 D05 R05 BC    ...U .... positive regulation of cell adhesion
+  GO:0042102  # BP    . uGOs     5   5 L08 D09 R09 ABCG  ...U .... positive regulation of T cell proliferation
+  GO:0034446  # BP    . uGOs     3   0 L04 D04 R04 C     .... .rdu substrate adhesion-dependent cell spreading
+  GO:0050901  # BP    . uGOs     3   0 L06 D06 R06 CG    P... .rdu leukocyte tethering or rolling
+  GO:1900024  # BP    . uGOs     2   2 L06 D06 R06 BC    .R.. .... regulation of substrate adhesion-dependent cell spreading
+**GO:0030198  # BP    3 uGOs    32   9 L05 D05 R05 C     .... prdu extracellular matrix organization
+  GO:0022617  # BP    . uGOs     6   2 L05 D06 R06 C     .... .rdu extracellular matrix disassembly
+  GO:0030199  # BP    . uGOs     3   0 L06 D06 R06 C     .... .rdu collagen fibril organization
+
+SECTION: Transcriptional control
+**GO:0006310  # BP    1 uGOs    90  11 L06 D07 R07 C     .... prdu DNA recombination
+**GO:0006325  # BP    8 uGOs    86   9 L04 D04 R04 C     .... prdu chromatin organization
+  GO:0006338  # BP    . uGOs    64   7 L05 D05 R05 C     .... .... chromatin remodeling
+  GO:0040029  # BP    . uGOs    54   4 L06 D08 R08 BC    .... .... epigenetic regulation of gene expression
+  GO:0141137  # BP    . uGOs     4   2 L07 D09 R09 BC    .... .... positive regulation of gene expression, epigenetic
+  GO:0034728  # BP    . uGOs     2   2 L06 D06 R06 C     .... .... nucleosome organization
+  GO:0045815  # BP    . uGOs     2   1 L08 D10 R11 BC    P... ..d. transcription initiation-coupled chromatin remodeling
+  GO:0006334  # BP    . uGOs     1   0 L07 D07 R07 C     P... ...u nucleosome assembly
+  GO:0006337  # BP    . uGOs     0   0 L07 D07 R07 C     .... .... nucleosome disassembly
+**GO:0006281  # BP   11 uGOs    81  17 L05 D07 R07 CH    .... prdu DNA repair
+  GO:0006282  # BP    . uGOs    23   8 L05 D08 R08 BCH   .R.. .... regulation of DNA repair
+  GO:0000725  # BP    . uGOs    22   4 L06 D08 R08 CH    .... .... recombinational repair
+  GO:0006302  # BP    . uGOs    20   5 L06 D08 R08 CH    .... prdu double-strand break repair
+  GO:0000724  # BP    . uGOs    15   4 L07 D09 R09 CH    .... prdu double-strand break repair via homologous recombination
+  GO:0006289  # BP    . uGOs    11   4 L06 D08 R08 CH    .... pr.. nucleotide-excision repair
+  GO:0045739  # BP    . uGOs     8   5 L05 D09 R09 BCH   ...U .... positive regulation of DNA repair
+  GO:2000779  # BP    . uGOs     7   5 L06 D09 R09 BCH   .R.. .... regulation of double-strand break repair
+  GO:0006303  # BP    . uGOs     6   2 L07 D09 R09 CH    .... prdu double-strand break repair via nonhomologous end joining
+  GO:2000781  # BP    . uGOs     2   2 L06 D10 R10 BCH   ...U .... positive regulation of double-strand break repair
+  GO:2000819  # BP    . uGOs     1   1 L06 D09 R09 BCH   .R.. .... regulation of nucleotide-excision repair
+**GO:0006260  # BP    4 uGOs    54   1 L06 D07 R07 C     .... prdu DNA replication
+  GO:0006261  # BP    . uGOs    39   6 L07 D08 R08 C     .... prdu DNA-templated DNA replication
+  GO:0006275  # BP    . uGOs    20   3 L07 D08 R08 BC    .R.. .... regulation of DNA replication
+  GO:0006270  # BP    . uGOs     4   1 L06 D07 R09 C     P... .rdu DNA replication initiation
+**GO:0007059  # BP    8 uGOs    22   1 L03 D03 R04 C     .... prdu chromosome segregation
+  GO:0033045  # BP    . uGOs    41   4 L07 D07 R07 BC    .R.. .... regulation of sister chromatid segregation
+  GO:0044784  # BP    . uGOs    24   2 L04 D08 R08 BC    .... .rdu metaphase/anaphase transition of cell cycle
+  GO:0098813  # BP    . uGOs    16   2 L04 D04 R05 C     .... p... nuclear chromosome segregation
+  GO:0051304  # BP    . uGOs     9   2 L03 D03 R05 C     P... prdu chromosome separation
+  GO:0051983  # BP    . uGOs     5   5 L06 D06 R06 BC    .R.. .... regulation of chromosome segregation
+  GO:0000819  # BP    . uGOs     5   2 L05 D06 R06 C     .... prd. sister chromatid segregation
+  GO:1905818  # BP    . uGOs     4   4 L07 D07 R07 BC    .R.. .... regulation of chromosome separation
+* GO:0006399  # BP    2 uGOs    18   7 L06 D07 R07 C     .... .rdu tRNA metabolic process
+  GO:0099116  # BP    . uGOs     2   2 L06 D09 R10 C     .... .... tRNA 5'-end processing
+  GO:0001682  # BP    . uGOs     0   0 L07 D10 R11 C     .... .... tRNA 5'-leader removal
+**GO:0016071  # BP   24 uGOs    14   7 L06 D07 R07 C     .... .rdu mRNA metabolic process
+  GO:0000956  # BP    . uGOs    35  10 L08 D10 R10 BC    .... .... nuclear-transcribed mRNA catabolic process
+  GO:1903313  # BP    . uGOs    29   3 L08 D09 R09 BC    ...U .... positive regulation of mRNA metabolic process
+  GO:0006402  # BP    . uGOs    25   5 L07 D09 R09 BC    .... .rdu mRNA catabolic process
+  GO:0061014  # BP    . uGOs    21   8 L07 D10 R11 BC    ...U .... positive regulation of mRNA catabolic process
+  GO:0006397  # BP    . uGOs    20   7 L05 D08 R09 C     .... .rdu mRNA processing
+  GO:0061013  # BP    . uGOs    16   8 L06 D09 R10 BC    .R.. .... regulation of mRNA catabolic process
+  GO:0061157  # BP    . uGOs    13   8 L05 D11 R12 BC    .... .... mRNA destabilization
+  GO:0000288  # BP    . uGOs    10   0 L06 D12 R13 BC    .... prdu nuclear-transcribed mRNA catabolic process, deadenylation-dependent decay
+  GO:0050684  # BP    . uGOs     8   4 L08 D09 R10 BC    .R.. .... regulation of mRNA processing
+  GO:0043488  # BP    . uGOs     8   7 L04 D10 R11 BC    .... .... regulation of mRNA stability
+  GO:1903311  # BP    . uGOs     6   6 L07 D08 R08 BC    .R.. .... regulation of mRNA metabolic process
+  GO:1903312  # BP    . uGOs     6   3 L08 D09 R09 BC    ..D. .... negative regulation of mRNA metabolic process
+  GO:1902373  # BP    . uGOs     6   6 L07 D10 R11 BC    ..D. .... negative regulation of mRNA catabolic process
+  GO:0048024  # BP    . uGOs     6   4 L07 D10 R13 BC    .R.. .... regulation of mRNA splicing, via spliceosome
+  GO:0000184  # BP    . uGOs     5   2 L09 D11 R11 BC    .... .rdu nuclear-transcribed mRNA catabolic process, nonsense-mediated decay
+  GO:0048255  # BP    . uGOs     5   2 L05 D11 R12 BC    .... .... mRNA stabilization
+  GO:0000289  # BP    . uGOs     3   0 L09 D11 R14 BC    P... .rdu nuclear-transcribed mRNA poly(A) tail shortening
+  GO:1900151  # BP    . uGOs     3   2 L05 D11 R14 BC    .R.. .... regulation of nuclear-transcribed mRNA catabolic process, deadenylation-dependent decay
+  GO:0060211  # BP    . uGOs     2   2 L07 D10 R15 BC    .R.. .... regulation of nuclear-transcribed mRNA poly(A) tail shortening
+  GO:0009299  # BP    . uGOs     1   1 L07 D09 R09 C     .... .... mRNA transcription
+  GO:0042789  # BP    . uGOs     0   0 L08 D10 R10 C     .... .... mRNA transcription by RNA polymerase II
+  GO:0070934  # BP    . uGOs     0   0 L06 D12 R13 BC    .... .... CRD-mediated mRNA stabilization
+  GO:0060213  # BP    . uGOs     0   0 L08 D11 R16 BC    ...U .... positive regulation of nuclear-transcribed mRNA poly(A) tail shortening
+**GO:0031047  # BP    5 uGOs    10   3 L09 D09 R09 BC    .... prd. regulatory ncRNA-mediated gene silencing
+  GO:0070918  # BP    . uGOs    25   5 L05 D05 R10 BC    P... .r.. regulatory ncRNA processing
+  GO:0035196  # BP    . uGOs    12   2 L06 D06 R11 BC    .... prdu miRNA processing
+  GO:0070922  # BP    . uGOs     0   0 L07 D07 R10 BC    P... .... RISC complex assembly
+  GO:0035278  # BP    . uGOs     0   0 L09 D12 R12 BC    .... .... miRNA-mediated gene silencing by inhibition of translation
+**GO:0032200  # BP   10 uGOs     4   2 L06 D06 R06 C     .... p... telomere organization
+  GO:0000723  # BP    . uGOs    38   8 L06 D07 R07 C     .... .rdu telomere maintenance
+  GO:0032204  # BP    . uGOs    35  10 L07 D08 R08 BC    .R.. .... regulation of telomere maintenance
+  GO:0032206  # BP    . uGOs    11   8 L08 D09 R09 BC    ...U .... positive regulation of telomere maintenance
+  GO:1904356  # BP    . uGOs     5   3 L08 D09 R09 BC    .R.. .... regulation of telomere maintenance via telomere lengthening
+  GO:0010833  # BP    . uGOs     4   1 L07 D08 R08 C     .... .rdu telomere maintenance via telomere lengthening
+  GO:0007004  # BP    . uGOs     3   0 L08 D09 R09 C     .... .rdu telomere maintenance via telomerase
+  GO:0032210  # BP    . uGOs     2   2 L08 D10 R10 BC    .R.. .... regulation of telomere maintenance via telomerase
+  GO:1904358  # BP    . uGOs     1   1 L09 D10 R10 BC    ...U .... positive regulation of telomere maintenance via telomere lengthening
+  GO:0032212  # BP    . uGOs     0   0 L09 D11 R11 BC    ...U .... positive regulation of telomere maintenance via telomerase
+
+SECTION: Mitochondrion organisation
+**GO:0007005  # BP   10 uGOs    12   7 L05 D05 R05 C     .... pr.u mitochondrion organization
+  GO:0010821  # BP    . uGOs    17   7 L06 D06 R06 BC    .R.. .... regulation of mitochondrion organization
+  GO:0007006  # BP    . uGOs    14   4 L05 D06 R06 C     .... .... mitochondrial membrane organization
+  GO:0046902  # BP    . uGOs    11   5 L04 D07 R07 BCE   P... .... regulation of mitochondrial membrane permeability
+  GO:0035794  # BP    . uGOs     6   2 L05 D08 R08 BCE   .... .... positive regulation of mitochondrial membrane permeability
+  GO:1902686  # BP    . uGOs     5   1 L06 D09 R09 BCE   P... .... mitochondrial outer membrane permeabilization involved in programmed cell death
+  GO:0008637  # BP    . uGOs     4   4 L06 D06 R06 C     P... .... apoptotic mitochondrial changes
+  GO:0001836  # BP    . uGOs     3   0 L07 D07 R07 BCH   P... .rdu release of cytochrome c from mitochondria
+  GO:0090199  # BP    . uGOs     2   2 L07 D07 R08 BCH   .R.. .... regulation of release of cytochrome c from mitochondria
+  GO:0090200  # BP    . uGOs     0   0 L07 D08 R09 BCH   ...U .... positive regulation of release of cytochrome c from mitochondria
+
+SECTION: Cell signalling
+**GO:0055085  # BP   24 uGOs   223  47 L02 D04 R04 CE    .... .rdu transmembrane transport
+  GO:0098655  # BP    . uGOs   198  15 L04 D06 R06 CE    .... .rdu monoatomic cation transmembrane transport
+  GO:0098739  # BP    . uGOs   122  26 L03 D05 R05 CE    .... .... import across plasma membrane
+  GO:0034762  # BP    . uGOs    88  17 L04 D05 R05 BCE   .R.. .... regulation of transmembrane transport
+  GO:0098660  # BP    . uGOs    55   4 L03 D05 R05 CE    .... .... inorganic ion transmembrane transport
+  GO:0070588  # BP    . uGOs    50   8 L05 D08 R08 CE    .... .rdu calcium ion transmembrane transport
+  GO:1904062  # BP    . uGOs    49  10 L06 D07 R07 BCE   .R.. .... regulation of monoatomic cation transmembrane transport
+  GO:1903169  # BP    . uGOs    27   8 L07 D08 R09 BCE   .R.. .... regulation of calcium ion transmembrane transport
+  GO:0140115  # BP    . uGOs    22  16 L03 D05 R05 CE    .... .... export across plasma membrane
+  GO:0022898  # BP    . uGOs    22   3 L04 D06 R06 BCE   .... .... regulation of transmembrane transporter activity
+  GO:0032412  # BP    . uGOs    19  12 L05 D07 R07 BCE   .... .... regulation of monoatomic ion transmembrane transporter activity
+  GO:0097553  # BP    . uGOs    19   3 L06 D09 R09 CE    .... .... calcium ion transmembrane import into cytosol
+  GO:0098662  # BP    . uGOs    18  17 L04 D06 R06 CE    .... .... inorganic cation transmembrane transport
+  GO:0035725  # BP    . uGOs    18   2 L05 D08 R08 CE    .... .rdu sodium ion transmembrane transport
+  GO:0099587  # BP    . uGOs    13   2 L04 D06 R06 CE    .... .... inorganic ion import across plasma membrane
+  GO:1902305  # BP    . uGOs    13   5 L07 D08 R09 BCE   .R.. .... regulation of sodium ion transmembrane transport
+  GO:0071805  # BP    . uGOs    12   3 L05 D08 R08 CE    .... .rdu potassium ion transmembrane transport
+  GO:0098659  # BP    . uGOs     9   9 L05 D07 R07 CE    .... .... inorganic cation import across plasma membrane
+  GO:2000649  # BP    . uGOs     8   5 L06 D09 R10 BCE   .... .... regulation of sodium ion transmembrane transporter activity
+  GO:0034220  # BP    . uGOs     6   3 L03 D05 R05 CE    .... .rdu monoatomic ion transmembrane transport
+  GO:0034765  # BP    . uGOs     4   4 L05 D06 R06 BCE   .R.. .... regulation of monoatomic ion transmembrane transport
+  GO:0036376  # BP    . uGOs     3   0 L04 D09 R09 CE    .... .rdu sodium ion export across plasma membrane
+  GO:1990573  # BP    . uGOs     3   0 L06 D09 R09 CE    .... .rdu potassium ion import across plasma membrane
+  GO:0098703  # BP    . uGOs     3   0 L06 D10 R10 CE    .... .rdu calcium ion import across plasma membrane
+**GO:0050896  # BP  288 uGOs   180  15 L01 D01 R01 H     .... .rdu response to stimulus
+  GO:0042221  # BP    . uGOs  1322  70 L02 D02 R02 H     .... p... response to chemical
+  GO:0009605  # BP    . uGOs   932  12 L02 D02 R02 H     .... prdu response to external stimulus
+  GO:0048583  # BP    . uGOs   588  38 L03 D03 R03 BH    .R.. .... regulation of response to stimulus
+  GO:0007165  # BP    . uGOs   552  30 L02 D04 R04 BCH   P... .rdu signal transduction
+  GO:0070887  # BP    . uGOs   522  41 L03 D03 R03 CH    .... p... cellular response to chemical stimulus
+  GO:0043207  # BP    . uGOs   470   6 L03 D03 R03 H     .... .... response to external biotic stimulus
+  GO:1901700  # BP    . uGOs   330 142 L03 D03 R03 H     .... .... response to oxygen-containing compound
+  GO:0009628  # BP    . uGOs   290  15 L02 D02 R02 H     .... .... response to abiotic stimulus
+  GO:1902531  # BP    . uGOs   288  31 L05 D06 R06 BCH   .R.. .... regulation of intracellular signal transduction
+  GO:0007166  # BP    . uGOs   274  32 L03 D05 R05 BCH   .... .... cell surface receptor signaling pathway
+  GO:1901698  # BP    . uGOs   238 115 L03 D03 R03 H     .... p... response to nitrogen compound
+  GO:0050776  # BP    . uGOs   234  22 L04 D04 R04 BGH   .R.. .... regulation of immune response
+  GO:0048585  # BP    . uGOs   213  53 L04 D04 R04 BH    ..D. .... negative regulation of response to stimulus
+  GO:1901701  # BP    . uGOs   212 120 L04 D04 R04 CH    .... .... cellular response to oxygen-containing compound
+  GO:0009966  # BP    . uGOs   211  60 L04 D05 R05 BCH   .R.. .... regulation of signal transduction
+  GO:0032101  # BP    . uGOs   192  22 L04 D04 R04 BH    .R.. .... regulation of response to external stimulus
+  GO:0006955  # BP    . uGOs   173   9 L02 D02 R02 GH    .... prdu immune response
+  GO:1901652  # BP    . uGOs   170   2 L03 D03 R03 H     .... .... response to peptide
+  GO:0048584  # BP    . uGOs   169  51 L04 D04 R04 BH    ...U .... positive regulation of response to stimulus
+  GO:0034097  # BP    . uGOs   168  30 L04 D04 R04 H     .... .rdu response to cytokine
+  GO:0033993  # BP    . uGOs   150  36 L03 D03 R03 H     .... .... response to lipid
+  GO:0051716  # BP    . uGOs   138  13 L02 D02 R02 CH    .... p... cellular response to stimulus
+  GO:1901699  # BP    . uGOs   137  86 L04 D04 R04 CH    .... .... cellular response to nitrogen compound
+  GO:0141124  # BP    . uGOs   136  13 L04 D06 R06 BCH   .... .... intracellular signaling cassette
+  GO:0006950  # BP    . uGOs   133  30 L02 D02 R02 H     .... pr.. response to stress
+  GO:0009968  # BP    . uGOs   133  63 L05 D06 R06 BCH   ..D. .... negative regulation of signal transduction
+  GO:0009607  # BP    . uGOs   119   6 L02 D02 R02 H     .... .rdu response to biotic stimulus
+  GO:0007186  # BP    . uGOs   115  40 L03 D05 R05 BCH   .... .rdu G protein-coupled receptor signaling pathway
+  GO:0007167  # BP    . uGOs   109   5 L04 D06 R06 BCH   .... .... enzyme-linked receptor protein signaling pathway
+  GO:0033554  # BP    . uGOs   106  28 L03 D03 R03 CH    .... pr.. cellular response to stress
+  GO:0009611  # BP    . uGOs   102   7 L03 D03 R03 H     .... .rdu response to wounding
+  GO:0009719  # BP    . uGOs    99   4 L02 D02 R02 H     .... .... response to endogenous stimulus
+  GO:0009314  # BP    . uGOs    96   3 L03 D03 R03 H     .... .... response to radiation
+  GO:0009967  # BP    . uGOs    93  52 L05 D06 R06 BCH   ...U .... positive regulation of signal transduction
+  GO:0070848  # BP    . uGOs    91   9 L03 D03 R03 H     .... .... response to growth factor
+  GO:0071345  # BP    . uGOs    86  28 L05 D05 R05 H     .... p... cellular response to cytokine stimulus
+  GO:0007169  # BP    . uGOs    83  18 L05 D07 R07 BCH   .... p... cell surface receptor protein tyrosine kinase signaling pathway
+  GO:0050778  # BP    . uGOs    80  20 L05 D05 R05 BGH   ...U .... positive regulation of immune response
+  GO:1902532  # BP    . uGOs    80  29 L06 D07 R07 BCH   ..D. .... negative regulation of intracellular signal transduction
+  GO:0002819  # BP    . uGOs    79   5 L05 D05 R05 BGH   .R.. .... regulation of adaptive immune response
+  GO:0035556  # BP    . uGOs    77  20 L03 D05 R05 BCH   .... .rdu intracellular signal transduction
+  GO:1902533  # BP    . uGOs    75  41 L06 D07 R07 BCH   ...U .... positive regulation of intracellular signal transduction
+  GO:0002250  # BP    . uGOs    74   5 L03 D03 R03 GH    .... .rdu adaptive immune response
+  GO:0071396  # BP    . uGOs    71  32 L04 D04 R04 CH    .... .... cellular response to lipid
+  GO:0080134  # BP    . uGOs    70  12 L04 D04 R04 BH    .R.. .... regulation of response to stress
+  GO:0002822  # BP    . uGOs    70   8 L06 D06 R06 BGH   .R.. .... regulation of adaptive immune response based on somatic recombination of immune receptors built from immunoglobulin superfamily domains
+  GO:0060759  # BP    . uGOs    62   5 L04 D04 R05 BH    .R.. .... regulation of response to cytokine stimulus
+  GO:0032102  # BP    . uGOs    61  19 L05 D05 R05 BH    ..D. .... negative regulation of response to external stimulus
+  GO:0002460  # BP    . uGOs    60   9 L04 D04 R04 GH    .... .rdu adaptive immune response based on somatic recombination of immune receptors built from immunoglobulin superfamily domains
+  GO:0019221  # BP    . uGOs    57  41 L04 D06 R06 BCH   P... .rdu cytokine-mediated signaling pathway
+  GO:0050777  # BP    . uGOs    56  18 L05 D05 R05 BGH   ..D. .... negative regulation of immune response
+  GO:0062197  # BP    . uGOs    53   9 L04 D04 R04 CH    .... .... cellular response to chemical stress
+  GO:0006952  # BP    . uGOs    51  13 L03 D03 R03 H     .... prdu defense response
+  GO:0097190  # BP    . uGOs    49   4 L03 D05 R05 BCH   P... prdu apoptotic signaling pathway
+  GO:0071363  # BP    . uGOs    48   9 L04 D04 R04 H     .... prd. cellular response to growth factor stimulus
+  GO:0043434  # BP    . uGOs    48  15 L04 D04 R04 H     .... .... response to peptide hormone
+  GO:0009755  # BP    . uGOs    48  15 L03 D05 R05 BCH   P... .... hormone-mediated signaling pathway
+  GO:0071214  # BP    . uGOs    47   9 L03 D04 R04 CH    .... .... cellular response to abiotic stimulus
+  GO:0071216  # BP    . uGOs    46   7 L03 D03 R03 CH    .... .... cellular response to biotic stimulus
+  GO:0032103  # BP    . uGOs    46  16 L05 D05 R05 BH    ...U .... positive regulation of response to external stimulus
+  GO:0002367  # BP    . uGOs    43   5 L03 D07 R07 ACGH  P... .rdu cytokine production involved in immune response
+  GO:0002764  # BP    . uGOs    42   3 L03 D05 R05 BCGH  .... .... immune response-regulating signaling pathway
+  GO:0141193  # BP    . uGOs    41   6 L05 D07 R07 BCH   .... .... nuclear receptor-mediated signaling pathway
+  GO:0002831  # BP    . uGOs    39  16 L04 D04 R04 BH    .R.. .... regulation of response to biotic stimulus
+  GO:0034599  # BP    . uGOs    39   3 L04 D05 R05 CH    .... prdu cellular response to oxidative stress
+  GO:0009725  # BP    . uGOs    38  19 L03 D03 R03 H     .... .... response to hormone
+  GO:0071478  # BP    . uGOs    38   2 L04 D05 R05 CH    .... .... cellular response to radiation
+  GO:0080135  # BP    . uGOs    37  26 L04 D05 R05 BCH   .R.. .... regulation of cellular response to stress
+  GO:0002768  # BP    . uGOs    37   4 L04 D06 R06 BCGH  .... .... immune response-regulating cell surface receptor signaling pathway
+  GO:0097193  # BP    . uGOs    36   7 L04 D06 R06 BCH   .... .rdu intrinsic apoptotic signaling pathway
+  GO:0009267  # BP    . uGOs    35  20 L04 D04 R04 CH    .... p... cellular response to starvation
+  GO:0009266  # BP    . uGOs    33   8 L03 D03 R03 H     .... .... response to temperature stimulus
+  GO:2001242  # BP    . uGOs    32   9 L06 D07 R07 BCH   .R.. .... regulation of intrinsic apoptotic signaling pathway
+  GO:0001959  # BP    . uGOs    32  18 L05 D06 R07 BCH   .R.. .... regulation of cytokine-mediated signaling pathway
+  GO:0007264  # BP    . uGOs    32   9 L05 D07 R07 BCH   .... .rdu small GTPase-mediated signal transduction
+  GO:0002366  # BP    . uGOs    31   5 L03 D04 R04 ACGH  .... .... leukocyte activation involved in immune response
+  GO:0000165  # BP    . uGOs    30   6 L05 D07 R07 BCH   .... .rdu MAPK cascade
+  GO:0070482  # BP    . uGOs    29   4 L03 D03 R03 H     .... .... response to oxygen levels
+  GO:0071774  # BP    . uGOs    27   1 L04 D04 R04 H     .... .... response to fibroblast growth factor
+  GO:0044344  # BP    . uGOs    26   0 L05 D05 R05 H     .... p... cellular response to fibroblast growth factor stimulus
+  GO:0000075  # BP    . uGOs    26   4 L04 D08 R08 BCH   .... .rdu cell cycle checkpoint signaling
+  GO:0032870  # BP    . uGOs    25  15 L04 D04 R04 CH    .... p... cellular response to hormone stimulus
+  GO:0008543  # BP    . uGOs    24  15 L06 D08 R08 BCH   P... .rdu fibroblast growth factor receptor signaling pathway
+  GO:0051056  # BP    . uGOs    24  11 L06 D07 R08 BCH   .R.. .... regulation of small GTPase mediated signal transduction
+  GO:0002429  # BP    . uGOs    24   4 L04 D08 R08 BCGH  .... .... immune response-activating cell surface receptor signaling pathway
+  GO:0048545  # BP    . uGOs    23   4 L04 D04 R04 H     .... .... response to steroid hormone
+  GO:1990868  # BP    . uGOs    23   1 L05 D05 R05 H     .... .... response to chemokine
+  GO:0034614  # BP    . uGOs    23   4 L05 D06 R06 CH    .... p... cellular response to reactive oxygen species
+  GO:0038127  # BP    . uGOs    23   4 L06 D08 R08 BCH   .... .rdu ERBB signaling pathway
+  GO:0030518  # BP    . uGOs    23   6 L05 D08 R08 BCH   .... .rdu nuclear receptor-mediated steroid hormone signaling pathway
+  GO:0042093  # BP    . uGOs    23   4 L09 D11 R13 ACDGH .... prdu T-helper cell differentiation
+  GO:0019724  # BP    . uGOs    22   3 L05 D05 R05 GH    .... prdu B cell mediated immunity
+  GO:1990869  # BP    . uGOs    22   0 L06 D06 R06 H     .... p... cellular response to chemokine
+  GO:0019722  # BP    . uGOs    22   4 L05 D07 R07 BCH   .... .rdu calcium-mediated signaling
+  GO:0070098  # BP    . uGOs    21  10 L04 D07 R07 BCH   P... .rdu chemokine-mediated signaling pathway
+  GO:0031667  # BP    . uGOs    20  11 L02 D02 R02 H     .... prdu response to nutrient levels
+  GO:0097191  # BP    . uGOs    20   4 L04 D06 R06 BCH   .... prdu extrinsic apoptotic signaling pathway
+  GO:0007178  # BP    . uGOs    20   2 L05 D07 R07 BCH   .... prdu cell surface receptor protein serine/threonine kinase signaling pathway
+  GO:0002718  # BP    . uGOs    20   8 L05 D09 R09 ABCGH .R.. .... regulation of cytokine production involved in immune response
+  GO:0042594  # BP    . uGOs    19  10 L03 D03 R03 H     .... .... response to starvation
+  GO:0000302  # BP    . uGOs    19   6 L04 D04 R04 H     .... .rdu response to reactive oxygen species
+  GO:1903034  # BP    . uGOs    19   5 L05 D05 R05 BH    .R.. .... regulation of response to wounding
+  GO:0002253  # BP    . uGOs    19   3 L02 D06 R06 BGH   .... .... activation of immune response
+  GO:0071453  # BP    . uGOs    18   2 L04 D04 R04 CH    .... .... cellular response to oxygen levels
+  GO:0007188  # BP    . uGOs    18   2 L04 D06 R06 BCH   .... .... adenylate cyclase-modulating G protein-coupled receptor signaling pathway
+  GO:0043408  # BP    . uGOs    18   8 L06 D07 R08 BCH   .R.. .... regulation of MAPK cascade
+  GO:0035924  # BP    . uGOs    17   0 L05 D05 R05 H     .... prd. cellular response to vascular endothelial growth factor stimulus
+  GO:0031347  # BP    . uGOs    17  15 L05 D05 R05 BH    .R.. .... regulation of defense response
+  GO:0098581  # BP    . uGOs    16   4 L04 D04 R04 H     .... .... detection of external biotic stimulus
+  GO:0006956  # BP    . uGOs    16   5 L03 D07 R07 BGH   .... .rdu complement activation
+  GO:0090287  # BP    . uGOs    15   9 L04 D04 R05 BH    .R.. .... regulation of cellular response to growth factor stimulus
+  GO:2001233  # BP    . uGOs    15   4 L05 D06 R06 BCH   .R.. .... regulation of apoptotic signaling pathway
+  GO:0048008  # BP    . uGOs    15   3 L06 D08 R08 BCH   .... .rdu platelet-derived growth factor receptor signaling pathway
+  GO:0009408  # BP    . uGOs    14   3 L03 D04 R04 H     .... .... response to heat
+  GO:0036294  # BP    . uGOs    14   3 L05 D05 R05 CH    .... p... cellular response to decreased oxygen levels
+  GO:0071375  # BP    . uGOs    14  14 L05 D05 R05 CH    .... .... cellular response to peptide hormone stimulus
+  GO:0033143  # BP    . uGOs    14   6 L06 D07 R09 BCH   .R.. .... regulation of intracellular steroid hormone receptor signaling pathway
+  GO:0009612  # BP    . uGOs    13   6 L03 D03 R03 H     .... p... response to mechanical stimulus
+  GO:2001243  # BP    . uGOs    13   7 L07 D08 R08 BCH   ..D. .... negative regulation of intrinsic apoptotic signaling pathway
+  GO:0090092  # BP    . uGOs    13   6 L05 D06 R08 BCH   .R.. .... regulation of transmembrane receptor protein serine/threonine kinase signaling pathway
+  GO:0050851  # BP    . uGOs    13   2 L05 D09 R09 BCGH  .... .rdu antigen receptor-mediated signaling pathway
+  GO:0032868  # BP    . uGOs    12   1 L05 D05 R05 H     .... .... response to insulin
+  GO:0031348  # BP    . uGOs    12  12 L05 D06 R06 BH    ..D. .... negative regulation of defense response
+  GO:0010469  # BP    . uGOs    12   9 L03 D06 R06 BCH   .... .... regulation of signaling receptor activity
+  GO:0002286  # BP    . uGOs    12   5 L05 D06 R06 ACGH  .... p... T cell activation involved in immune response
+  GO:0006959  # BP    . uGOs    11   4 L03 D03 R03 GH    .... .rdu humoral immune response
+  GO:0002285  # BP    . uGOs    11   5 L04 D05 R05 ACGH  .... .... lymphocyte activation involved in immune response
+  GO:0071383  # BP    . uGOs    11   2 L05 D05 R05 CH    .... p... cellular response to steroid hormone stimulus
+  GO:0002833  # BP    . uGOs    11  11 L05 D05 R05 BH    ...U .... positive regulation of response to biotic stimulus
+  GO:0032869  # BP    . uGOs    11   0 L06 D06 R06 CH    .... prdu cellular response to insulin stimulus
+  GO:0031929  # BP    . uGOs    11   2 L04 D06 R06 BCH   .... .rdu TOR signaling
+  GO:0031349  # BP    . uGOs    11  11 L05 D06 R06 BH    ...U .... positive regulation of defense response
+  GO:0007215  # BP    . uGOs    11   2 L04 D06 R06 BCH   .... .rdu glutamate receptor signaling pathway
+  GO:2001236  # BP    . uGOs    11   4 L06 D07 R07 BCH   .R.. .... regulation of extrinsic apoptotic signaling pathway
+  GO:0141091  # BP    . uGOs    11   3 L06 D08 R08 BCH   .... .... transforming growth factor beta receptor superfamily signaling pathway
+  GO:0038084  # BP    . uGOs    11   3 L06 D08 R08 BCH   P... .rdu vascular endothelial growth factor signaling pathway
+  GO:0034976  # BP    . uGOs    10   6 L04 D04 R04 CH    .... prdu response to endoplasmic reticulum stress
+  GO:0036293  # BP    . uGOs    10   4 L04 D04 R04 H     .... .... response to decreased oxygen levels
+  GO:0071456  # BP    . uGOs    10   0 L04 D06 R06 CH    .... prdu cellular response to hypoxia
+  GO:0016064  # BP    . uGOs    10   6 L06 D06 R06 GH    .... prdu immunoglobulin mediated immune response
+  GO:2001244  # BP    . uGOs    10   6 L07 D08 R08 BCH   ...U .... positive regulation of intrinsic apoptotic signaling pathway
+  GO:0031570  # BP    . uGOs    10   4 L05 D09 R09 BCH   .... .... DNA integrity checkpoint signaling
+  GO:0002292  # BP    . uGOs    10   3 L06 D08 R10 ACDGH .... .... T cell differentiation involved in immune response
+  GO:0006979  # BP    . uGOs     9   5 L03 D03 R03 H     .... prdu response to oxidative stress
+  GO:0071559  # BP    . uGOs     9   1 L04 D04 R04 H     .... .... response to transforming growth factor beta
+  GO:2001234  # BP    . uGOs     9   5 L06 D07 R07 BCH   ..D. .... negative regulation of apoptotic signaling pathway
+  GO:1901184  # BP    . uGOs     9   4 L05 D06 R09 BCH   .R.. .... regulation of ERBB signaling pathway
+  GO:0002720  # BP    . uGOs     9   5 L06 D10 R10 ABCGH ...U .... positive regulation of cytokine production involved in immune response
+  GO:0002920  # BP    . uGOs     8   5 L05 D05 R05 BGH   .R.. .... regulation of humoral immune response
+  GO:0071560  # BP    . uGOs     8   0 L05 D05 R05 H     .... prdu cellular response to transforming growth factor beta stimulus
+  GO:0097696  # BP    . uGOs     8   1 L04 D06 R06 BCH   .... .rdu cell surface receptor signaling pathway via STAT
+  GO:0032006  # BP    . uGOs     8   4 L06 D07 R07 BCH   .R.. .... regulation of TOR signaling
+  GO:0008625  # BP    . uGOs     8   1 L05 D07 R07 BCH   .... .rdu extrinsic apoptotic signaling pathway via death domain receptors
+  GO:0048010  # BP    . uGOs     8   5 L06 D08 R08 BCH   .... .rdu vascular endothelial growth factor receptor signaling pathway
+  GO:0032924  # BP    . uGOs     8   1 L07 D09 R09 BCH   .... .rdu activin receptor signaling pathway
+  GO:0043410  # BP    . uGOs     8   8 L07 D08 R09 BCH   ...U .... positive regulation of MAPK cascade
+  GO:0007173  # BP    . uGOs     8   5 L07 D09 R09 BCH   .... .rdu epidermal growth factor receptor signaling pathway
+  GO:0043409  # BP    . uGOs     8   7 L07 D08 R09 BCH   ..D. .... negative regulation of MAPK cascade
+  GO:0031669  # BP    . uGOs     7   6 L03 D03 R03 CH    .... .... cellular response to nutrient levels
+  GO:0035966  # BP    . uGOs     7   3 L03 D03 R03 H     .... .... response to topologically incorrect protein
+  GO:0006974  # BP    . uGOs     7   5 L04 D04 R04 CH    .... p... DNA damage response
+  GO:0071772  # BP    . uGOs     7   1 L04 D04 R04 H     .... .... response to BMP
+  GO:0034605  # BP    . uGOs     7   3 L04 D05 R05 CH    .... .rdu cellular response to heat
+  GO:0038093  # BP    . uGOs     7   2 L05 D07 R07 BCGH  .... .... Fc receptor signaling pathway
+  GO:0090101  # BP    . uGOs     7   5 L06 D07 R09 BCH   ..D. .... negative regulation of transmembrane receptor protein serine/threonine kinase signaling pathway
+  GO:0072539  # BP    . uGOs     7   0 L10 D12 R14 ACDGH P... prdu T-helper 17 cell differentiation
+  GO:0090398  # BP    . uGOs     6   2 L02 D02 R04 CH    P... .rdu cellular senescence
+  GO:0035967  # BP    . uGOs     6   2 L04 D04 R04 CH    .... .... cellular response to topologically incorrect protein
+  GO:0071773  # BP    . uGOs     6   0 L05 D05 R05 H     .... p... cellular response to BMP stimulus
+  GO:1905897  # BP    . uGOs     6   6 L05 D06 R06 BCH   .R.. .... regulation of response to endoplasmic reticulum stress
+  GO:0042770  # BP    . uGOs     6   3 L04 D06 R06 BCH   .... .... signal transduction in response to DNA damage
+  GO:1903844  # BP    . uGOs     6   3 L05 D05 R06 BH    .R.. .... regulation of cellular response to transforming growth factor beta stimulus
+  GO:0070059  # BP    . uGOs     6   1 L05 D07 R07 BCH   .... .rdu intrinsic apoptotic signaling pathway in response to endoplasmic reticulum stress
+  GO:0030449  # BP    . uGOs     6   6 L05 D06 R08 BGH   .R.. .... regulation of complement activation
+  GO:0002431  # BP    . uGOs     6   2 L05 D09 R09 BCGH  .... .r.u Fc receptor mediated stimulatory signaling pathway
+  GO:0090100  # BP    . uGOs     6   5 L06 D07 R09 BCH   ...U .... positive regulation of transmembrane receptor protein serine/threonine kinase signaling pathway
+  GO:0002295  # BP    . uGOs     6   3 L07 D07 R14 ACDGH P... .... T-helper cell lineage commitment
+  GO:0071495  # BP    . uGOs     5   5 L03 D03 R03 H     .... .... cellular response to endogenous stimulus
+  GO:0002263  # BP    . uGOs     5   4 L03 D03 R03 ACGH  P... .... cell activation involved in immune response
+  GO:0034612  # BP    . uGOs     5   1 L05 D05 R05 H     .... .... response to tumor necrosis factor
+  GO:0070669  # BP    . uGOs     5   1 L05 D05 R05 H     .... .... response to interleukin-2
+  GO:0070555  # BP    . uGOs     5   1 L05 D05 R05 H     .... .... response to interleukin-1
+  GO:0072331  # BP    . uGOs     5   2 L04 D06 R06 BCH   .... .rdu signal transduction by p53 class mediator
+  GO:0038179  # BP    . uGOs     5   2 L04 D06 R06 BCH   P... .... neurotrophin signaling pathway
+  GO:0043401  # BP    . uGOs     5   2 L04 D06 R06 BCH   P... .... steroid hormone receptor signaling pathway
+  GO:2001235  # BP    . uGOs     5   2 L06 D07 R07 BCH   ...U .... positive regulation of apoptotic signaling pathway
+  GO:0046425  # BP    . uGOs     5   2 L06 D07 R08 BCH   .R.. p... regulation of receptor signaling pathway via JAK-STAT
+  GO:0038130  # BP    . uGOs     5   4 L07 D09 R09 BCH   .... ..d. ERBB4 signaling pathway
+  GO:0030509  # BP    . uGOs     5   0 L07 D09 R09 BCH   P... .rdu BMP signaling pathway
+  GO:0032925  # BP    . uGOs     5   3 L06 D07 R10 BCH   .R.. .... regulation of activin receptor signaling pathway
+  GO:0072538  # BP    . uGOs     4   0 L05 D05 R05 GH    .... prdu T-helper 17 type immune response
+  GO:0071347  # BP    . uGOs     4   0 L06 D06 R06 H     .... p... cellular response to interleukin-1
+  GO:0071356  # BP    . uGOs     4   0 L06 D06 R06 H     .... p... cellular response to tumor necrosis factor
+  GO:0071352  # BP    . uGOs     4   0 L06 D06 R06 H     .... p... cellular response to interleukin-2
+  GO:0030522  # BP    . uGOs     4   4 L04 D06 R06 BCH   .... .... intracellular receptor signaling pathway
+  GO:0002455  # BP    . uGOs     4   0 L04 D07 R07 GH    .... prdu humoral immune response mediated by circulating immunoglobulin
+  GO:0099601  # BP    . uGOs     4   4 L04 D07 R07 BCH   .... .... regulation of neurotransmitter receptor activity
+  GO:0007249  # BP    . uGOs     4   0 L05 D07 R07 BCH   .... prdu canonical NF-kappaB signal transduction
+  GO:0007259  # BP    . uGOs     4   0 L05 D07 R07 BCH   .... prdu cell surface receptor signaling pathway via JAK-STAT
+  GO:0035235  # BP    . uGOs     4   3 L04 D07 R07 BCH   .... .... ionotropic glutamate receptor signaling pathway
+  GO:0038061  # BP    . uGOs     4   0 L05 D07 R07 BCH   .... prdu non-canonical NF-kappaB signal transduction
+  GO:0038094  # BP    . uGOs     4   1 L06 D08 R08 BCGH  .... .... Fc-gamma receptor signaling pathway
+  GO:0060396  # BP    . uGOs     4   1 L06 D08 R08 BCH   P... .rdu growth hormone receptor signaling pathway
+  GO:0007254  # BP    . uGOs     4   0 L06 D08 R08 BCH   .... prdu JNK cascade
+  GO:0007179  # BP    . uGOs     4   0 L07 D09 R09 BCH   P... prdu transforming growth factor beta receptor signaling pathway
+  GO:0045916  # BP    . uGOs     4   4 L06 D07 R09 BGH   ..D. .... negative regulation of complement activation
+  GO:0050853  # BP    . uGOs     4   1 L06 D10 R10 BCGH  .... .rdu B cell receptor signaling pathway
+  GO:0050852  # BP    . uGOs     4   0 L06 D10 R10 BCGH  .... prdu T cell receptor signaling pathway
+  GO:0000077  # BP    . uGOs     4   1 L05 D10 R10 BCH   .... .rdu DNA damage checkpoint signaling
+  GO:0002293  # BP    . uGOs     4   2 L07 D09 R11 ACDGH .... .... alpha-beta T cell differentiation involved in immune response
+  GO:1990089  # BP    . uGOs     3   1 L04 D04 R04 H     .... .... response to nerve growth factor
+  GO:0001666  # BP    . uGOs     3   3 L03 D05 R05 H     .... .... response to hypoxia
+  GO:0042542  # BP    . uGOs     3   1 L05 D05 R05 H     .... p... response to hydrogen peroxide
+  GO:1903036  # BP    . uGOs     3   3 L05 D06 R06 BH    ...U .... positive regulation of response to wounding
+  GO:0007229  # BP    . uGOs     3   0 L04 D06 R06 BCH   .... .rdu integrin-mediated signaling pathway
+  GO:1903035  # BP    . uGOs     3   3 L05 D06 R06 BH    ..D. .... negative regulation of response to wounding
+  GO:0043491  # BP    . uGOs     3   0 L05 D07 R07 BCH   .... .rdu phosphatidylinositol 3-kinase/protein kinase B signal transduction
+  GO:0002287  # BP    . uGOs     3   3 L06 D07 R07 ACGH  .... .... alpha-beta T cell activation involved in immune response
+  GO:0033209  # BP    . uGOs     3   0 L05 D07 R07 BCH   P... .rdu tumor necrosis factor-mediated signaling pathway
+  GO:0070498  # BP    . uGOs     3   0 L05 D07 R07 BCH   P... .rdu interleukin-1-mediated signaling pathway
+  GO:0035771  # BP    . uGOs     3   0 L05 D07 R07 BCH   P... .rdu interleukin-4-mediated signaling pathway
+  GO:1904892  # BP    . uGOs     3   3 L05 D06 R07 BCH   .R.. .... regulation of receptor signaling pathway via STAT
+  GO:0038110  # BP    . uGOs     3   0 L05 D07 R07 BCH   P... .rdu interleukin-2-mediated signaling pathway
+  GO:0007265  # BP    . uGOs     3   0 L06 D08 R08 BCH   .... .rdu Ras protein signal transduction
+  GO:0008286  # BP    . uGOs     3   0 L06 D08 R08 BCH   P... .rdu insulin receptor signaling pathway
+  GO:2001238  # BP    . uGOs     3   2 L07 D08 R08 BCH   ...U .... positive regulation of extrinsic apoptotic signaling pathway
+  GO:0060395  # BP    . uGOs     3   0 L05 D07 R08 BCH   P... .rdu SMAD protein signal transduction
+  GO:0048013  # BP    . uGOs     3   0 L06 D08 R08 BCH   .... .rdu ephrin receptor signaling pathway
+  GO:0048009  # BP    . uGOs     3   0 L06 D08 R08 BCH   .... .rdu insulin-like growth factor receptor signaling pathway
+  GO:0070371  # BP    . uGOs     3   0 L06 D08 R08 BCH   .... .rdu ERK1 and ERK2 cascade
+  GO:0006958  # BP    . uGOs     3   0 L04 D08 R08 BGH   P... .rdu complement activation, classical pathway
+  GO:0030520  # BP    . uGOs     3   0 L06 D09 R09 BCH   .... .rdu estrogen receptor signaling pathway
+  GO:0030521  # BP    . uGOs     3   0 L06 D09 R09 BCH   .... .rdu androgen receptor signaling pathway
+  GO:0038128  # BP    . uGOs     3   3 L07 D09 R09 BCH   .... .... ERBB2 signaling pathway
+  GO:0007260  # BP    . uGOs     3   0 L08 D09 R09 BCH   P... .rdu tyrosine phosphorylation of STAT protein
+  GO:0017015  # BP    . uGOs     3   2 L06 D07 R10 BCH   .R.. .... regulation of transforming growth factor beta receptor signaling pathway
+  GO:0042058  # BP    . uGOs     3   3 L06 D07 R10 BCH   .R.. .... regulation of epidermal growth factor receptor signaling pathway
+  GO:0072540  # BP    . uGOs     3   0 L08 D08 R15 ACDGH P... .rdu T-helper 17 cell lineage commitment
+  GO:1990840  # BP    . uGOs     2   1 L03 D03 R03 H     .... .... response to lectin
+  GO:0071496  # BP    . uGOs     2   2 L03 D03 R03 H     .... .... cellular response to external stimulus
+  GO:0035094  # BP    . uGOs     2   1 L03 D03 R03 H     .... p... response to nicotine
+  GO:0006986  # BP    . uGOs     2   2 L04 D04 R04 H     .... .... response to unfolded protein
+  GO:0034620  # BP    . uGOs     2   1 L05 D05 R05 CH    .... p... cellular response to unfolded protein
+  GO:1990806  # BP    . uGOs     2   2 L03 D05 R05 BCH   .... .... ligand-gated ion channel signaling pathway
+  GO:1990090  # BP    . uGOs     2   1 L05 D05 R05 H     .... p... cellular response to nerve growth factor stimulus
+  GO:0070672  # BP    . uGOs     2   1 L05 D05 R05 H     .... .... response to interleukin-15
+  GO:0060416  # BP    . uGOs     2   1 L05 D05 R05 H     .... .... response to growth hormone
+  GO:1900076  # BP    . uGOs     2   2 L04 D04 R07 BCH   .R.. .... regulation of cellular response to insulin stimulus
+  GO:0002757  # BP    . uGOs     2   2 L03 D07 R07 BCGH  .... .... immune response-activating signaling pathway
+  GO:0043122  # BP    . uGOs     2   2 L06 D07 R08 BCH   .R.. .... regulation of canonical NF-kappaB signal transduction
+  GO:0010803  # BP    . uGOs     2   2 L06 D07 R08 BCH   .R.. .... regulation of tumor necrosis factor-mediated signaling pathway
+  GO:0051896  # BP    . uGOs     2   2 L06 D07 R08 BCH   .R.. .... regulation of phosphatidylinositol 3-kinase/protein kinase B signal transduction
+  GO:0060390  # BP    . uGOs     2   2 L06 D07 R09 BCH   .R.. .... regulation of SMAD protein signal transduction
+  GO:0030947  # BP    . uGOs     2   2 L05 D06 R09 BCH   .R.. .... regulation of vascular endothelial growth factor receptor signaling pathway
+  GO:0070372  # BP    . uGOs     2   2 L07 D08 R09 BCH   .R.. .... regulation of ERK1 and ERK2 cascade
+  GO:0042509  # BP    . uGOs     2   2 L10 D10 R10 BCH   .R.. .... regulation of tyrosine phosphorylation of STAT protein
+  GO:0060765  # BP    . uGOs     2   2 L07 D08 R10 BCH   .R.. .... regulation of androgen receptor signaling pathway
+  GO:0030510  # BP    . uGOs     2   2 L05 D07 R10 BCH   .R.. .... regulation of BMP signaling pathway
+  GO:0032926  # BP    . uGOs     2   1 L07 D08 R11 BCH   ..D. .... negative regulation of activin receptor signaling pathway
+  GO:0002294  # BP    . uGOs     2   2 L08 D10 R12 ACDGH .... .... CD4-positive, alpha-beta T cell differentiation involved in immune response
+  GO:0104004  # BP    . uGOs     1   1 L03 D03 R03 CH    .... .... cellular response to environmental stimulus
+  GO:1904645  # BP    . uGOs     1   1 L04 D04 R04 H     .... .... response to amyloid-beta
+  GO:0043627  # BP    . uGOs     1   1 L04 D04 R04 H     .... .... response to estrogen
+  GO:1990858  # BP    . uGOs     1   1 L04 D04 R04 H     .... .... cellular response to lectin
+  GO:0071355  # BP    . uGOs     1   0 L06 D06 R06 H     .... p... cellular response to interleukin-9
+  GO:0071378  # BP    . uGOs     1   0 L06 D06 R06 CH    .... p... cellular response to growth hormone stimulus
+  GO:0071350  # BP    . uGOs     1   0 L06 D06 R06 H     .... p... cellular response to interleukin-15
+  GO:0070301  # BP    . uGOs     1   0 L06 D07 R07 CH    .... p... cellular response to hydrogen peroxide
+  GO:1904894  # BP    . uGOs     1   1 L06 D07 R08 BCH   ...U .... positive regulation of receptor signaling pathway via STAT
+  GO:0038095  # BP    . uGOs     1   1 L06 D08 R08 BCGH  .... .... Fc-epsilon receptor signaling pathway
+  GO:0046427  # BP    . uGOs     1   0 L07 D08 R09 BCH   ...U p... positive regulation of receptor signaling pathway via JAK-STAT
+  GO:0043406  # BP    . uGOs     1   1 L08 D12 R12 BCH   .... .... positive regulation of MAP kinase activity
+  GO:0035095  # BP    . uGOs     0   0 L04 D04 R04 AH    P... .... behavioral response to nicotine
+  GO:0071391  # BP    . uGOs     0   0 L05 D05 R05 CH    .... .... cellular response to estrogen stimulus
+  GO:1904646  # BP    . uGOs     0   0 L05 D05 R05 CH    .... .... cellular response to amyloid-beta
+  GO:0071260  # BP    . uGOs     0   0 L04 D05 R05 CH    .... .... cellular response to mechanical stimulus
+  GO:0038154  # BP    . uGOs     0   0 L05 D07 R07 BCH   .... .... interleukin-11-mediated signaling pathway
+  GO:0035723  # BP    . uGOs     0   0 L05 D07 R07 BCH   P... .... interleukin-15-mediated signaling pathway
+  GO:0038113  # BP    . uGOs     0   0 L05 D07 R07 BCH   P... .... interleukin-9-mediated signaling pathway
+  GO:0038180  # BP    . uGOs     0   0 L05 D07 R07 BCH   P... .... nerve growth factor signaling pathway
+  GO:0007168  # BP    . uGOs     0   0 L05 D07 R07 BCH   .... .... receptor guanylyl cyclase signaling pathway
+  GO:0060397  # BP    . uGOs     0   0 L07 D09 R09 BCH   .... .... growth hormone receptor signaling pathway via JAK-STAT
+  GO:0043123  # BP    . uGOs     0   0 L07 D08 R09 BCH   ...U .... positive regulation of canonical NF-kappaB signal transduction
+  GO:0051897  # BP    . uGOs     0   0 L07 D08 R09 BCH   ...U .... positive regulation of phosphatidylinositol 3-kinase/protein kinase B signal transduction
+  GO:0060391  # BP    . uGOs     0   0 L07 D08 R10 BCH   ...U .... positive regulation of SMAD protein signal transduction
+  GO:0070374  # BP    . uGOs     0   0 L08 D09 R10 BCH   ...U .... positive regulation of ERK1 and ERK2 cascade
+  GO:0042531  # BP    . uGOs     0   0 L11 D11 R11 BCH   ...U .... positive regulation of tyrosine phosphorylation of STAT protein
+**GO:0044419  # BP   45 uGOs   166   5 L01 D01 R01 I     .... .... biological process involved in interspecies interaction between organisms
+  GO:0051707  # BP    . uGOs   466  14 L02 D04 R04 HI    .... .... response to other organism
+  GO:0044403  # BP    . uGOs   335   6 L02 D02 R02 I     .... .r.. biological process involved in symbiotic interaction
+  GO:0098542  # BP    . uGOs   315   3 L03 D05 R05 HI    .... p... defense response to other organism
+  GO:0140546  # BP    . uGOs   308  10 L04 D06 R06 HI    .... .... defense response to symbiont
+  GO:0051701  # BP    . uGOs   303  10 L03 D03 R03 I     .... .... biological process involved in interaction with host
+  GO:0045087  # BP    . uGOs   228  16 L03 D07 R07 GHI   .... prdu innate immune response
+  GO:0045088  # BP    . uGOs   168  14 L05 D06 R08 BGHI  .R.. .... regulation of innate immune response
+  GO:0045089  # BP    . uGOs   147  13 L06 D07 R09 BGHI  ...U .... positive regulation of innate immune response
+  GO:0002218  # BP    . uGOs   135   3 L03 D08 R10 BGHI  .... .... activation of innate immune response
+  GO:0002758  # BP    . uGOs   132   2 L04 D09 R11 BCGHI .... .... innate immune response-activating signaling pathway
+  GO:0002221  # BP    . uGOs    99   5 L05 D10 R12 BCGHI .... .r.u pattern recognition receptor signaling pathway
+  GO:0009617  # BP    . uGOs    85   5 L03 D05 R05 HI    .... p... response to bacterium
+  GO:0002753  # BP    . uGOs    67   7 L05 D11 R13 BCGHI .... .rd. cytoplasmic pattern recognition receptor signaling pathway
+  GO:0042742  # BP    . uGOs    50   6 L04 D06 R06 HI    .... prdu defense response to bacterium
+  GO:0062207  # BP    . uGOs    49  11 L05 D07 R13 BCGHI .R.. .... regulation of pattern recognition receptor signaling pathway
+  GO:0044409  # BP    . uGOs    43   4 L04 D04 R04 I     .... pr.u symbiont entry into host
+  GO:0002220  # BP    . uGOs    37   3 L05 D10 R12 BCGHI .... .... innate immune response activating cell surface receptor signaling pathway
+  GO:0002752  # BP    . uGOs    34   2 L06 D11 R13 BCGHI .... .... cell surface pattern recognition receptor signaling pathway
+  GO:0140895  # BP    . uGOs    29   6 L07 D12 R14 BCGHI .... .... cell surface toll-like receptor signaling pathway
+  GO:0002237  # BP    . uGOs    28   6 L04 D04 R06 HI    P... .... response to molecule of bacterial origin
+  GO:0140894  # BP    . uGOs    28   7 L06 D12 R14 BCGHI .... .... endolysosomal toll-like receptor signaling pathway
+  GO:0002224  # BP    . uGOs    25   6 L06 D11 R13 BCGHI .... .rdu toll-like receptor signaling pathway
+  GO:0061844  # BP    . uGOs    24   0 L05 D08 R08 GHI   .... p... antimicrobial humoral immune response mediated by antimicrobial peptide
+  GO:0062208  # BP    . uGOs    21  21 L06 D08 R14 BCGHI ...U .... positive regulation of pattern recognition receptor signaling pathway
+  GO:0009615  # BP    . uGOs    14   4 L03 D05 R05 HI    .... .... response to virus
+  GO:0032493  # BP    . uGOs    11   3 L05 D05 R07 HI    .... .... response to bacterial lipoprotein
+  GO:0051607  # BP    . uGOs    10   3 L04 D06 R06 HI    .... .rd. defense response to virus
+  GO:0032490  # BP    . uGOs     8   4 L04 D05 R07 HI    .... .... detection of molecule of bacterial origin
+  GO:0070339  # BP    . uGOs     8   4 L06 D06 R08 HI    .... .... response to bacterial lipopeptide
+  GO:0034341  # BP    . uGOs     8   1 L05 D05 R08 GHI   P... .rdu response to type II interferon
+  GO:0032496  # BP    . uGOs     7   2 L04 D05 R07 HI    .... .... response to lipopolysaccharide
+  GO:0071219  # BP    . uGOs     7   4 L04 D05 R07 CHI   .... .... cellular response to molecule of bacterial origin
+  GO:0002756  # BP    . uGOs     7   2 L07 D12 R14 BCGHI .... .rdu MyD88-independent toll-like receptor signaling pathway
+  GO:0034142  # BP    . uGOs     7   4 L08 D13 R15 BCGHI .... .rdu toll-like receptor 4 signaling pathway
+  GO:0071222  # BP    . uGOs     5   0 L05 D06 R08 CHI   .... p... cellular response to lipopolysaccharide
+  GO:0002755  # BP    . uGOs     5   2 L07 D12 R14 BCGHI .... .rdu MyD88-dependent toll-like receptor signaling pathway
+  GO:0031663  # BP    . uGOs     4   0 L04 D06 R09 BCHI  P... .rdu lipopolysaccharide-mediated signaling pathway
+  GO:0071346  # BP    . uGOs     4   0 L06 D06 R09 GHI   .... p... cellular response to type II interferon
+  GO:0006957  # BP    . uGOs     3   0 L04 D08 R08 BGHI  .... .rdu complement activation, alternative pathway
+  GO:0071220  # BP    . uGOs     3   1 L05 D06 R08 CHI   .... .... cellular response to bacterial lipoprotein
+  GO:0001867  # BP    . uGOs     3   0 L04 D08 R08 BGHI  .... .rdu complement activation, lectin pathway
+  GO:0071221  # BP    . uGOs     2   2 L06 D07 R09 CHI   .... .... cellular response to bacterial lipopeptide
+  GO:0035666  # BP    . uGOs     1   1 L08 D13 R15 BCGHI .... .... TRIF-dependent toll-like receptor signaling pathway
+  GO:0002223  # BP    . uGOs     0   0 L05 D11 R13 BCGHI .... .... stimulatory C-type lectin receptor signaling pathway
+**GO:0034330  # BP    8 uGOs   102   7 L04 D04 R04 C     .... .... cell junction organization
+  GO:0034329  # BP    . uGOs    63   3 L05 D05 R05 C     .... .rdu cell junction assembly
+  GO:0050808  # BP    . uGOs    62   8 L05 D05 R05 C     .... prd. synapse organization
+  GO:0099173  # BP    . uGOs    43   2 L04 D04 R06 C     P... pr.. postsynapse organization
+  GO:0050807  # BP    . uGOs    26  11 L05 D05 R06 BC    PR.. .... regulation of synapse organization
+  GO:0045216  # BP    . uGOs    18   7 L05 D05 R05 C     .... .... cell-cell junction organization
+  GO:0150115  # BP    . uGOs    11   2 L05 D05 R05 C     .... .rdu cell-substrate junction organization
+  GO:0007044  # BP    . uGOs     6   2 L06 D06 R06 C     .... .r.. cell-substrate junction assembly
+**GO:0016192  # BP   21 uGOs    72  19 L02 D04 R04 CE    .... pr.. vesicle-mediated transport
+  GO:0006897  # BP    . uGOs   118   8 L03 D05 R05 CE    .... prdu endocytosis
+  GO:0006898  # BP    . uGOs    42   7 L04 D06 R06 CE    .... .rdu receptor-mediated endocytosis
+  GO:0030100  # BP    . uGOs    42   9 L05 D06 R06 BCE   .R.. .... regulation of endocytosis
+  GO:0006909  # BP    . uGOs    32   1 L04 D06 R06 CE    .... prdu phagocytosis
+  GO:0016197  # BP    . uGOs    31   6 L03 D05 R05 CE    .... .... endosomal transport
+  GO:0048193  # BP    . uGOs    29   7 L03 D05 R05 CE    .... p... Golgi vesicle transport
+  GO:0006900  # BP    . uGOs    21   5 L05 D06 R06 CE    P... p... vesicle budding from membrane
+  GO:0031623  # BP    . uGOs    20   6 L05 D07 R07 CE    .... .rdu receptor internalization
+  GO:0045807  # BP    . uGOs    16   6 L05 D07 R07 BCE   ...U .... positive regulation of endocytosis
+  GO:0060627  # BP    . uGOs    15  12 L04 D05 R05 BCE   .R.. .... regulation of vesicle-mediated transport
+  GO:0006888  # BP    . uGOs    12   0 L04 D06 R06 CE    .... pr.u endoplasmic reticulum to Golgi vesicle-mediated transport
+  GO:0050764  # BP    . uGOs    12   4 L06 D07 R07 BCE   .R.. .... regulation of phagocytosis
+  GO:0072583  # BP    . uGOs    10   4 L05 D07 R07 CE    .... prdu clathrin-dependent endocytosis
+  GO:0042147  # BP    . uGOs     6   3 L04 D06 R06 CE    .... .rdu retrograde transport, endosome to Golgi
+  GO:0090114  # BP    . uGOs     5   0 L06 D07 R07 CE    P... p... COPII-coated vesicle budding
+  GO:0050766  # BP    . uGOs     5   4 L06 D08 R08 BCE   ...U .... positive regulation of phagocytosis
+  GO:0006910  # BP    . uGOs     4   1 L03 D03 R07 CE    P... ...u phagocytosis, recognition
+  GO:0038096  # BP    . uGOs     3   0 L04 D10 R10 BCEGH .... .rdu Fc-gamma receptor signaling pathway involved in phagocytosis
+  GO:0008228  # BP    . uGOs     2   0 L03 D03 R08 CEG   ...U .r.u opsonization
+  GO:0002433  # BP    . uGOs     1   1 L03 D07 R07 BCEGH P... .... immune response-regulating cell surface receptor signaling pathway involved in phagocytosis
+**GO:0006913  # BP    5 uGOs    35   2 L05 D06 R06 CE    .... .rdu nucleocytoplasmic transport
+  GO:0046822  # BP    . uGOs    23   7 L06 D06 R07 BCE   .R.. .... regulation of nucleocytoplasmic transport
+  GO:0046824  # BP    . uGOs     5   5 L06 D07 R08 BCE   ...U .... positive regulation of nucleocytoplasmic transport
+  GO:0006606  # BP    . uGOs     5   2 L05 D08 R08 CE    .... .rdu protein import into nucleus
+  GO:0051170  # BP    . uGOs     3   3 L06 D07 R07 CE    .... .... import into nucleus
+**GO:0072659  # BP    2 uGOs     6   2 L05 D06 R06 CE    .... prdu protein localization to plasma membrane
+  GO:1903076  # BP    . uGOs     8   5 L07 D07 R07 BCE   .R.. .... regulation of protein localization to plasma membrane
+
+SECTION: Immune or inflammatory response
+**GO:0016032  # BP    3 uGOs   116  50 L01 D01 R01 J     .... prdu viral process
+  GO:0046718  # BP    . uGOs    28   2 L05 D05 R05 IJ    P... prdu symbiont entry into host cell
+  GO:0019058  # BP    . uGOs    11   0 L02 D02 R02 J     .... prdu viral life cycle
+**GO:0042060  # BP   15 uGOs    54   1 L04 D04 R04 H     .... prdu wound healing
+  GO:0007596  # BP    . uGOs    25   0 L03 D05 R05 ABH   P... prdu blood coagulation
+  GO:0030193  # BP    . uGOs    15   6 L04 D07 R07 ABH   .R.. .... regulation of blood coagulation
+  GO:0061045  # BP    . uGOs    14   5 L06 D07 R07 BH    ..D. .... negative regulation of wound healing
+  GO:0072378  # BP    . uGOs    12   0 L07 D07 R08 ABCH  P... p... blood coagulation, fibrin clot formation
+  GO:0061041  # BP    . uGOs    10   5 L06 D06 R06 BH    .R.. .... regulation of wound healing
+  GO:0030195  # BP    . uGOs     9   6 L05 D08 R08 ABH   ..D. .... negative regulation of blood coagulation
+  GO:0030168  # BP    . uGOs     7   0 L03 D03 R06 ABCH  P... prdu platelet activation
+  GO:0030194  # BP    . uGOs     6   6 L05 D08 R08 ABH   ...U .... positive regulation of blood coagulation
+  GO:0090303  # BP    . uGOs     3   3 L06 D07 R07 BH    ...U .... positive regulation of wound healing
+  GO:0070527  # BP    . uGOs     3   0 L05 D05 R07 ABCH  P... .rdu platelet aggregation
+  GO:0042730  # BP    . uGOs     3   0 L06 D09 R09 ABH   .... .rdu fibrinolysis
+  GO:0007597  # BP    . uGOs     3   0 L07 D07 R09 ABCH  P... .rdu blood coagulation, intrinsic pathway
+  GO:0051917  # BP    . uGOs     2   2 L05 D08 R10 ABH   .R.. .... regulation of fibrinolysis
+  GO:0051918  # BP    . uGOs     0   0 L04 D09 R11 ABH   ..D. .... negative regulation of fibrinolysis
+**GO:0006954  # BP    5 uGOs    30   6 L04 D04 R04 H     .... prdu inflammatory response
+  GO:0050727  # BP    . uGOs    86   9 L05 D06 R06 BH    .R.. .... regulation of inflammatory response
+  GO:0050729  # BP    . uGOs    30   9 L06 D07 R07 BH    ...U .... positive regulation of inflammatory response
+  GO:0050728  # BP    . uGOs    28   9 L06 D07 R07 BH    ..D. .... negative regulation of inflammatory response
+  GO:0006953  # BP    . uGOs     3   1 L06 D06 R06 H     .... p... acute-phase response
+
+SECTION: Nervous system
+**GO:0050877  # BP    6 uGOs   140  14 L03 D03 R03 A     .... .rdu nervous system process
+  GO:0050890  # BP    . uGOs    25   2 L04 D04 R04 A     .... .... cognition
+  GO:0007611  # BP    . uGOs    23   3 L03 D05 R05 A     .... .... learning or memory
+  GO:0099565  # BP    . uGOs    12   0 L04 D06 R09 ABCH  P... p... chemical synaptic transmission, postsynaptic
+  GO:0019226  # BP    . uGOs     8   0 L04 D04 R04 AC    P... prdu transmission of nerve impulse
+  GO:0060079  # BP    . uGOs     8   2 L05 D05 R10 ABCH  P... .rdu excitatory postsynaptic potential
+
+SECTION: Cell motility or localisation
+**GO:0048870  # BP   14 uGOs   154  12 L02 D02 R02 C     .... prdu cell motility
+  GO:0016477  # BP    . uGOs   118  35 L03 D03 R03 C     .... .rdu cell migration
+  GO:0071674  # BP    . uGOs    60   6 L03 D05 R05 CG    .... .rdu mononuclear cell migration
+  GO:0050900  # BP    . uGOs    51   7 L02 D04 R04 CG    .... .rdu leukocyte migration
+  GO:0072676  # BP    . uGOs    42   3 L04 D06 R06 CG    .... .rdu lymphocyte migration
+  GO:0072678  # BP    . uGOs    35   5 L05 D07 R07 CG    .... .rdu T cell migration
+  GO:0001667  # BP    . uGOs    27   6 L04 D04 R04 C     .... p... ameboidal-type cell migration
+  GO:0097529  # BP    . uGOs    22   7 L03 D05 R05 CG    .... .... myeloid leukocyte migration
+  GO:0045123  # BP    . uGOs    21   4 L03 D05 R05 CG    .... prdu cellular extravasation
+  GO:0097530  # BP    . uGOs    14   3 L04 D06 R06 CG    .... .... granulocyte migration
+  GO:0043542  # BP    . uGOs    12   3 L04 D04 R04 C     .... .rdu endothelial cell migration
+  GO:0043534  # BP    . uGOs     6   3 L05 D05 R05 C     .... .rdu blood vessel endothelial cell migration
+  GO:1990266  # BP    . uGOs     6   3 L05 D07 R07 CG    .... .rdu neutrophil migration
+  GO:0072677  # BP    . uGOs     5   2 L05 D07 R07 CG    .... .rdu eosinophil migration
+**GO:0040011  # BP   35 uGOs    18   6 L01 D01 R01 L     .... .rdu locomotion
+  GO:2000145  # BP    . uGOs   206   6 L04 D04 R04 BCL   .R.. .... regulation of cell motility
+  GO:0042330  # BP    . uGOs   202   5 L02 D02 R03 HL    P... .... taxis
+  GO:0006935  # BP    . uGOs   189   9 L03 D03 R04 HL    P... .rdu chemotaxis
+  GO:0030334  # BP    . uGOs   187  27 L05 D05 R05 BCL   .R.. .... regulation of cell migration
+  GO:0060326  # BP    . uGOs   105  14 L04 D04 R05 CHL   P... .... cell chemotaxis
+  GO:0050920  # BP    . uGOs    99  15 L04 D05 R05 BHL   .R.. .... regulation of chemotaxis
+  GO:0002685  # BP    . uGOs    62   7 L04 D06 R06 BCGL  .R.. .... regulation of leukocyte migration
+  GO:0030595  # BP    . uGOs    62   8 L03 D05 R06 CGHL  .... .rdu leukocyte chemotaxis
+  GO:0030335  # BP    . uGOs    51  21 L06 D06 R06 BCL   ...U .... positive regulation of cell migration
+  GO:0002688  # BP    . uGOs    37   8 L05 D07 R07 BCGHL .R.. .... regulation of leukocyte chemotaxis
+  GO:0050918  # BP    . uGOs    30   8 L04 D04 R05 HL    .... .rdu positive chemotaxis
+  GO:0050921  # BP    . uGOs    26  12 L05 D06 R06 BHL   ...U .... positive regulation of chemotaxis
+  GO:0002687  # BP    . uGOs    25   5 L05 D07 R07 BCGL  ...U .... positive regulation of leukocyte migration
+  GO:0071675  # BP    . uGOs    25   7 L05 D07 R07 BCGL  .R.. .... regulation of mononuclear cell migration
+  GO:0048247  # BP    . uGOs    21   4 L04 D07 R07 CGHL  .... .rdu lymphocyte chemotaxis
+  GO:0050926  # BP    . uGOs    16   3 L05 D06 R06 BHL   .R.. .... regulation of positive chemotaxis
+  GO:0071677  # BP    . uGOs    16   5 L06 D08 R08 BCGL  ...U .... positive regulation of mononuclear cell migration
+  GO:2000401  # BP    . uGOs    14   4 L06 D08 R08 BCGL  .R.. .... regulation of lymphocyte migration
+  GO:0071621  # BP    . uGOs    12   3 L04 D07 R07 CGHL  .... .rdu granulocyte chemotaxis
+  GO:0002690  # BP    . uGOs    12   6 L06 D08 R08 BCGHL ...U .... positive regulation of leukocyte chemotaxis
+  GO:0040012  # BP    . uGOs    11   7 L03 D03 R03 BL    .R.. .... regulation of locomotion
+  GO:0010594  # BP    . uGOs    11   4 L06 D06 R06 BCL   .R.. .... regulation of endothelial cell migration
+  GO:1901623  # BP    . uGOs    10   5 L06 D09 R09 BCGHL .R.. .... regulation of lymphocyte chemotaxis
+  GO:2000403  # BP    . uGOs     9   2 L07 D09 R09 BCGL  ...U .... positive regulation of lymphocyte migration
+  GO:0010818  # BP    . uGOs     6   4 L05 D08 R08 CGHL  .... .r.u T cell chemotaxis
+  GO:0040017  # BP    . uGOs     5   5 L04 D04 R04 BL    ...U .... positive regulation of locomotion
+  GO:0043535  # BP    . uGOs     5   3 L07 D07 R07 BCL   .R.. .... regulation of blood vessel endothelial cell migration
+  GO:2000147  # BP    . uGOs     3   3 L05 D05 R05 BCL   ...U .... positive regulation of cell motility
+  GO:0002548  # BP    . uGOs     3   0 L04 D06 R07 CGHL  .... .rdu monocyte chemotaxis
+  GO:0030593  # BP    . uGOs     3   0 L05 D08 R08 CGHL  .... .rdu neutrophil chemotaxis
+  GO:0048245  # BP    . uGOs     3   0 L05 D08 R08 CGHL  .... .rdu eosinophil chemotaxis
+  GO:0010595  # BP    . uGOs     2   2 L07 D07 R07 BCL   ...U .... positive regulation of endothelial cell migration
+  GO:0050927  # BP    . uGOs     2   2 L06 D07 R07 BHL   ...U .... positive regulation of positive chemotaxis
+  GO:0043536  # BP    . uGOs     1   1 L08 D08 R08 BCL   ...U .... positive regulation of blood vessel endothelial cell migration
+
+SECTION: Intracellular organisation
+**GO:0061024  # BP    1 uGOs   212  30 L04 D04 R04 C     .... p... membrane organization
+**GO:0007010  # BP   21 uGOs    71   9 L05 D05 R05 C     .... prdu cytoskeleton organization
+  GO:0051493  # BP    . uGOs    76   6 L06 D06 R06 BC    .R.. .... regulation of cytoskeleton organization
+  GO:0000226  # BP    . uGOs    43  18 L03 D06 R06 C     .... pr.. microtubule cytoskeleton organization
+  GO:0032956  # BP    . uGOs    39   6 L05 D07 R07 BC    .R.. .... regulation of actin cytoskeleton organization
+  GO:0051495  # BP    . uGOs    30  17 L07 D07 R07 BC    ...U .... positive regulation of cytoskeleton organization
+  GO:0070507  # BP    . uGOs    29   5 L05 D07 R07 BC    .R.. .... regulation of microtubule cytoskeleton organization
+  GO:0030036  # BP    . uGOs    23   9 L03 D06 R06 C     .... pr.. actin cytoskeleton organization
+  GO:0061572  # BP    . uGOs    23   3 L06 D06 R08 C     .... .... actin filament bundle organization
+  GO:0007051  # BP    . uGOs    20   5 L03 D07 R07 C     .... pr.. spindle organization
+  GO:0030239  # BP    . uGOs    19   2 L04 D08 R08 CD    P... p... myofibril assembly
+  GO:0007015  # BP    . uGOs    15  11 L05 D05 R07 C     P... .r.. actin filament organization
+  GO:0046785  # BP    . uGOs    14   0 L05 D08 R08 C     .... prdu microtubule polymerization
+  GO:0051017  # BP    . uGOs    14   4 L05 D07 R09 C     .... .rdu actin filament bundle assembly
+  GO:0110053  # BP    . uGOs    12   4 L06 D08 R08 BC    .R.. .... regulation of actin filament organization
+  GO:0031110  # BP    . uGOs     9   4 L06 D08 R08 BC    .R.. .... regulation of microtubule polymerization or depolymerization
+  GO:0031032  # BP    . uGOs     8   7 L04 D07 R07 C     .... .r.. actomyosin structure organization
+  GO:0045010  # BP    . uGOs     8   2 L06 D06 R08 C     .... .rdu actin nucleation
+  GO:0031109  # BP    . uGOs     5   2 L04 D07 R07 C     .... .rdu microtubule polymerization or depolymerization
+  GO:0031113  # BP    . uGOs     5   3 L06 D09 R09 BC    .R.. .... regulation of microtubule polymerization
+  GO:0008154  # BP    . uGOs     3   2 L06 D06 R08 C     .... .r.. actin polymerization or depolymerization
+  GO:0034314  # BP    . uGOs     3   0 L07 D07 R09 C     .... .rdu Arp2/3 complex-mediated actin nucleation
+**GO:0007163  # BP    1 uGOs    43  11 L02 D02 R02 C     .... .r.. establishment or maintenance of cell polarity
+
+SECTION: Circulatory system
+**GO:0003013  # BP   17 uGOs   180   5 L03 D03 R03 A     .... .... circulatory system process
+  GO:0008015  # BP    . uGOs   121   2 L04 D04 R04 A     .... prdu blood circulation
+  GO:1903522  # BP    . uGOs   101   6 L05 D05 R05 AB    .R.. .... regulation of blood circulation
+  GO:0008016  # BP    . uGOs    76   8 L06 D06 R06 AB    .R.. .... regulation of heart contraction
+  GO:0003018  # BP    . uGOs    57   5 L04 D04 R04 A     .... .... vascular process in circulatory system
+  GO:0061337  # BP    . uGOs    54   2 L07 D07 R07 AB    .... prdu cardiac conduction
+  GO:0086065  # BP    . uGOs    47   7 L03 D03 R08 ABC   P... .... cell communication involved in cardiac conduction
+  GO:0060048  # BP    . uGOs    26   0 L06 D06 R06 A     P... prdu cardiac muscle contraction
+  GO:0086019  # BP    . uGOs    26   5 L04 D05 R09 ABC   .... .... cell-cell signaling involved in cardiac conduction
+  GO:0086003  # BP    . uGOs    22   0 L05 D05 R07 AC    P... prdu cardiac muscle cell contraction
+  GO:0086002  # BP    . uGOs    18   2 L06 D06 R08 ABC   P... .... cardiac muscle cell action potential involved in contraction
+  GO:0003015  # BP    . uGOs    15   2 L04 D04 R04 A     .... p... heart process
+  GO:0055117  # BP    . uGOs    13   4 L07 D08 R08 AB    .R.. .... regulation of cardiac muscle contraction
+  GO:0002027  # BP    . uGOs    10   5 L03 D07 R07 AB    .... .... regulation of heart rate
+  GO:0086005  # BP    . uGOs     8   0 L07 D07 R09 ABC   .... prdu ventricular cardiac muscle cell action potential
+  GO:0060047  # BP    . uGOs     4   0 L05 D05 R05 A     P... prdu heart contraction
+  GO:0086091  # BP    . uGOs     0   0 L04 D08 R08 AB    .... .... regulation of heart rate by cardiac conduction
+
+SECTION: Muscle system
+**GO:0003012  # BP    6 uGOs   201   4 L03 D03 R03 A     .... .r.. muscle system process
+  GO:0090257  # BP    . uGOs   106   4 L05 D05 R05 AB    .R.. .... regulation of muscle system process
+  GO:0006936  # BP    . uGOs   102   2 L04 D04 R04 A     .... prdu muscle contraction
+  GO:0006937  # BP    . uGOs    62   5 L06 D06 R06 AB    .R.. .... regulation of muscle contraction
+  GO:0006941  # BP    . uGOs    32   3 L05 D05 R05 A     .... .rdu striated muscle contraction
+  GO:0006942  # BP    . uGOs    17   4 L07 D07 R07 AB    .R.. .... regulation of striated muscle contraction
+
+SECTION: Programmed cell death
+**GO:0012501  # BP   17 uGOs   212  12 L03 D03 R03 C     .... prdu programmed cell death
+  GO:0006915  # BP    . uGOs   188  19 L04 D04 R04 C     .... prdu apoptotic process
+  GO:0043067  # BP    . uGOs   143  10 L04 D04 R04 BC    .R.. .... regulation of programmed cell death
+  GO:0042981  # BP    . uGOs   129  19 L05 D05 R05 BC    .R.. .... regulation of apoptotic process
+  GO:0043068  # BP    . uGOs    63  10 L05 D05 R05 BC    ...U .... positive regulation of programmed cell death
+  GO:0043069  # BP    . uGOs    62   8 L05 D05 R05 BC    ..D. .... negative regulation of programmed cell death
+  GO:0043066  # BP    . uGOs    54  17 L06 D06 R06 BC    ..D. p... negative regulation of apoptotic process
+  GO:0043065  # BP    . uGOs    51  17 L06 D06 R06 BC    ...U p... positive regulation of apoptotic process
+  GO:0051402  # BP    . uGOs    19   5 L05 D05 R05 C     .... prdu neuron apoptotic process
+  GO:0043523  # BP    . uGOs    13   7 L06 D06 R06 BC    .R.. .... regulation of neuron apoptotic process
+  GO:0097300  # BP    . uGOs    12   2 L04 D04 R04 C     .... prdu programmed necrotic cell death
+  GO:0070266  # BP    . uGOs     6   0 L05 D05 R05 C     .... prdu necroptotic process
+  GO:0062098  # BP    . uGOs     5   3 L05 D05 R05 BC    .R.. .... regulation of programmed necrotic cell death
+  GO:0043524  # BP    . uGOs     5   5 L07 D07 R07 BC    ..D. .... negative regulation of neuron apoptotic process
+  GO:0072577  # BP    . uGOs     3   0 L05 D05 R05 C     .... .rdu endothelial cell apoptotic process
+  GO:0060544  # BP    . uGOs     2   2 L06 D06 R06 BC    .R.. .... regulation of necroptotic process
+  GO:2000351  # BP    . uGOs     2   2 L06 D06 R06 BC    .R.. .... regulation of endothelial cell apoptotic process
+
+SECTION: Mitotic cell cycle
+**GO:0000278  # BP   18 uGOs    17   4 L03 D03 R03 C     .... prdu mitotic cell cycle
+  GO:1903047  # BP    . uGOs   164  50 L03 D03 R04 C     P... .... mitotic cell cycle process
+  GO:0045930  # BP    . uGOs    40   7 L06 D06 R06 BC    ..D. .... negative regulation of mitotic cell cycle
+  GO:0140014  # BP    . uGOs    32   1 L04 D07 R07 C     .... prdu mitotic nuclear division
+  GO:1902850  # BP    . uGOs    20   4 L04 D07 R07 C     .... .... microtubule cytoskeleton organization involved in mitosis
+  GO:0044772  # BP    . uGOs    17   4 L04 D04 R05 C     .... .rdu mitotic cell cycle phase transition
+  GO:0045931  # BP    . uGOs    15   6 L06 D06 R06 BC    ...U .... positive regulation of mitotic cell cycle
+  GO:1901991  # BP    . uGOs    11   5 L07 D08 R08 BC    ..D. .... negative regulation of mitotic cell cycle phase transition
+  GO:1901990  # BP    . uGOs    10   6 L06 D07 R07 BC    .R.. .... regulation of mitotic cell cycle phase transition
+  GO:0007346  # BP    . uGOs     9   9 L05 D05 R05 BC    .R.. .... regulation of mitotic cell cycle
+  GO:1901992  # BP    . uGOs     6   4 L07 D08 R08 BC    ...U .... positive regulation of mitotic cell cycle phase transition
+  GO:0010965  # BP    . uGOs     4   4 L08 D08 R10 BC    .R.. .... regulation of mitotic sister chromatid separation
+  GO:0000086  # BP    . uGOs     3   0 L05 D05 R06 C     .... .rdu G2/M transition of mitotic cell cycle
+  GO:0000082  # BP    . uGOs     3   0 L05 D05 R06 C     .... .rdu G1/S transition of mitotic cell cycle
+  GO:0007091  # BP    . uGOs     3   0 L05 D09 R09 BC    .... .rdu metaphase/anaphase transition of mitotic cell cycle
+  GO:2000045  # BP    . uGOs     2   2 L07 D08 R08 BC    .R.. .... regulation of G1/S transition of mitotic cell cycle
+  GO:0010389  # BP    . uGOs     2   2 L07 D08 R08 BC    .R.. .... regulation of G2/M transition of mitotic cell cycle
+  GO:1901970  # BP    . uGOs     2   2 L08 D09 R11 BC    ...U .... positive regulation of mitotic sister chromatid separation
+
+SECTION: Misc.
+* GO:0008150  # BP  645 uGOs   486  18 L00 D00 R00       .... .rdu biological_process
+  GO:0032501  # BP    . uGOs  3785  61 L01 D01 R01 A     .... .rdu multicellular organismal process
+  GO:0065007  # BP    . uGOs  2355   9 L01 D01 R01 B     .... .... biological regulation
+  GO:0009653  # BP    . uGOs  2184  88 L02 D02 R03 D     P... pr.. anatomical structure morphogenesis
+  GO:0050789  # BP    . uGOs  1996  24 L02 D02 R02 B     .R.. .... regulation of biological process
+  GO:0007275  # BP    . uGOs  1991   5 L02 D03 R03 AD    .... pr.. multicellular organism development
+  GO:0032502  # BP    . uGOs  1711  22 L01 D01 R01 D     .... prdu developmental process
+  GO:0048731  # BP    . uGOs  1552  27 L03 D03 R04 AD    P... p... system development
+  GO:0009058  # BP    . uGOs  1450  75 L03 D03 R03 C     .... .rdu biosynthetic process
+  GO:0008152  # BP    . uGOs  1328  84 L02 D02 R02 C     .... .rdu metabolic process
+  GO:0048856  # BP    . uGOs  1180 202 L02 D02 R02 D     .... p... anatomical structure development
+  GO:0051179  # BP    . uGOs  1045   9 L01 D01 R01 E     .... .r.. localization
+  GO:0009056  # BP    . uGOs  1036  76 L03 D03 R03 C     .... .rdu catabolic process
+  GO:0044238  # BP    . uGOs  1004   8 L03 D03 R03 C     .... .r.. primary metabolic process
+  GO:0033036  # BP    . uGOs   990   5 L02 D02 R02 E     .... .... macromolecule localization
+  GO:0051234  # BP    . uGOs   985   6 L02 D02 R02 E     .... .... establishment of localization
+  GO:0006810  # BP    . uGOs   979  45 L03 D03 R03 E     .... .rdu transport
+  GO:0050794  # BP    . uGOs   891  61 L03 D03 R03 BC    .R.. .... regulation of cellular process
+  GO:0022414  # BP    . uGOs   814  20 L01 D01 R01 F     .... .rdu reproductive process
+  GO:0006629  # BP    . uGOs   780  15 L04 D04 R04 C     .... .rdu lipid metabolic process
+  GO:0009889  # BP    . uGOs   779  48 L05 D05 R05 BC    .R.. .... regulation of biosynthetic process
+  GO:0044281  # BP    . uGOs   739  19 L03 D03 R03 C     .... .rdu small molecule metabolic process
+  GO:0002376  # BP    . uGOs   729  19 L01 D01 R01 G     .... .rdu immune system process
+  GO:0022402  # BP    . uGOs   680  49 L02 D02 R03 C     P... .rdu cell cycle process
+  GO:0003008  # BP    . uGOs   668   9 L02 D02 R02 A     .... .r.. system process
+  GO:0022607  # BP    . uGOs   664  59 L04 D04 R04 C     P... .... cellular component assembly
+  GO:0070727  # BP    . uGOs   646   3 L03 D03 R03 CE    .... p... cellular macromolecule localization
+  GO:0008104  # BP    . uGOs   638  32 L04 D04 R04 CE    .... prdu protein localization
+  GO:0023052  # BP    . uGOs   635   5 L03 D03 R03 B     .... prdu signaling
+  GO:0002682  # BP    . uGOs   580  16 L03 D03 R03 BG    .R.. .... regulation of immune system process
+  GO:0048646  # BP    . uGOs   527 106 L02 D02 R04 D     P... .... anatomical structure formation involved in morphogenesis
+  GO:0036211  # BP    . uGOs   519  44 L05 D05 R05 C     .... .rdu protein modification process
+  GO:0019222  # BP    . uGOs   504  35 L04 D04 R04 BC    .R.. .... regulation of metabolic process
+  GO:0048729  # BP    . uGOs   493  13 L03 D03 R04 D     P... .... tissue morphogenesis
+  GO:0009887  # BP    . uGOs   484  28 L03 D03 R04 D     P... prdu animal organ morphogenesis
+  GO:0051239  # BP    . uGOs   480  58 L03 D03 R03 AB    .R.. .... regulation of multicellular organismal process
+  GO:0007399  # BP    . uGOs   430   0 L04 D04 R05 AD    .... prdu nervous system development
+  GO:0072001  # BP    . uGOs   411   0 L04 D04 R05 AD    .... p... renal system development
+  GO:0050793  # BP    . uGOs   407  78 L03 D03 R03 BD    .R.. .... regulation of developmental process
+  GO:0051049  # BP    . uGOs   405  36 L04 D04 R04 BE    .R.. .... regulation of transport
+  GO:0046903  # BP    . uGOs   397  11 L04 D04 R04 E     .... .rdu secretion
+  GO:0033043  # BP    . uGOs   387  22 L05 D05 R05 BC    .R.. .... regulation of organelle organization
+  GO:0006259  # BP    . uGOs   351  34 L05 D06 R06 C     .... .rdu DNA metabolic process
+  GO:0051093  # BP    . uGOs   335 102 L04 D04 R04 BD    ..D. .... negative regulation of developmental process
+  GO:0002009  # BP    . uGOs   334  22 L04 D04 R05 D     P... .rdu morphogenesis of an epithelium
+  GO:0022603  # BP    . uGOs   332  36 L04 D04 R04 BD    .R.. .... regulation of anatomical structure morphogenesis
+  GO:0009893  # BP    . uGOs   325  37 L05 D05 R05 BC    ...U .... positive regulation of metabolic process
+  GO:0001816  # BP    . uGOs   322  55 L02 D06 R06 AC    .... prdu cytokine production
+  GO:0007417  # BP    . uGOs   320   0 L04 D04 R06 AD    P... p... central nervous system development
+  GO:0009892  # BP    . uGOs   316  39 L05 D05 R05 BC    ..D. .... negative regulation of metabolic process
+  GO:0048869  # BP    . uGOs   312  18 L02 D02 R02 CD    .... .... cellular developmental process
+  GO:0048513  # BP    . uGOs   303  32 L03 D03 R03 D     .... p... animal organ development
+  GO:0032940  # BP    . uGOs   300  13 L03 D05 R05 CE    .... .rdu secretion by cell
+  GO:0071840  # BP    . uGOs   299   2 L02 D02 R02 C     .... .... cellular component organization or biogenesis
+  GO:0006139  # BP    . uGOs   299   6 L04 D04 R04 C     .... .rdu nucleobase-containing compound metabolic process
+  GO:0001822  # BP    . uGOs   299   3 L04 D04 R06 AD    P... prdu kidney development
+  GO:0141187  # BP    . uGOs   298   2 L05 D06 R06 C     .... .... nucleic acid biosynthetic process
+  GO:0016043  # BP    . uGOs   297  33 L03 D03 R03 C     .... .rdu cellular component organization
+  GO:0046907  # BP    . uGOs   297  25 L03 D04 R04 CE    .... .rdu intracellular transport
+  GO:0051240  # BP    . uGOs   297 124 L04 D04 R04 AB    ...U .... positive regulation of multicellular organismal process
+  GO:0032774  # BP    . uGOs   296  11 L06 D07 R07 C     .... prdu RNA biosynthetic process
+  GO:0051094  # BP    . uGOs   293 104 L04 D04 R04 BD    ...U .... positive regulation of developmental process
+  GO:0098657  # BP    . uGOs   286   7 L04 D04 R04 E     .... .... import into cell
+  GO:0007420  # BP    . uGOs   275   0 L04 D04 R07 AD    P... p... brain development
+  GO:0065008  # BP    . uGOs   274  39 L02 D02 R02 B     .... .... regulation of biological quality
+  GO:2000241  # BP    . uGOs   272  58 L03 D03 R03 BF    .R.. .... regulation of reproductive process
+  GO:0048519  # BP    . uGOs   266  42 L03 D03 R03 B     ..D. .... negative regulation of biological process
+  GO:0048518  # BP    . uGOs   256  35 L03 D03 R03 B     ...U .... positive regulation of biological process
+  GO:0010876  # BP    . uGOs   249   2 L03 D03 R03 E     .... prdu lipid localization
+  GO:0010556  # BP    . uGOs   241  15 L06 D06 R06 BC    .R.. .... regulation of macromolecule biosynthetic process
+  GO:0009888  # BP    . uGOs   238  27 L03 D03 R03 D     .... p... tissue development
+  GO:0071705  # BP    . uGOs   236  75 L04 D04 R04 E     .... .... nitrogen compound transport
+  GO:0006869  # BP    . uGOs   236  21 L04 D04 R04 E     P... .rdu lipid transport
+  GO:0006996  # BP    . uGOs   234  30 L04 D04 R04 C     .... .rdu organelle organization
+  GO:0042127  # BP    . uGOs   227  30 L04 D04 R04 BC    .R.. .... regulation of cell population proliferation
+  GO:0051241  # BP    . uGOs   224 130 L04 D04 R04 AB    ..D. .... negative regulation of multicellular organismal process
+  GO:0001817  # BP    . uGOs   216  52 L04 D08 R08 ABC   .R.. .... regulation of cytokine production
+  GO:0009894  # BP    . uGOs   215  34 L05 D05 R05 BC    .R.. .... regulation of catabolic process
+  GO:0048523  # BP    . uGOs   211  74 L04 D04 R04 BC    ..D. .... negative regulation of cellular process
+  GO:0048522  # BP    . uGOs   206  65 L04 D04 R04 BC    ...U .... positive regulation of cellular process
+  GO:0072359  # BP    . uGOs   204   0 L04 D04 R05 AD    .... p... circulatory system development
+  GO:0007507  # BP    . uGOs   201   2 L04 D04 R06 AD    P... p... heart development
+  GO:0007389  # BP    . uGOs   200  16 L02 D02 R04 AD    P... p... pattern specification process
+  GO:0033365  # BP    . uGOs   190  19 L05 D05 R05 CE    .... p... protein localization to organelle
+  GO:0009790  # BP    . uGOs   189   3 L03 D04 R04 AD    .... prdu embryo development
+  GO:0042110  # BP    . uGOs   188   6 L04 D05 R05 ACG   .... prdu T cell activation
+  GO:1903046  # BP    . uGOs   186  57 L02 D03 R04 CF    P... .... meiotic cell cycle process
+  GO:0099536  # BP    . uGOs   184   3 L04 D05 R05 BC    .... p... synaptic signaling
+  GO:0045184  # BP    . uGOs   171   6 L03 D05 R05 CE    .... .rdu establishment of protein localization
+  GO:0099537  # BP    . uGOs   169   9 L05 D06 R06 BC    .... .r.. trans-synaptic signaling
+  GO:0003002  # BP    . uGOs   164  41 L03 D03 R05 AD    .... .... regionalization
+  GO:0044057  # BP    . uGOs   160  10 L04 D04 R04 AB    .R.. .... regulation of system process
+  GO:0080090  # BP    . uGOs   158  12 L05 D05 R05 BC    .R.. .... regulation of primary metabolic process
+  GO:0051640  # BP    . uGOs   155  14 L02 D02 R02 E     .... p... organelle localization
+  GO:0006066  # BP    . uGOs   154  15 L04 D04 R04 C     .... .... alcohol metabolic process
+  GO:0002697  # BP    . uGOs   154  20 L04 D04 R04 BG    .R.. .... regulation of immune effector process
+  GO:0006351  # BP    . uGOs   153  17 L07 D08 R08 C     P... prdu DNA-templated transcription
+  GO:0009891  # BP    . uGOs   143  44 L06 D06 R06 BC    ...U .... positive regulation of biosynthetic process
+  GO:0008202  # BP    . uGOs   139  18 L05 D05 R05 C     .... .rdu steroid metabolic process
+  GO:0010467  # BP    . uGOs   138   6 L05 D05 R05 C     .... prdu gene expression
+  GO:0009890  # BP    . uGOs   138  43 L06 D06 R06 BC    ..D. .... negative regulation of biosynthetic process
+  GO:0008283  # BP    . uGOs   135  30 L02 D02 R02 C     .... .rdu cell population proliferation
+  GO:1903530  # BP    . uGOs   135  12 L04 D06 R06 BCE   .R.. .... regulation of secretion by cell
+  GO:0048858  # BP    . uGOs   134   4 L03 D05 R05 CD    P... .... cell projection morphogenesis
+  GO:0098916  # BP    . uGOs   133   3 L06 D07 R07 BC    .... .... anterograde trans-synaptic signaling
+  GO:2000026  # BP    . uGOs   131  21 L04 D04 R04 ABD   .R.. .... regulation of multicellular organismal development
+  GO:0007268  # BP    . uGOs   130  13 L07 D08 R08 BC    .... prdu chemical synaptic transmission
+  GO:0120039  # BP    . uGOs   129   3 L04 D06 R06 CD    .... .... plasma membrane bounded cell projection morphogenesis
+  GO:0010468  # BP    . uGOs   128  22 L07 D07 R07 BC    .R.. p... regulation of gene expression
+  GO:0030900  # BP    . uGOs   126   0 L03 D03 R08 AD    P... p... forebrain development
+  GO:0060429  # BP    . uGOs   125  19 L04 D04 R04 D     .... p... epithelium development
+  GO:0044085  # BP    . uGOs   124   9 L03 D03 R03 C     .... pr.u cellular component biogenesis
+  GO:0099177  # BP    . uGOs   124   4 L04 D05 R07 BC    .R.. .... regulation of trans-synaptic signaling
+  GO:0062012  # BP    . uGOs   122  63 L05 D05 R05 BC    .R.. .... regulation of small molecule metabolic process
+  GO:0001944  # BP    . uGOs   122   4 L04 D04 R06 AD    P... prdu vasculature development
+  GO:0045935  # BP    . uGOs   122  13 L06 D07 R07 BC    ...U .... positive regulation of nucleobase-containing compound metabolic process
+  GO:0032880  # BP    . uGOs   121  24 L05 D05 R05 BCE   .R.. .... regulation of protein localization
+  GO:0033044  # BP    . uGOs   120  11 L06 D06 R06 BC    .R.. .... regulation of chromosome organization
+  GO:0018193  # BP    . uGOs   120  21 L06 D06 R06 C     .... .... peptidyl-amino acid modification
+  GO:0045934  # BP    . uGOs   120  15 L06 D07 R07 BC    ..D. .... negative regulation of nucleobase-containing compound metabolic process
+  GO:0051604  # BP    . uGOs   119   9 L05 D05 R06 C     P... prdu protein maturation
+  GO:0007610  # BP    . uGOs   118  29 L02 D02 R02 A     .... .rdu behavior
+  GO:0050804  # BP    . uGOs   118  23 L05 D06 R09 BC    .R.. .... modulation of chemical synaptic transmission
+  GO:0051641  # BP    . uGOs   114   7 L02 D02 R02 CE    .... pr.. cellular localization
+  GO:0010638  # BP    . uGOs   113  24 L06 D06 R06 BC    ...U .... positive regulation of organelle organization
+  GO:0034654  # BP    . uGOs   109   3 L04 D05 R05 C     .... .... nucleobase-containing compound biosynthetic process
+  GO:0065009  # BP    . uGOs   108   8 L02 D02 R02 B     .... .... regulation of molecular function
+  GO:0006412  # BP    . uGOs   107   4 L05 D05 R06 C     P... prdu translation
+  GO:0006886  # BP    . uGOs   104  20 L04 D07 R07 CE    P... .rdu intracellular protein transport
+  GO:0006811  # BP    . uGOs   102   3 L04 D04 R04 E     .... .rdu monoatomic ion transport
+  GO:0048598  # BP    . uGOs   102  63 L03 D03 R05 AD    P... p... embryonic morphogenesis
+  GO:0010558  # BP    . uGOs   100  14 L07 D07 R07 BC    ..D. .... negative regulation of macromolecule biosynthetic process
+  GO:0003007  # BP    . uGOs    97   0 L04 D04 R07 AD    P... pr.. heart morphogenesis
+  GO:0010639  # BP    . uGOs    96  22 L06 D06 R06 BC    ..D. .... negative regulation of organelle organization
+  GO:0010608  # BP    . uGOs    96   4 L08 D08 R08 BC    .... .... post-transcriptional regulation of gene expression
+  GO:0043687  # BP    . uGOs    95   6 L06 D06 R06 C     .... .rdu post-translational protein modification
+  GO:0045321  # BP    . uGOs    94   6 L02 D03 R03 ACG   .... .rdu leukocyte activation
+  GO:0001763  # BP    . uGOs    93   4 L02 D03 R04 AD    .... pr.. morphogenesis of a branching structure
+  GO:0006417  # BP    . uGOs    92  17 L07 D09 R09 BC    .R.. .... regulation of translation
+  GO:0006468  # BP    . uGOs    91  11 L06 D06 R06 C     .... .rdu protein phosphorylation
+  GO:0045229  # BP    . uGOs    90   9 L04 D04 R04 C     .... .... external encapsulating structure organization
+  GO:0046486  # BP    . uGOs    89   4 L05 D05 R05 C     .... .... glycerolipid metabolic process
+  GO:0043269  # BP    . uGOs    87   6 L05 D05 R05 BE    .R.. .... regulation of monoatomic ion transport
+  GO:0001568  # BP    . uGOs    87   5 L03 D03 R07 AD    P... p... blood vessel development
+  GO:0010629  # BP    . uGOs    86  17 L08 D08 R08 BC    ..D. .... negative regulation of gene expression
+  GO:0042113  # BP    . uGOs    85   3 L04 D05 R05 ACG   .... prdu B cell activation
+  GO:0006355  # BP    . uGOs    85  19 L08 D09 R09 BC    .R.. .... regulation of DNA-templated transcription
+  GO:0141188  # BP    . uGOs    83   2 L05 D06 R06 C     .... .... nucleic acid catabolic process
+  GO:0061138  # BP    . uGOs    82   6 L03 D05 R06 AD    .... p... morphogenesis of a branching epithelium
+  GO:0006401  # BP    . uGOs    81  15 L06 D07 R07 C     .... .rdu RNA catabolic process
+  GO:0006812  # BP    . uGOs    80   2 L05 D05 R05 E     .... .... monoatomic cation transport
+  GO:0070647  # BP    . uGOs    80   2 L07 D07 R07 C     .... .rdu protein modification by small protein conjugation or removal
+  GO:0006403  # BP    . uGOs    79   7 L03 D03 R03 E     .... p... RNA localization
+  GO:0030001  # BP    . uGOs    78   8 L06 D06 R06 E     .... .r.. metal ion transport
+  GO:0044770  # BP    . uGOs    77   5 L03 D03 R04 C     .... .rdu cell cycle phase transition
+  GO:1990778  # BP    . uGOs    76  17 L05 D05 R05 CE    .... .rdu protein localization to cell periphery
+  GO:0044093  # BP    . uGOs    75   5 L03 D03 R03 B     .... .... positive regulation of molecular function
+  GO:0006793  # BP    . uGOs    74  12 L03 D03 R03 C     .... .rdu phosphorus metabolic process
+  GO:0090304  # BP    . uGOs    74   4 L04 D05 R05 C     .... .... nucleic acid metabolic process
+  GO:0002252  # BP    . uGOs    73  13 L02 D02 R02 G     .... .rdu immune effector process
+  GO:0009792  # BP    . uGOs    73   2 L04 D05 R05 AD    .... p... embryo development ending in birth or egg hatching
+  GO:0001819  # BP    . uGOs    73  49 L05 D09 R09 ABC   ...U .... positive regulation of cytokine production
+  GO:0032386  # BP    . uGOs    71  21 L05 D05 R05 BCE   .R.. .... regulation of intracellular transport
+  GO:0010564  # BP    . uGOs    71  40 L05 D05 R05 BC    .R.. .... regulation of cell cycle process
+  GO:0016070  # BP    . uGOs    70  17 L05 D06 R06 C     .... .rdu RNA metabolic process
+  GO:0035239  # BP    . uGOs    68  12 L03 D03 R05 AD    P... p... tube morphogenesis
+  GO:0050790  # BP    . uGOs    67  12 L03 D03 R03 B     .... .... regulation of catalytic activity
+  GO:0001508  # BP    . uGOs    66   5 L04 D04 R04 B     .... prdu action potential
+  GO:0097435  # BP    . uGOs    66  13 L04 D04 R04 C     .... .rdu supramolecular fiber organization
+  GO:0022604  # BP    . uGOs    65  13 L05 D05 R05 BD    .R.. .... regulation of cell morphogenesis
+  GO:0044092  # BP    . uGOs    64   7 L03 D03 R03 B     .... .... negative regulation of molecular function
+  GO:0032602  # BP    . uGOs    64  22 L03 D07 R07 AC    .... .rdu chemokine production
+  GO:0007269  # BP    . uGOs    64  18 L04 D08 R09 BCE   P... prdu neurotransmitter secretion
+  GO:0051656  # BP    . uGOs    63  13 L03 D03 R03 E     .... .... establishment of organelle localization
+  GO:0061061  # BP    . uGOs    62   2 L03 D03 R03 D     .... p... muscle structure development
+  GO:0043412  # BP    . uGOs    62   8 L04 D04 R04 C     .... .... macromolecule modification
+  GO:0051046  # BP    . uGOs    62  14 L05 D05 R05 BE    .R.. .... regulation of secretion
+  GO:0002694  # BP    . uGOs    62   8 L04 D05 R05 ABCG  .R.. .... regulation of leukocyte activation
+  GO:0051050  # BP    . uGOs    62  39 L04 D05 R05 BE    ...U .... positive regulation of transport
+  GO:0043009  # BP    . uGOs    62   1 L05 D06 R06 AD    .... p... chordate embryonic development
+  GO:0032989  # BP    . uGOs    61   0 L04 D04 R04 C     .... p... cellular anatomical entity morphogenesis
+  GO:0006650  # BP    . uGOs    61  11 L06 D06 R06 C     .... .... glycerophospholipid metabolic process
+  GO:0010927  # BP    . uGOs    60  18 L03 D05 R05 CD    P... .... cellular component assembly involved in morphogenesis
+  GO:0002683  # BP    . uGOs    59  25 L04 D04 R04 BG    ..D. .... negative regulation of immune system process
+  GO:0019538  # BP    . uGOs    59  20 L04 D04 R04 C     .... prdu protein metabolic process
+  GO:0090068  # BP    . uGOs    59  38 L06 D06 R06 BC    ...U .... positive regulation of cell cycle process
+  GO:0031401  # BP    . uGOs    59  13 L08 D08 R08 BC    ...U .... positive regulation of protein modification process
+  GO:0010256  # BP    . uGOs    58   0 L04 D04 R04 C     .... p... endomembrane system organization
+  GO:0048732  # BP    . uGOs    57  24 L04 D04 R04 D     .... p... gland development
+  GO:0006644  # BP    . uGOs    57  21 L05 D05 R05 C     .... .rdu phospholipid metabolic process
+  GO:0019216  # BP    . uGOs    57  11 L06 D06 R06 BC    .R.. .... regulation of lipid metabolic process
+  GO:0051649  # BP    . uGOs    56  38 L03 D03 R03 CE    P... .... establishment of localization in cell
+  GO:0009896  # BP    . uGOs    56  44 L06 D06 R06 BC    ...U .... positive regulation of catabolic process
+  GO:0001932  # BP    . uGOs    56  12 L08 D08 R08 BC    .R.. .... regulation of protein phosphorylation
+  GO:0019953  # BP    . uGOs    55   2 L02 D02 R02 F     .... p... sexual reproduction
+  GO:0050678  # BP    . uGOs    55  17 L05 D05 R05 BC    .R.. .... regulation of epithelial cell proliferation
+  GO:0015031  # BP    . uGOs    55  20 L04 D06 R06 CE    .... .rdu protein transport
+  GO:0045017  # BP    . uGOs    55   2 L05 D06 R06 C     .... .... glycerolipid biosynthetic process
+  GO:0010605  # BP    . uGOs    55  20 L06 D06 R06 BC    ..D. .... negative regulation of macromolecule metabolic process
+  GO:0051301  # BP    . uGOs    54  18 L02 D02 R02 C     .... prdu cell division
+  GO:0043085  # BP    . uGOs    54  10 L04 D04 R04 B     .... .... positive regulation of catalytic activity
+  GO:0072657  # BP    . uGOs    53  20 L04 D05 R05 CE    .... prdu protein localization to membrane
+  GO:0001501  # BP    . uGOs    53   1 L04 D04 R05 AD    .... p... skeletal system development
+  GO:0030029  # BP    . uGOs    52   4 L02 D02 R02 C     .... .r.. actin filament-based process
+  GO:0000902  # BP    . uGOs    52  21 L03 D03 R04 D     .... prdu cell morphogenesis
+  GO:0007267  # BP    . uGOs    52  32 L03 D04 R04 BC    .... p... cell-cell signaling
+  GO:0002699  # BP    . uGOs    52  19 L05 D05 R05 BG    ...U .... positive regulation of immune effector process
+  GO:0010948  # BP    . uGOs    52  33 L06 D06 R06 BC    ..D. .... negative regulation of cell cycle process
+  GO:0072594  # BP    . uGOs    52  13 L04 D06 R06 CE    .... .... establishment of protein localization to organelle
+  GO:0006796  # BP    . uGOs    51  34 L04 D04 R04 C     .... .rdu phosphate-containing compound metabolic process
+  GO:0044087  # BP    . uGOs    51  23 L04 D04 R04 BC    .R.. .... regulation of cellular component biogenesis
+  GO:0010604  # BP    . uGOs    51  18 L06 D06 R06 BC    ...U .... positive regulation of macromolecule metabolic process
+  GO:0042391  # BP    . uGOs    50  20 L03 D03 R03 B     .... .... regulation of membrane potential
+  GO:0002684  # BP    . uGOs    50  15 L04 D04 R04 BG    ...U .... positive regulation of immune system process
+  GO:0046631  # BP    . uGOs    50   7 L05 D06 R06 ACG   .... .rdu alpha-beta T cell activation
+  GO:0032446  # BP    . uGOs    50   7 L08 D08 R08 C     .... .... protein modification by small protein conjugation
+  GO:0009895  # BP    . uGOs    49  39 L06 D06 R06 BC    ..D. .... negative regulation of catabolic process
+  GO:0048738  # BP    . uGOs    49   4 L06 D06 R07 AD    P... prdu cardiac muscle tissue development
+  GO:0051254  # BP    . uGOs    49   9 L07 D08 R08 BC    ...U .... positive regulation of RNA metabolic process
+  GO:0016485  # BP    . uGOs    48  12 L06 D06 R07 C     .... .rdu protein processing
+  GO:0048514  # BP    . uGOs    48   5 L04 D04 R08 AD    P... p.d. blood vessel morphogenesis
+  GO:0008380  # BP    . uGOs    47   3 L05 D05 R09 C     .... .rdu RNA splicing
+  GO:0050673  # BP    . uGOs    46  19 L03 D03 R03 C     .... .rdu epithelial cell proliferation
+  GO:0030030  # BP    . uGOs    46   5 L04 D04 R04 C     .... .rdu cell projection organization
+  GO:0042098  # BP    . uGOs    46   7 L05 D06 R06 ACG   .... .rdu T cell proliferation
+  GO:1901873  # BP    . uGOs    46   3 L08 D08 R08 BC    .R.. .... regulation of post-translational protein modification
+  GO:0002443  # BP    . uGOs    44   4 L03 D03 R03 G     .... .rdu leukocyte mediated immunity
+  GO:0060485  # BP    . uGOs    44  10 L04 D04 R04 D     P... p... mesenchyme development
+  GO:0009059  # BP    . uGOs    44  25 L04 D04 R04 C     .... prdu macromolecule biosynthetic process
+  GO:0051128  # BP    . uGOs    44  42 L04 D04 R04 BC    .R.. .... regulation of cellular component organization
+  GO:0015918  # BP    . uGOs    43   5 L05 D05 R05 E     .... .rdu sterol transport
+  GO:0140694  # BP    . uGOs    43  18 L06 D06 R06 C     .... .... membraneless organelle assembly
+  GO:0046474  # BP    . uGOs    43   9 L06 D07 R07 C     .... .... glycerophospholipid biosynthetic process
+  GO:0051054  # BP    . uGOs    43  14 L07 D08 R08 BC    ...U .... positive regulation of DNA metabolic process
+  GO:1903320  # BP    . uGOs    43   8 L09 D09 R09 BC    .R.. .... regulation of protein modification by small protein conjugation or removal
+  GO:0046649  # BP    . uGOs    42   6 L03 D04 R04 ACG   .... prdu lymphocyte activation
+  GO:0015850  # BP    . uGOs    42  41 L04 D04 R04 E     .... .... organic hydroxy compound transport
+  GO:0051174  # BP    . uGOs    42   5 L05 D05 R05 BC    .R.. .... regulation of phosphorus metabolic process
+  GO:1903317  # BP    . uGOs    42   6 L07 D08 R08 BC    .R.. .... regulation of protein maturation
+  GO:0003206  # BP    . uGOs    42   5 L03 D03 R08 AD    P... prdu cardiac chamber morphogenesis
+  GO:0051236  # BP    . uGOs    41   3 L03 D03 R04 E     P... .... establishment of RNA localization
+  GO:0051130  # BP    . uGOs    41  41 L05 D05 R05 BC    ...U .... positive regulation of cellular component organization
+  GO:0051051  # BP    . uGOs    41  39 L04 D05 R05 BE    ..D. .... negative regulation of transport
+  GO:0019219  # BP    . uGOs    41  17 L06 D06 R06 BC    .R.. .... regulation of nucleobase-containing compound metabolic process
+  GO:0007369  # BP    . uGOs    41   2 L04 D04 R06 AD    .... prdu gastrulation
+  GO:0032642  # BP    . uGOs    41  15 L05 D09 R09 ABC   .R.. .... regulation of chemokine production
+  GO:0031344  # BP    . uGOs    40   5 L05 D05 R05 BC    .R.. .... regulation of cell projection organization
+  GO:0071897  # BP    . uGOs    40   5 L06 D07 R07 C     .... .rdu DNA biosynthetic process
+  GO:0051129  # BP    . uGOs    38  38 L05 D05 R05 BC    ..D. .... negative regulation of cellular component organization
+  GO:0045936  # BP    . uGOs    38  14 L07 D07 R07 BC    ..D. .... negative regulation of phosphate metabolic process
+  GO:0051276  # BP    . uGOs    37  18 L05 D05 R05 C     .... .rdu chromosome organization
+  GO:0051253  # BP    . uGOs    37   8 L07 D08 R08 BC    ..D. .... negative regulation of RNA metabolic process
+  GO:0090066  # BP    . uGOs    36   7 L03 D03 R03 B     .... .... regulation of anatomical structure size
+  GO:0002274  # BP    . uGOs    36   6 L03 D04 R04 ACG   .... .... myeloid leukocyte activation
+  GO:0051169  # BP    . uGOs    36   1 L04 D05 R05 CE    .... .... nuclear transport
+  GO:0045937  # BP    . uGOs    36  12 L07 D07 R07 BC    ...U .... positive regulation of phosphate metabolic process
+  GO:0010557  # BP    . uGOs    36  14 L07 D07 R07 BC    ...U .... positive regulation of macromolecule biosynthetic process
+  GO:2001252  # BP    . uGOs    36   8 L07 D07 R07 BC    ...U .... positive regulation of chromosome organization
+  GO:0006446  # BP    . uGOs    36  11 L08 D10 R10 BC    .R.. .... regulation of translational initiation
+  GO:0120036  # BP    . uGOs    35  10 L05 D05 R05 C     .... .r.. plasma membrane bounded cell projection organization
+  GO:0019220  # BP    . uGOs    35  17 L06 D06 R06 BC    .R.. .... regulation of phosphate metabolic process
+  GO:1901988  # BP    . uGOs    35   6 L07 D07 R07 BC    ..D. .... negative regulation of cell cycle phase transition
+  GO:0050658  # BP    . uGOs    35   9 L04 D07 R07 E     .... .... RNA transport
+  GO:0002700  # BP    . uGOs    35   7 L05 D08 R08 BCG   .R.. .... regulation of production of molecular mediator of immune response
+  GO:0045892  # BP    . uGOs    35  16 L09 D10 R10 BC    ..D. .... negative regulation of DNA-templated transcription
+  GO:0035295  # BP    . uGOs    34  25 L03 D03 R04 AD    P... p... tube development
+  GO:0016567  # BP    . uGOs    34   4 L09 D09 R09 C     .... .rdu protein ubiquitination
+  GO:0061982  # BP    . uGOs    33  14 L03 D04 R05 CF    .... .... meiosis I cell cycle process
+  GO:0006508  # BP    . uGOs    33   4 L05 D05 R05 C     .... .rdu proteolysis
+  GO:1903829  # BP    . uGOs    33  21 L05 D06 R06 BCE   ...U .... positive regulation of protein localization
+  GO:0045893  # BP    . uGOs    33  16 L09 D10 R10 BC    ...U .... positive regulation of DNA-templated transcription
+  GO:0017148  # BP    . uGOs    33  11 L08 D10 R10 BC    ..D. .... negative regulation of translation
+  GO:0001775  # BP    . uGOs    32  13 L02 D02 R02 AC    .... .rdu cell activation
+  GO:0043170  # BP    . uGOs    32  18 L03 D03 R03 C     .... .rdu macromolecule metabolic process
+  GO:0043086  # BP    . uGOs    32   6 L04 D04 R04 B     .... .... negative regulation of catalytic activity
+  GO:0002703  # BP    . uGOs    32   6 L05 D05 R05 BG    .R.. .... regulation of leukocyte mediated immunity
+  GO:0022612  # BP    . uGOs    32   7 L04 D04 R05 D     P... .... gland morphogenesis
+  GO:0051216  # BP    . uGOs    32   4 L04 D04 R06 AD    P... prdu cartilage development
+  GO:0031399  # BP    . uGOs    31  16 L07 D07 R07 BC    .R.. .... regulation of protein modification process
+  GO:0007017  # BP    . uGOs    30   9 L02 D02 R02 C     .... .r.. microtubule-based process
+  GO:0015914  # BP    . uGOs    30   8 L05 D05 R05 E     .... .rdu phospholipid transport
+  GO:0006366  # BP    . uGOs    30   3 L08 D09 R09 C     .... prdu transcription by RNA polymerase II
+  GO:1902903  # BP    . uGOs    29   9 L05 D05 R05 BC    .R.. .... regulation of supramolecular fiber organization
+  GO:0070663  # BP    . uGOs    29   6 L05 D05 R05 BC    .R.. .... regulation of leukocyte proliferation
+  GO:0030301  # BP    . uGOs    29   5 L06 D06 R06 E     .... prdu cholesterol transport
+  GO:0042129  # BP    . uGOs    29   7 L07 D08 R08 ABCG  .R.. .... regulation of T cell proliferation
+  GO:0048167  # BP    . uGOs    29  12 L03 D07 R10 BC    .... .... regulation of synaptic plasticity
+  GO:0023051  # BP    . uGOs    28  11 L03 D03 R04 B     .R.. .... regulation of signaling
+  GO:0140352  # BP    . uGOs    28   5 L02 D04 R04 CE    .... .... export from cell
+  GO:0008284  # BP    . uGOs    28  27 L05 D05 R05 BC    ...U .... positive regulation of cell population proliferation
+  GO:0120032  # BP    . uGOs    28  11 L06 D07 R07 BC    .R.. .... regulation of plasma membrane bounded cell projection assembly
+  GO:0010959  # BP    . uGOs    28   6 L06 D06 R07 BE    .R.. .... regulation of metal ion transport
+  GO:0030879  # BP    . uGOs    27   0 L05 D05 R05 D     .... p... mammary gland development
+  GO:0072132  # BP    . uGOs    27   4 L04 D04 R05 D     P... p... mesenchyme morphogenesis
+  GO:0009952  # BP    . uGOs    27  14 L04 D04 R06 AD    .... p... anterior/posterior pattern specification
+  GO:0016125  # BP    . uGOs    27   6 L06 D06 R06 C     .... .... sterol metabolic process
+  GO:0006352  # BP    . uGOs    27   4 L07 D08 R09 C     P... prdu DNA-templated transcription initiation
+  GO:0045727  # BP    . uGOs    27   9 L08 D10 R10 BC    ...U .... positive regulation of translation
+  GO:0008285  # BP    . uGOs    26  26 L05 D05 R05 BC    ..D. .... negative regulation of cell population proliferation
+  GO:0008360  # BP    . uGOs    26   4 L03 D06 R06 BD    .... .... regulation of cell shape
+  GO:0002440  # BP    . uGOs    26   7 L02 D06 R06 CG    .... .rdu production of molecular mediator of immune response
+  GO:0001525  # BP    . uGOs    26   5 L03 D03 R09 AD    P... prdu angiogenesis
+  GO:0001934  # BP    . uGOs    26   7 L09 D09 R09 BC    ...U .... positive regulation of protein phosphorylation
+  GO:0006357  # BP    . uGOs    26   8 L09 D10 R10 BC    .R.. .... regulation of transcription by RNA polymerase II
+  GO:0090407  # BP    . uGOs    25  19 L04 D05 R05 C     .... .... organophosphate biosynthetic process
+  GO:1904375  # BP    . uGOs    25   8 L06 D06 R06 BCE   .R.. .... regulation of protein localization to cell periphery
+  GO:0045859  # BP    . uGOs    25   5 L06 D09 R09 BC    .... .... regulation of protein kinase activity
+  GO:0007154  # BP    . uGOs    24  12 L02 D02 R02 C     .... prdu cell communication
+  GO:0098727  # BP    . uGOs    24   2 L02 D02 R02 D     .... .... maintenance of cell number
+  GO:0033002  # BP    . uGOs    24   2 L03 D03 R03 C     .... .... muscle cell proliferation
+  GO:0032879  # BP    . uGOs    24  18 L03 D03 R03 BE    .R.. .... regulation of localization
+  GO:0031214  # BP    . uGOs    24   5 L04 D04 R04 D     P... .rdu biomineral tissue development
+  GO:0006639  # BP    . uGOs    24   6 L06 D06 R06 C     .... .... acylglycerol metabolic process
+  GO:0072376  # BP    . uGOs    24   6 L06 D06 R07 C     .... .rdu protein activation cascade
+  GO:0070661  # BP    . uGOs    23   5 L03 D03 R03 C     .... .rdu leukocyte proliferation
+  GO:0032535  # BP    . uGOs    23  10 L04 D04 R04 BC    .... .... regulation of cellular component size
+  GO:0051249  # BP    . uGOs    23   8 L05 D06 R06 ABCG  .R.. .... regulation of lymphocyte activation
+  GO:1905475  # BP    . uGOs    23  12 L06 D06 R06 BCE   .R.. .... regulation of protein localization to membrane
+  GO:0008654  # BP    . uGOs    23  20 L05 D06 R06 C     .... .rdu phospholipid biosynthetic process
+  GO:0051252  # BP    . uGOs    23  13 L06 D07 R07 BC    .R.. .... regulation of RNA metabolic process
+  GO:0034381  # BP    . uGOs    22   5 L02 D02 R04 AB    P... .rdu plasma lipoprotein particle clearance
+  GO:0009057  # BP    . uGOs    22  10 L04 D04 R04 C     .... .... macromolecule catabolic process
+  GO:0010646  # BP    . uGOs    22  17 L04 D04 R04 BC    .R.. .... regulation of cell communication
+  GO:1902652  # BP    . uGOs    22  15 L05 D05 R05 C     .... .... secondary alcohol metabolic process
+  GO:0010628  # BP    . uGOs    22  17 L08 D08 R08 BC    ...U .... positive regulation of gene expression
+  GO:0031396  # BP    . uGOs    22   5 L10 D10 R10 BC    .R.. .... regulation of protein ubiquitination
+  GO:0019827  # BP    . uGOs    21   4 L02 D03 R03 AD    .... prdu stem cell population maintenance
+  GO:0051338  # BP    . uGOs    21  10 L04 D04 R04 B     .... .... regulation of transferase activity
+  GO:0034504  # BP    . uGOs    21   7 L06 D06 R06 CE    .... prdu protein localization to nucleus
+  GO:0000209  # BP    . uGOs    21   9 L10 D10 R10 C     .... .rdu protein polyubiquitination
+  GO:0001503  # BP    . uGOs    20   6 L02 D02 R02 A     .... prdu ossification
+  GO:0030048  # BP    . uGOs    20   4 L03 D03 R03 C     .... .r.u actin filament-based movement
+  GO:0016050  # BP    . uGOs    20  13 L05 D05 R05 C     .... .... vesicle organization
+  GO:0070201  # BP    . uGOs    20   6 L06 D06 R06 BCE   .R.. .... regulation of establishment of protein localization
+  GO:0120035  # BP    . uGOs    20   6 L06 D06 R06 BC    .R.. .... regulation of plasma membrane bounded cell projection organization
+  GO:0001933  # BP    . uGOs    20   8 L09 D09 R09 BC    ..D. .... negative regulation of protein phosphorylation
+  GO:0071900  # BP    . uGOs    20   8 L07 D10 R10 BC    .... .... regulation of protein serine/threonine kinase activity
+  GO:0060341  # BP    . uGOs    19  10 L04 D04 R04 BCE   .R.. .... regulation of cellular localization
+  GO:0044089  # BP    . uGOs    19  19 L05 D05 R05 BC    ...U .... positive regulation of cellular component biogenesis
+  GO:0002696  # BP    . uGOs    19   6 L05 D06 R06 ABCG  ...U .... positive regulation of leukocyte activation
+  GO:0030162  # BP    . uGOs    19   6 L07 D07 R07 BC    .R.. .... regulation of proteolysis
+  GO:0071706  # BP    . uGOs    19   4 L03 D07 R07 AC    .... .rdu tumor necrosis factor superfamily cytokine production
+  GO:0051248  # BP    . uGOs    19  13 L07 D07 R07 BC    ..D. .... negative regulation of protein metabolic process
+  GO:0001704  # BP    . uGOs    19   3 L03 D03 R07 AD    P... p... formation of primary germ layer
+  GO:0046488  # BP    . uGOs    19   8 L07 D07 R07 C     .... .... phosphatidylinositol metabolic process
+  GO:0018108  # BP    . uGOs    19   3 L07 D08 R08 C     .... .rdu peptidyl-tyrosine phosphorylation
+  GO:0032886  # BP    . uGOs    18   4 L04 D04 R04 BC    .R.. .... regulation of microtubule-based process
+  GO:0060537  # BP    . uGOs    18   2 L04 D04 R04 D     .... .rdu muscle tissue development
+  GO:0016482  # BP    . uGOs    18   6 L04 D05 R05 CE    .... .... cytosolic transport
+  GO:0048285  # BP    . uGOs    18   7 L05 D05 R05 C     .... p... organelle fission
+  GO:0060255  # BP    . uGOs    18  12 L05 D05 R05 BC    .R.. .... regulation of macromolecule metabolic process
+  GO:0042157  # BP    . uGOs    18   3 L05 D05 R05 C     .... .rdu lipoprotein metabolic process
+  GO:0051445  # BP    . uGOs    18   6 L04 D05 R05 BCF   .R.. .... regulation of meiotic cell cycle
+  GO:0050679  # BP    . uGOs    18  16 L06 D06 R06 BC    ...U .... positive regulation of epithelial cell proliferation
+  GO:0071827  # BP    . uGOs    18   3 L02 D06 R06 AC    .... .... plasma lipoprotein particle organization
+  GO:0051247  # BP    . uGOs    18  13 L07 D07 R07 BC    ...U .... positive regulation of protein metabolic process
+  GO:1902369  # BP    . uGOs    18   5 L07 D09 R09 BC    ..D. .... negative regulation of RNA catabolic process
+  GO:0051668  # BP    . uGOs    17   8 L03 D03 R03 CE    .... .... localization within membrane
+  GO:0032388  # BP    . uGOs    17  17 L05 D06 R06 BCE   ...U .... positive regulation of intracellular transport
+  GO:0035710  # BP    . uGOs    17   4 L06 D07 R07 ACG   .... .rdu CD4-positive, alpha-beta T cell activation
+  GO:0006816  # BP    . uGOs    17   7 L07 D07 R07 E     .... .rdu calcium ion transport
+  GO:0000966  # BP    . uGOs    17   4 L05 D05 R09 C     .... .... RNA 5'-end processing
+  GO:0003254  # BP    . uGOs    16   6 L04 D04 R05 BC    .R.. .... regulation of membrane depolarization
+  GO:0051246  # BP    . uGOs    16  16 L06 D06 R06 BC    .R.. .... regulation of protein metabolic process
+  GO:0050863  # BP    . uGOs    16   9 L06 D07 R07 ABCG  .R.. .... regulation of T cell activation
+  GO:0032606  # BP    . uGOs    16   7 L03 D07 R07 AC    .... .rdu type I interferon production
+  GO:0045860  # BP    . uGOs    16   4 L07 D10 R10 BC    .... .... positive regulation of protein kinase activity
+  GO:0007498  # BP    . uGOs    15   5 L04 D04 R04 D     .... prdu mesoderm development
+  GO:0032970  # BP    . uGOs    15   3 L04 D04 R04 BC    .R.. .... regulation of actin filament-based process
+  GO:0006839  # BP    . uGOs    15   4 L04 D05 R05 CE    .... p... mitochondrial transport
+  GO:0086001  # BP    . uGOs    15   5 L05 D05 R05 B     .... pr.. cardiac muscle cell action potential
+  GO:0032944  # BP    . uGOs    15   3 L06 D06 R06 BC    .R.. .... regulation of mononuclear cell proliferation
+  GO:0034369  # BP    . uGOs    15   4 L03 D07 R07 ABC   P... .... plasma lipoprotein particle remodeling
+  GO:0051052  # BP    . uGOs    15  15 L06 D07 R07 BC    .R.. .... regulation of DNA metabolic process
+  GO:0050806  # BP    . uGOs    15  11 L05 D07 R10 BC    ...U .... positive regulation of synaptic transmission
+  GO:0070252  # BP    . uGOs    14   7 L04 D04 R04 C     .... .... actin-mediated cell contraction
+  GO:0006457  # BP    . uGOs    14   5 L02 D02 R07 C     P... .rdu protein folding
+  GO:0051223  # BP    . uGOs    14  10 L05 D07 R07 BCE   .R.. .... regulation of protein transport
+  GO:0003205  # BP    . uGOs    14   5 L03 D03 R07 AD    P... p... cardiac chamber development
+  GO:0003279  # BP    . uGOs    14   2 L03 D03 R08 AD    P... p... cardiac septum development
+  GO:0031400  # BP    . uGOs    14  14 L08 D08 R08 BC    ..D. .... negative regulation of protein modification process
+  GO:1903555  # BP    . uGOs    14   6 L05 D09 R09 ABC   .R.. .... regulation of tumor necrosis factor superfamily cytokine production
+  GO:0002040  # BP    . uGOs    14   0 L04 D04 R10 AD    .... prdu sprouting angiogenesis
+  GO:0051302  # BP    . uGOs    13   7 L04 D04 R04 BC    .R.. .... regulation of cell division
+  GO:0051336  # BP    . uGOs    13   8 L04 D04 R04 B     .... .... regulation of hydrolase activity
+  GO:0050865  # BP    . uGOs    13   9 L04 D04 R04 ABC   .R.. .... regulation of cell activation
+  GO:2000377  # BP    . uGOs    13   5 L05 D05 R05 BC    .R.. .... regulation of reactive oxygen species metabolic process
+  GO:0006641  # BP    . uGOs    13   4 L07 D07 R07 C     .... .rdu triglyceride metabolic process
+  GO:0032374  # BP    . uGOs    13   6 L07 D07 R07 BE    .R.. .... regulation of cholesterol transport
+  GO:0055008  # BP    . uGOs    13   2 L05 D05 R08 AD    P... p... cardiac muscle tissue morphogenesis
+  GO:0032722  # BP    . uGOs    13  13 L06 D10 R10 ABC   ...U .... positive regulation of chemokine production
+  GO:0048144  # BP    . uGOs    12   3 L03 D03 R03 C     .... .rdu fibroblast proliferation
+  GO:0061448  # BP    . uGOs    12   9 L04 D04 R04 D     .... p... connective tissue development
+  GO:0016310  # BP    . uGOs    12   7 L05 D05 R05 C     .... .rdu phosphorylation
+  GO:0010648  # BP    . uGOs    12  11 L05 D05 R05 BC    ..D. .... negative regulation of cell communication
+  GO:0032371  # BP    . uGOs    12   5 L06 D06 R06 BE    .R.. .... regulation of sterol transport
+  GO:0061035  # BP    . uGOs    12   3 L05 D05 R07 ABD   .R.. .... regulation of cartilage development
+  GO:1904951  # BP    . uGOs    12   4 L06 D07 R07 BCE   ...U .... positive regulation of establishment of protein localization
+  GO:0008203  # BP    . uGOs    12   3 L06 D07 R07 C     .... .rdu cholesterol metabolic process
+  GO:0046634  # BP    . uGOs    12   7 L07 D08 R08 ABCG  .R.. .... regulation of alpha-beta T cell activation
+  GO:0006661  # BP    . uGOs    12   2 L07 D08 R08 C     .... .rdu phosphatidylinositol biosynthetic process
+  GO:2000278  # BP    . uGOs    12   6 L07 D08 R08 BC    .R.. .... regulation of DNA biosynthetic process
+  GO:0050730  # BP    . uGOs    12   5 L09 D09 R09 BC    .R.. .... regulation of peptidyl-tyrosine phosphorylation
+  GO:0045765  # BP    . uGOs    12   5 L05 D06 R10 ABD   .R.. .... regulation of angiogenesis
+  GO:0050878  # BP    . uGOs    11  10 L03 D03 R03 B     .... p... regulation of body fluid levels
+  GO:0051899  # BP    . uGOs    11   3 L04 D04 R04 B     .... .rdu membrane depolarization
+  GO:0010647  # BP    . uGOs    11  10 L05 D05 R05 BC    ...U .... positive regulation of cell communication
+  GO:0086010  # BP    . uGOs    11   1 L05 D05 R05 B     P... .r.. membrane depolarization during action potential
+  GO:1900180  # BP    . uGOs    11   5 L06 D06 R07 BCE   .R.. .... regulation of protein localization to nucleus
+  GO:0046470  # BP    . uGOs    11   5 L07 D07 R07 C     .... .rdu phosphatidylcholine metabolic process
+  GO:0051251  # BP    . uGOs    11   6 L06 D07 R07 ABCG  ...U .... positive regulation of lymphocyte activation
+  GO:0003203  # BP    . uGOs    11   2 L05 D05 R08 AD    P... p... endocardial cushion morphogenesis
+  GO:0051924  # BP    . uGOs    11   6 L07 D07 R08 BE    .R.. .... regulation of calcium ion transport
+  GO:0060411  # BP    . uGOs    11   3 L03 D03 R09 AD    P... p... cardiac septum morphogenesis
+  GO:0006469  # BP    . uGOs    11   4 L07 D10 R10 BC    .... p... negative regulation of protein kinase activity
+  GO:0045944  # BP    . uGOs    11   7 L10 D11 R11 BC    ...U .... positive regulation of transcription by RNA polymerase II
+  GO:0051321  # BP    . uGOs    10   1 L02 D03 R03 CF    P... prdu meiotic cell cycle
+  GO:0060322  # BP    . uGOs    10   1 L03 D03 R03 D     .... p... head development
+  GO:0097120  # BP    . uGOs    10   7 L03 D03 R03 E     .... .rdu receptor localization to synapse
+  GO:0046651  # BP    . uGOs    10   3 L04 D05 R05 ACG   .... .rdu lymphocyte proliferation
+  GO:1902905  # BP    . uGOs    10  10 L06 D06 R06 BC    ...U .... positive regulation of supramolecular fiber organization
+  GO:1902904  # BP    . uGOs    10  10 L06 D06 R06 BC    ..D. .... negative regulation of supramolecular fiber organization
+  GO:0031346  # BP    . uGOs    10  10 L06 D06 R06 BC    ...U .... positive regulation of cell projection organization
+  GO:0050670  # BP    . uGOs    10   5 L06 D07 R07 ABCG  .R.. .... regulation of lymphocyte proliferation
+  GO:0006354  # BP    . uGOs    10   4 L07 D08 R09 C     P... prdu DNA-templated transcription elongation
+  GO:0070613  # BP    . uGOs    10   6 L08 D09 R09 BC    .R.. .... regulation of protein processing
+  GO:0070167  # BP    . uGOs     9   5 L05 D05 R05 ABD   .R.. .... regulation of biomineral tissue development
+  GO:0051347  # BP    . uGOs     9   9 L05 D05 R05 B     .... .... positive regulation of transferase activity
+  GO:0023057  # BP    . uGOs     9   9 L04 D04 R05 B     ..D. .... negative regulation of signaling
+  GO:0098900  # BP    . uGOs     9   9 L03 D04 R05 B     .R.. .... regulation of action potential
+  GO:0086012  # BP    . uGOs     9   6 L06 D06 R06 B     P... .rdu membrane depolarization during cardiac muscle cell action potential
+  GO:0070665  # BP    . uGOs     9   4 L06 D06 R06 BC    ...U .... positive regulation of leukocyte proliferation
+  GO:0018209  # BP    . uGOs     9   9 L07 D07 R07 C     .... .... peptidyl-serine modification
+  GO:0042325  # BP    . uGOs     9   4 L07 D07 R07 BC    .R.. .... regulation of phosphorylation
+  GO:0046777  # BP    . uGOs     9   5 L07 D07 R07 C     .... .rdu protein autophosphorylation
+  GO:1901989  # BP    . uGOs     9   6 L07 D07 R07 BC    ...U .... positive regulation of cell cycle phase transition
+  GO:0003197  # BP    . uGOs     9   0 L05 D05 R07 AD    P... p... endocardial cushion development
+  GO:0001706  # BP    . uGOs     9   0 L04 D04 R08 AD    P... p... endoderm formation
+  GO:0050817  # BP    . uGOs     8   2 L02 D02 R02 A     .... .rdu coagulation
+  GO:0001935  # BP    . uGOs     8   2 L04 D04 R04 C     .... .rdu endothelial cell proliferation
+  GO:0048145  # BP    . uGOs     8   4 L05 D05 R05 BC    .R.. .... regulation of fibroblast proliferation
+  GO:0023056  # BP    . uGOs     8   8 L04 D04 R05 B     ...U .... positive regulation of signaling
+  GO:0016311  # BP    . uGOs     8   5 L05 D05 R05 C     .... .rdu dephosphorylation
+  GO:0030282  # BP    . uGOs     8   1 L05 D05 R05 AD    P... prdu bone mineralization
+  GO:1901987  # BP    . uGOs     8   8 L06 D06 R06 BC    .R.. .... regulation of cell cycle phase transition
+  GO:0006470  # BP    . uGOs     8   6 L06 D06 R06 C     .... .... protein dephosphorylation
+  GO:1902743  # BP    . uGOs     8   4 L07 D07 R07 BC    .R.. .... regulation of lamellipodium organization
+  GO:0003231  # BP    . uGOs     8   0 L04 D04 R08 AD    .... prdu cardiac ventricle development
+  GO:0006278  # BP    . uGOs     8   2 L07 D08 R08 C     .... .... RNA-templated DNA biosynthetic process
+  GO:2001141  # BP    . uGOs     8   6 L07 D08 R08 BC    .R.. .... regulation of RNA biosynthetic process
+  GO:0034370  # BP    . uGOs     8   3 L04 D08 R08 ABC   .... .... triglyceride-rich lipoprotein particle remodeling
+  GO:0032527  # BP    . uGOs     8   1 L05 D08 R08 CE    .... .rdu protein exit from endoplasmic reticulum
+  GO:0018105  # BP    . uGOs     8   2 L07 D08 R08 C     .... .rdu peptidyl-serine phosphorylation
+  GO:0032479  # BP    . uGOs     8   4 L05 D09 R09 ABC   .R.. .... regulation of type I interferon production
+  GO:2000142  # BP    . uGOs     8   4 L09 D10 R10 BC    .R.. .... regulation of DNA-templated transcription initiation
+  GO:0032784  # BP    . uGOs     8   4 L09 D10 R10 BC    .R.. .... regulation of DNA-templated transcription elongation
+  GO:0043489  # BP    . uGOs     8   3 L04 D10 R10 BC    .... .... RNA stabilization
+  GO:0006367  # BP    . uGOs     8   0 L08 D09 R10 C     P... prdu transcription initiation at RNA polymerase II promoter
+  GO:0051090  # BP    . uGOs     8   3 L03 D10 R10 BC    .... .... regulation of DNA-binding transcription factor activity
+  GO:0000122  # BP    . uGOs     8   5 L10 D11 R11 BC    ..D. .... negative regulation of transcription by RNA polymerase II
+  GO:0007204  # BP    . uGOs     7   5 L03 D03 R03 B     .... .... positive regulation of cytosolic calcium ion concentration
+  GO:0048659  # BP    . uGOs     7   1 L04 D04 R04 C     .... .rdu smooth muscle cell proliferation
+  GO:1905952  # BP    . uGOs     7   3 L04 D04 R04 BE    .R.. .... regulation of lipid localization
+  GO:0044839  # BP    . uGOs     7   2 L04 D04 R05 C     .... .rdu cell cycle G2/M phase transition
+  GO:0051348  # BP    . uGOs     7   7 L05 D05 R05 B     .... .... negative regulation of transferase activity
+  GO:1901342  # BP    . uGOs     7   5 L05 D05 R07 ABD   .R.. .... regulation of vasculature development
+  GO:0051222  # BP    . uGOs     7   7 L05 D08 R08 BCE   ...U .... positive regulation of protein transport
+  GO:0046854  # BP    . uGOs     7   4 L08 D09 R09 C     .... .... phosphatidylinositol phosphate biosynthetic process
+  GO:0043487  # BP    . uGOs     7   5 L03 D09 R09 BC    .R.. .... regulation of RNA stability
+  GO:0048168  # BP    . uGOs     7   3 L04 D08 R11 BC    .... .... regulation of neuronal synaptic plasticity
+  GO:0007049  # BP    . uGOs     6   2 L02 D02 R02 C     .... prdu cell cycle
+  GO:0090559  # BP    . uGOs     6   4 L03 D03 R03 B     .... .... regulation of membrane permeability
+  GO:0051726  # BP    . uGOs     6   6 L04 D04 R04 BC    .R.. .... regulation of cell cycle
+  GO:0002449  # BP    . uGOs     6   3 L04 D04 R04 G     .... .rdu lymphocyte mediated immunity
+  GO:0006836  # BP    . uGOs     6   3 L04 D04 R04 E     .... .rdu neurotransmitter transport
+  GO:2000036  # BP    . uGOs     6   3 L04 D04 R04 ABD   .R.. .... regulation of stem cell population maintenance
+  GO:0034367  # BP    . uGOs     6   4 L05 D05 R05 C     .... .... protein-containing complex remodeling
+  GO:0042982  # BP    . uGOs     6   2 L05 D05 R05 C     .... .... amyloid precursor protein metabolic process
+  GO:0014706  # BP    . uGOs     6   3 L05 D05 R05 D     .... .rdu striated muscle tissue development
+  GO:0050866  # BP    . uGOs     6   6 L05 D05 R05 ABC   ..D. .... negative regulation of cell activation
+  GO:0050867  # BP    . uGOs     6   6 L05 D05 R05 ABC   ...U .... positive regulation of cell activation
+  GO:0051960  # BP    . uGOs     6   4 L05 D05 R06 ABD   .R.. .... regulation of nervous system development
+  GO:0000280  # BP    . uGOs     6   3 L06 D06 R06 C     .... .rdu nuclear division
+  GO:0001936  # BP    . uGOs     6   4 L06 D06 R06 BC    .R.. .... regulation of endothelial cell proliferation
+  GO:0006413  # BP    . uGOs     6   2 L03 D03 R07 C     P... prdu translational initiation
+  GO:0042327  # BP    . uGOs     6   2 L08 D08 R08 BC    ...U .... positive regulation of phosphorylation
+  GO:0032963  # BP    . uGOs     5   2 L03 D03 R03 C     .... .rdu collagen metabolic process
+  GO:0050435  # BP    . uGOs     5   2 L04 D04 R04 C     .... .... amyloid-beta metabolic process
+  GO:0032943  # BP    . uGOs     5   2 L04 D04 R04 C     .... .rdu mononuclear cell proliferation
+  GO:0007599  # BP    . uGOs     5   2 L04 D04 R04 B     .... .rdu hemostasis
+  GO:0050818  # BP    . uGOs     5   3 L04 D04 R04 AB    .R.. .... regulation of coagulation
+  GO:0034655  # BP    . uGOs     5   3 L04 D05 R05 C     .... .... nucleobase-containing compound catabolic process
+  GO:0044843  # BP    . uGOs     5   1 L04 D04 R05 C     .... .rdu cell cycle G1/S phase transition
+  GO:0006638  # BP    . uGOs     5   3 L05 D05 R05 C     .... .... neutral lipid metabolic process
+  GO:0051781  # BP    . uGOs     5   4 L05 D05 R05 BC    ...U .... positive regulation of cell division
+  GO:0048660  # BP    . uGOs     5   3 L05 D05 R05 BC    .R.. .... regulation of smooth muscle cell proliferation
+  GO:1900046  # BP    . uGOs     5   3 L03 D04 R05 B     .R.. .... regulation of hemostasis
+  GO:0097581  # BP    . uGOs     5   2 L06 D06 R06 C     .... .rdu lamellipodium organization
+  GO:0010586  # BP    . uGOs     5   2 L06 D07 R07 C     .... .rdu miRNA metabolic process
+  GO:0030032  # BP    . uGOs     5   1 L07 D07 R07 C     .... .rdu lamellipodium assembly
+  GO:0006814  # BP    . uGOs     5   2 L07 D07 R07 E     .... .rdu sodium ion transport
+  GO:0032946  # BP    . uGOs     5   1 L07 D07 R07 BC    ...U .... positive regulation of mononuclear cell proliferation
+  GO:1902991  # BP    . uGOs     5   3 L07 D07 R07 BC    .R.. .... regulation of amyloid precursor protein catabolic process
+  GO:0018107  # BP    . uGOs     5   2 L07 D08 R08 C     .... .rdu peptidyl-threonine phosphorylation
+  GO:0042326  # BP    . uGOs     5   2 L08 D08 R08 BC    ..D. .... negative regulation of phosphorylation
+  GO:0031638  # BP    . uGOs     5   2 L07 D07 R08 C     .... .... zymogen activation
+  GO:0043549  # BP    . uGOs     5   4 L05 D08 R08 BC    .... .... regulation of kinase activity
+  GO:0033135  # BP    . uGOs     5   3 L09 D09 R09 BC    .R.. .... regulation of peptidyl-serine phosphorylation
+  GO:0007271  # BP    . uGOs     5   0 L08 D09 R09 BC    .... prdu synaptic transmission, cholinergic
+  GO:2000573  # BP    . uGOs     5   5 L08 D09 R09 BC    ...U .... positive regulation of DNA biosynthetic process
+  GO:0006368  # BP    . uGOs     5   0 L08 D09 R10 C     P... prdu transcription elongation by RNA polymerase II
+  GO:0061097  # BP    . uGOs     5   3 L07 D10 R10 BC    .... .... regulation of protein tyrosine kinase activity
+  GO:0071902  # BP    . uGOs     5   4 L08 D11 R11 BC    .... .... positive regulation of protein serine/threonine kinase activity
+  GO:0043405  # BP    . uGOs     5   3 L08 D11 R11 BC    .... .... regulation of MAP kinase activity
+  GO:0097006  # BP    . uGOs     4   0 L03 D03 R03 B     .... p... regulation of plasma lipoprotein particle levels
+  GO:0031647  # BP    . uGOs     4   3 L03 D03 R03 B     .... .... regulation of protein stability
+  GO:0051881  # BP    . uGOs     4   4 L04 D04 R04 B     .... .... regulation of mitochondrial membrane potential
+  GO:0060078  # BP    . uGOs     4   4 L04 D04 R04 B     .... .... regulation of postsynaptic membrane potential
+  GO:0071824  # BP    . uGOs     4   4 L05 D05 R05 C     .... .... protein-DNA complex organization
+  GO:0045786  # BP    . uGOs     4   4 L05 D05 R05 BC    ..D. .... negative regulation of cell cycle
+  GO:0071825  # BP    . uGOs     4   4 L05 D05 R05 C     .... .... protein-lipid complex organization
+  GO:0045787  # BP    . uGOs     4   4 L05 D05 R05 BC    ...U .... positive regulation of cell cycle
+  GO:0030500  # BP    . uGOs     4   3 L05 D06 R06 ABD   .R.. .... regulation of bone mineralization
+  GO:0042987  # BP    . uGOs     4   1 L06 D06 R06 C     .... .rdu amyloid precursor protein catabolic process
+  GO:0006813  # BP    . uGOs     4   1 L07 D07 R07 E     .... .rdu potassium ion transport
+  GO:0018212  # BP    . uGOs     4   4 L07 D07 R07 C     .... .... peptidyl-tyrosine modification
+  GO:1902749  # BP    . uGOs     4   4 L07 D07 R07 BC    .R.. .... regulation of cell cycle G2/M phase transition
+  GO:2000628  # BP    . uGOs     4   4 L07 D08 R08 BC    .R.. .... regulation of miRNA metabolic process
+  GO:0050671  # BP    . uGOs     4   3 L07 D08 R08 ABCG  ...U .... positive regulation of lymphocyte proliferation
+  GO:0070509  # BP    . uGOs     4   1 L08 D08 R08 E     .... .rdu calcium ion import
+  GO:0045862  # BP    . uGOs     4   4 L08 D08 R08 BC    ...U .... positive regulation of proteolysis
+  GO:1903405  # BP    . uGOs     4   1 L08 D08 R08 CE    .... .... protein localization to nuclear body
+  GO:0033674  # BP    . uGOs     4   3 L06 D09 R09 BC    .... .... positive regulation of kinase activity
+  GO:0035249  # BP    . uGOs     4   0 L08 D09 R09 BC    .... prdu synaptic transmission, glutamatergic
+  GO:1903557  # BP    . uGOs     4   4 L06 D10 R10 ABC   ...U .... positive regulation of tumor necrosis factor superfamily cytokine production
+  GO:0043484  # BP    . uGOs     4   3 L06 D08 R10 BC    .R.. .... regulation of RNA splicing
+  GO:0060260  # BP    . uGOs     4   4 L10 D11 R11 BC    .R.. .... regulation of transcription initiation by RNA polymerase II
+  GO:0032409  # BP    . uGOs     3   3 L03 D03 R03 B     .... .... regulation of transporter activity
+  GO:0045023  # BP    . uGOs     3   0 L03 D03 R04 C     .... .rdu G0 to G1 transition
+  GO:0098953  # BP    . uGOs     3   1 L03 D04 R04 CE    .... .... receptor diffusion trapping
+  GO:0043062  # BP    . uGOs     3   2 L04 D04 R04 C     .... .... extracellular structure organization
+  GO:0030278  # BP    . uGOs     3   3 L04 D04 R04 AB    .R.. .... regulation of ossification
+  GO:1990000  # BP    . uGOs     3   0 L05 D05 R05 C     .... .rdu amyloid fibril formation
+  GO:0034384  # BP    . uGOs     3   0 L03 D03 R05 AB    .... .rdu high-density lipoprotein particle clearance
+  GO:0043632  # BP    . uGOs     3   3 L05 D05 R05 C     .... .... modification-dependent macromolecule catabolic process
+  GO:0043087  # BP    . uGOs     3   3 L05 D05 R05 B     .... .... regulation of GTPase activity
+  GO:0050657  # BP    . uGOs     3   2 L06 D06 R06 E     .... .... nucleic acid transport
+  GO:0060491  # BP    . uGOs     3   3 L05 D06 R06 BC    .R.. .... regulation of cell projection assembly
+  GO:0033700  # BP    . uGOs     3   0 L06 D06 R06 E     .... .rdu phospholipid efflux
+  GO:0010562  # BP    . uGOs     3   3 L06 D06 R06 BC    ...U .... positive regulation of phosphorus metabolic process
+  GO:0010563  # BP    . uGOs     3   3 L06 D06 R06 BC    ..D. .... negative regulation of phosphorus metabolic process
+  GO:0070169  # BP    . uGOs     3   3 L05 D06 R06 ABD   ...U .... positive regulation of biomineral tissue development
+  GO:0034205  # BP    . uGOs     3   0 L05 D07 R07 C     .... .rdu amyloid-beta formation
+  GO:0016072  # BP    . uGOs     3   3 L06 D07 R07 C     .... .... rRNA metabolic process
+  GO:0032635  # BP    . uGOs     3   0 L03 D07 R07 AC    .... .rdu interleukin-6 production
+  GO:0034063  # BP    . uGOs     3   0 L07 D07 R07 C     .... .rdu stress granule assembly
+  GO:0033344  # BP    . uGOs     3   0 L07 D07 R07 E     .... .rdu cholesterol efflux
+  GO:0032613  # BP    . uGOs     3   0 L03 D07 R07 AC    .... .rdu interleukin-10 production
+  GO:0043691  # BP    . uGOs     3   0 L07 D07 R07 E     .... .rdu reverse cholesterol transport
+  GO:0032637  # BP    . uGOs     3   0 L03 D07 R07 AC    .... .rdu interleukin-8 production
+  GO:0032615  # BP    . uGOs     3   0 L03 D07 R07 AC    .... .rdu interleukin-12 production
+  GO:1902806  # BP    . uGOs     3   3 L07 D07 R07 BC    .R.. .... regulation of cell cycle G1/S phase transition
+  GO:1900182  # BP    . uGOs     3   3 L06 D07 R08 BCE   ...U .... positive regulation of protein localization to nucleus
+  GO:0032608  # BP    . uGOs     3   0 L04 D08 R08 AC    .... .rdu interferon-beta production
+  GO:0032640  # BP    . uGOs     3   0 L04 D08 R08 AC    .... .rdu tumor necrosis factor production
+  GO:0002028  # BP    . uGOs     3   3 L07 D07 R08 BE    .R.. .... regulation of sodium ion transport
+  GO:0070200  # BP    . uGOs     3   0 L06 D08 R08 CE    .... .rdu establishment of protein localization to telomere
+  GO:0061036  # BP    . uGOs     3   1 L05 D06 R08 ABD   ...U .... positive regulation of cartilage development
+  GO:0032607  # BP    . uGOs     3   0 L04 D08 R08 AC    .... .rdu interferon-alpha production
+  GO:0045116  # BP    . uGOs     3   0 L09 D09 R09 C     .... .rdu protein neddylation
+  GO:1902680  # BP    . uGOs     3   3 L08 D09 R09 BC    ...U .... positive regulation of RNA biosynthetic process
+  GO:0033673  # BP    . uGOs     3   2 L06 D09 R09 BC    .... .... negative regulation of kinase activity
+  GO:0034372  # BP    . uGOs     3   0 L05 D09 R09 ABC   .... .rdu very-low-density lipoprotein particle remodeling
+  GO:1904867  # BP    . uGOs     3   0 L09 D09 R09 CE    .... .rdu protein localization to Cajal body
+  GO:0031639  # BP    . uGOs     3   0 L08 D08 R09 C     .... .rdu plasminogen activation
+  GO:1902679  # BP    . uGOs     3   3 L08 D09 R09 BC    ..D. .... negative regulation of RNA biosynthetic process
+  GO:0061614  # BP    . uGOs     3   0 L07 D09 R09 C     .... .rdu miRNA transcription
+  GO:0050731  # BP    . uGOs     3   3 L10 D10 R10 BC    ...U .... positive regulation of peptidyl-tyrosine phosphorylation
+  GO:0051966  # BP    . uGOs     3   3 L06 D07 R10 BC    .R.. .... regulation of synaptic transmission, glutamatergic
+  GO:0051091  # BP    . uGOs     3   3 L04 D11 R11 BC    .... .... positive regulation of DNA-binding transcription factor activity
+  GO:0045766  # BP    . uGOs     3   3 L06 D07 R11 ABD   ...U .... positive regulation of angiogenesis
+  GO:0061919  # BP    . uGOs     2   2 L02 D02 R02 C     .... .... process utilizing autophagic mechanism
+  GO:0050803  # BP    . uGOs     2   0 L03 D03 R03 B     .... p... regulation of synapse structure or activity
+  GO:1905710  # BP    . uGOs     2   2 L04 D04 R04 B     .... .... positive regulation of membrane permeability
+  GO:0007492  # BP    . uGOs     2   0 L04 D04 R04 D     .... p... endoderm development
+  GO:1902459  # BP    . uGOs     2   1 L05 D05 R05 ABD   ...U .... positive regulation of stem cell population maintenance
+  GO:0099628  # BP    . uGOs     2   1 L04 D05 R05 CE    .... .... neurotransmitter receptor diffusion trapping
+  GO:0070316  # BP    . uGOs     2   2 L06 D06 R06 BC    .R.. .... regulation of G0 to G1 transition
+  GO:0046503  # BP    . uGOs     2   2 L05 D06 R06 C     .... .... glycerolipid catabolic process
+  GO:0099643  # BP    . uGOs     2   2 L05 D07 R07 BCE   P... .... signal release from synapse
+  GO:0001938  # BP    . uGOs     2   2 L07 D07 R07 BC    ...U .... positive regulation of endothelial cell proliferation
+  GO:0031294  # BP    . uGOs     2   2 L02 D08 R08 ABCG  .... .... lymphocyte costimulation
+  GO:0070203  # BP    . uGOs     2   2 L07 D08 R09 BCE   .R.. .... regulation of establishment of protein localization to telomere
+  GO:0032653  # BP    . uGOs     2   2 L05 D09 R09 ABC   .R.. .... regulation of interleukin-10 production
+  GO:0032675  # BP    . uGOs     2   2 L05 D09 R09 ABC   .R.. .... regulation of interleukin-6 production
+  GO:2000630  # BP    . uGOs     2   2 L08 D09 R09 BC    ...U .... positive regulation of miRNA metabolic process
+  GO:0032655  # BP    . uGOs     2   2 L05 D09 R09 ABC   .R.. .... regulation of interleukin-12 production
+  GO:0032677  # BP    . uGOs     2   2 L05 D09 R09 ABC   .R.. .... regulation of interleukin-8 production
+  GO:0032647  # BP    . uGOs     2   2 L06 D10 R10 ABC   .R.. .... regulation of interferon-alpha production
+  GO:1902893  # BP    . uGOs     2   2 L08 D10 R10 BC    .R.. .... regulation of miRNA transcription
+  GO:1904869  # BP    . uGOs     2   2 L07 D07 R10 BCE   .R.. .... regulation of protein localization to Cajal body
+  GO:0050779  # BP    . uGOs     2   2 L04 D10 R10 BC    ...U .... RNA destabilization
+  GO:0032648  # BP    . uGOs     2   2 L06 D10 R10 ABC   .R.. .... regulation of interferon-beta production
+  GO:0010755  # BP    . uGOs     2   2 L09 D10 R10 BC    .R.. .... regulation of plasminogen activation
+  GO:0032481  # BP    . uGOs     2   2 L06 D10 R10 ABC   ...U .... positive regulation of type I interferon production
+  GO:0032680  # BP    . uGOs     2   2 L06 D10 R10 ABC   .R.. .... regulation of tumor necrosis factor production
+  GO:0034243  # BP    . uGOs     2   2 L10 D11 R11 BC    .R.. .... regulation of transcription elongation by RNA polymerase II
+  GO:0000079  # BP    . uGOs     2   2 L08 D11 R11 BC    .... .... regulation of cyclin-dependent protein serine/threonine kinase activity
+  GO:0032786  # BP    . uGOs     2   2 L10 D11 R11 BC    ...U .... positive regulation of DNA-templated transcription, elongation
+  GO:2000144  # BP    . uGOs     2   1 L10 D11 R11 BC    ...U .... positive regulation of DNA-templated transcription initiation
+  GO:0008219  # BP    . uGOs     1   1 L02 D02 R02 C     .... .... cell death
+  GO:0060324  # BP    . uGOs     1   0 L03 D03 R04 D     P... p... face development
+  GO:0050819  # BP    . uGOs     1   1 L05 D05 R05 AB    ..D. .... negative regulation of coagulation
+  GO:0050820  # BP    . uGOs     1   1 L05 D05 R05 AB    ...U .... positive regulation of coagulation
+  GO:0045778  # BP    . uGOs     1   1 L05 D05 R05 AB    ...U .... positive regulation of ossification
+  GO:1903513  # BP    . uGOs     1   1 L04 D05 R05 CE    .... .... endoplasmic reticulum to cytosol transport
+  GO:0098970  # BP    . uGOs     1   0 L04 D06 R06 BCE   .... .r.. postsynaptic neurotransmitter receptor diffusion trapping
+  GO:1900047  # BP    . uGOs     1   1 L04 D05 R06 B     ..D. .... negative regulation of hemostasis
+  GO:1900048  # BP    . uGOs     1   1 L04 D05 R06 B     ...U .... positive regulation of hemostasis
+  GO:0048661  # BP    . uGOs     1   1 L06 D06 R06 BC    ...U .... positive regulation of smooth muscle cell proliferation
+  GO:0034368  # BP    . uGOs     1   1 L06 D06 R06 C     .... .... protein-lipid complex remodeling
+  GO:0030501  # BP    . uGOs     1   1 L06 D07 R07 ABD   ...U .... positive regulation of bone mineralization
+  GO:0051028  # BP    . uGOs     1   1 L05 D08 R08 E     .... .... mRNA transport
+  GO:0034375  # BP    . uGOs     1   1 L04 D08 R08 ABC   .... .... high-density lipoprotein particle remodeling
+  GO:1904018  # BP    . uGOs     1   1 L05 D06 R08 ABD   ...U .... positive regulation of vasculature development
+  GO:1902656  # BP    . uGOs     1   1 L08 D08 R08 E     .... .... calcium ion import into cytosol
+  GO:0010765  # BP    . uGOs     1   1 L06 D08 R09 BE    ...U .... positive regulation of sodium ion transport
+  GO:0000338  # BP    . uGOs     1   0 L09 D09 R09 C     .... .r.. protein deneddylation
+  GO:0033138  # BP    . uGOs     1   1 L10 D10 R10 BC    ...U .... positive regulation of peptidyl-serine phosphorylation
+  GO:0051968  # BP    . uGOs     1   1 L06 D08 R11 BC    ...U .... positive regulation of synaptic transmission, glutamatergic
+  GO:0060261  # BP    . uGOs     1   1 L11 D12 R12 BC    ...U .... positive regulation of transcription initiation by RNA polymerase II
+  GO:0099505  # BP    . uGOs     0   0 L04 D04 R04 B     .... .... regulation of presynaptic membrane potential
+  GO:0050821  # BP    . uGOs     0   0 L04 D04 R04 B     .... .... protein stabilization
+  GO:0060371  # BP    . uGOs     0   0 L05 D05 R06 BC    .... .... regulation of atrial cardiac muscle cell membrane depolarization
+  GO:0032755  # BP    . uGOs     0   0 L06 D10 R10 ABC   ...U .... positive regulation of interleukin-6 production
+  GO:0032757  # BP    . uGOs     0   0 L06 D10 R10 ABC   ...U .... positive regulation of interleukin-8 production
+  GO:0036092  # BP    . uGOs     0   0 L09 D10 R10 C     .... .... phosphatidylinositol-3-phosphate biosynthetic process
+  GO:0032735  # BP    . uGOs     0   0 L06 D10 R10 ABC   ...U .... positive regulation of interleukin-12 production
+  GO:0070979  # BP    . uGOs     0   0 L11 D11 R11 C     .... .... protein K11-linked ubiquitination
+  GO:1902894  # BP    . uGOs     0   0 L09 D11 R11 BC    ..D. .... negative regulation of miRNA transcription
+  GO:0032727  # BP    . uGOs     0   0 L07 D11 R11 ABC   ...U .... positive regulation of interferon-alpha production
+  GO:0032760  # BP    . uGOs     0   0 L07 D11 R11 ABC   ...U .... positive regulation of tumor necrosis factor production
+  GO:1902895  # BP    . uGOs     0   0 L09 D11 R11 BC    ...U .... positive regulation of miRNA transcription
+  GO:1904871  # BP    . uGOs     0   0 L07 D08 R11 BCE   ...U .... positive regulation of protein localization to Cajal body
+  GO:0051092  # BP    . uGOs     0   0 L05 D12 R12 BC    .... .... positive regulation of NF-kappaB transcription factor activity
+  GO:0032968  # BP    . uGOs     0   0 L11 D12 R12 BC    ...U .... positive regulation of transcription elongation by RNA polymerase II
+* GO:0065003  # BP    9 uGOs   336  98 L05 D05 R05 C     .... .rdu protein-containing complex assembly
+  GO:0043254  # BP    . uGOs   109  38 L05 D05 R06 BC    .R.. .... regulation of protein-containing complex assembly
+  GO:0031334  # BP    . uGOs    40  32 L06 D06 R07 BC    ...U .... positive regulation of protein-containing complex assembly
+  GO:0051258  # BP    . uGOs    30   4 L06 D06 R06 C     .... .rdu protein polymerization
+  GO:0065004  # BP    . uGOs    21  11 L06 D06 R06 C     .... .... protein-DNA complex assembly
+  GO:0032271  # BP    . uGOs    12   6 L06 D06 R07 BC    .R.. .... regulation of protein polymerization
+  GO:0065005  # BP    . uGOs    11   3 L06 D06 R06 C     .... .... protein-lipid complex assembly
+  GO:0034377  # BP    . uGOs     6   3 L03 D07 R07 ABC   P... .... plasma lipoprotein particle assembly
+  GO:0070897  # BP    . uGOs     6   3 L07 D07 R10 C     P... .... transcription preinitiation complex assembly
+  GO:0051123  # BP    . uGOs     3   0 L08 D08 R11 C     P... .rdu RNA polymerase II preinitiation complex assembly
+**GO:0030154  # BP   70 uGOs   262  79 L03 D03 R03 CD    .... prdu cell differentiation
+  GO:0022008  # BP    . uGOs   344   2 L04 D04 R06 ACD   P... .rdu neurogenesis
+  GO:0048699  # BP    . uGOs   329   1 L05 D05 R07 ACD   .... p... generation of neurons
+  GO:0030182  # BP    . uGOs   280  13 L04 D04 R08 ACD   P... prdu neuron differentiation
+  GO:0048468  # BP    . uGOs   252  42 L03 D03 R04 CD    P... prdu cell development
+  GO:0045595  # BP    . uGOs   191  41 L04 D04 R04 BCD   .R.. .... regulation of cell differentiation
+  GO:0045596  # BP    . uGOs   154  40 L05 D05 R05 BCD   ..D. .... negative regulation of cell differentiation
+  GO:0042063  # BP    . uGOs   134   0 L05 D05 R07 ACD   .... prdu gliogenesis
+  GO:0045597  # BP    . uGOs   132  37 L05 D05 R05 BCD   ...U .... positive regulation of cell differentiation
+  GO:0048812  # BP    . uGOs   122   5 L05 D07 R11 ACD   P... p... neuron projection morphogenesis
+  GO:0048666  # BP    . uGOs   107   8 L04 D04 R09 ACD   P... p... neuron development
+  GO:0030097  # BP    . uGOs   100   5 L04 D04 R05 CD    .... prdu hemopoiesis
+  GO:0030217  # BP    . uGOs    98   8 L05 D07 R09 ACDG  .... prdu T cell differentiation
+  GO:0045165  # BP    . uGOs    72  35 L03 D03 R04 CD    P... prdu cell fate commitment
+  GO:0097485  # BP    . uGOs    71   3 L07 D07 R12 ACD   P... p... neuron projection guidance
+  GO:0010001  # BP    . uGOs    69   8 L04 D04 R08 ACD   P... prdu glial cell differentiation
+  GO:0007411  # BP    . uGOs    65  19 L08 D08 R13 ACD   P... prdu axon guidance
+  GO:1903706  # BP    . uGOs    60   6 L04 D06 R06 ABCDG .R.. .... regulation of hemopoiesis
+  GO:0030099  # BP    . uGOs    53   5 L04 D04 R06 CD    P... prdu myeloid cell differentiation
+  GO:0031175  # BP    . uGOs    49   8 L06 D06 R10 ACD   P... prdu neuron projection development
+  GO:0030183  # BP    . uGOs    48   2 L05 D07 R09 ACDG  .... prdu B cell differentiation
+  GO:0045580  # BP    . uGOs    45  10 L07 D09 R10 ABCDG .R.. .... regulation of T cell differentiation
+  GO:0060284  # BP    . uGOs    38  25 L05 D05 R05 BCD   .R.. .... regulation of cell development
+  GO:0002573  # BP    . uGOs    38   7 L05 D05 R07 CD    .... .rdu myeloid leukocyte differentiation
+  GO:1902105  # BP    . uGOs    37   5 L05 D07 R07 ABCDG .R.. .... regulation of leukocyte differentiation
+  GO:0042692  # BP    . uGOs    35   2 L04 D04 R04 CD    P... prdu muscle cell differentiation
+  GO:0007409  # BP    . uGOs    32   4 L06 D08 R12 ACD   P... prdu axonogenesis
+  GO:0010720  # BP    . uGOs    30  23 L06 D06 R06 BCD   ...U .... positive regulation of cell development
+  GO:0002761  # BP    . uGOs    29   7 L06 D08 R08 ABCDG .R.. .... regulation of myeloid leukocyte differentiation
+  GO:0046632  # BP    . uGOs    29   5 L06 D08 R10 ACDG  .... prdu alpha-beta T cell differentiation
+  GO:0048863  # BP    . uGOs    23   9 L04 D04 R04 CD    .... prdu stem cell differentiation
+  GO:0045058  # BP    . uGOs    23   5 L02 D02 R10 ACDG  P... .... T cell selection
+  GO:0016358  # BP    . uGOs    22   4 L03 D07 R11 ACD   .... prdu dendrite development
+  GO:0050770  # BP    . uGOs    21   4 L05 D08 R13 ABCD  .R.. .... regulation of axonogenesis
+  GO:0021782  # BP    . uGOs    17   7 L04 D04 R09 ACD   P... p... glial cell development
+  GO:0045637  # BP    . uGOs    16   6 L05 D07 R07 ABCDG .R.. .... regulation of myeloid cell differentiation
+  GO:0010975  # BP    . uGOs    16   7 L07 D07 R11 ABCD  .R.. .... regulation of neuron projection development
+  GO:0043368  # BP    . uGOs    16   2 L03 D03 R11 ACDG  .... p... positive T cell selection
+  GO:0002521  # BP    . uGOs    15   2 L04 D04 R06 CD    P... .rdu leukocyte differentiation
+  GO:0002062  # BP    . uGOs    15   1 L04 D04 R07 ACD   P... prdu chondrocyte differentiation
+  GO:0050767  # BP    . uGOs    15   3 L06 D06 R07 ABCD  .R.. .... regulation of neurogenesis
+  GO:0045445  # BP    . uGOs    14   2 L04 D04 R04 CD    P... prdu myoblast differentiation
+  GO:1903708  # BP    . uGOs    14   1 L05 D07 R07 ABCDG ...U .... positive regulation of hemopoiesis
+  GO:0045577  # BP    . uGOs    14   6 L07 D09 R10 ABCDG .R.. .... regulation of B cell differentiation
+  GO:0051146  # BP    . uGOs    13   2 L05 D05 R05 CD    .... prdu striated muscle cell differentiation
+  GO:1902107  # BP    . uGOs    13   3 L06 D08 R08 ABCDG ...U .... positive regulation of leukocyte differentiation
+  GO:0055001  # BP    . uGOs    12   2 L04 D04 R05 CD    P... p... muscle cell development
+  GO:1903131  # BP    . uGOs    10   4 L05 D05 R07 CD    .... .... mononuclear cell differentiation
+  GO:0061564  # BP    . uGOs    10   2 L07 D07 R11 ACD   .... p... axon development
+  GO:0043369  # BP    . uGOs    10   2 L05 D05 R12 ACDG  P... .... CD4-positive or CD8-positive, alpha-beta T cell lineage commitment
+  GO:0045444  # BP    . uGOs     9   2 L04 D04 R04 CD    .... .rdu fat cell differentiation
+  GO:0055002  # BP    . uGOs     9   2 L05 D05 R06 CD    P... p... striated muscle cell development
+  GO:0048667  # BP    . uGOs     9   4 L04 D04 R10 ACD   P... p... cell morphogenesis involved in neuron differentiation
+  GO:0035987  # BP    . uGOs     8   0 L04 D04 R09 ACD   P... prdu endodermal cell differentiation
+  GO:0043373  # BP    . uGOs     8   2 L06 D06 R13 ACDG  P... .... CD4-positive, alpha-beta T cell lineage commitment
+  GO:0043367  # BP    . uGOs     7   3 L07 D09 R11 ACDG  .... prdu CD4-positive, alpha-beta T cell differentiation
+  GO:0030098  # BP    . uGOs     6   3 L04 D06 R08 ACDG  .... .rdu lymphocyte differentiation
+  GO:0001649  # BP    . uGOs     5   0 L04 D04 R04 ACD   P... prdu osteoblast differentiation
+  GO:0045619  # BP    . uGOs     5   5 L06 D08 R09 ABCDG .R.. .... regulation of lymphocyte differentiation
+  GO:0010717  # BP    . uGOs     4   4 L05 D05 R07 BCD   .R.. .... regulation of epithelial to mesenchymal transition
+  GO:0045579  # BP    . uGOs     4   4 L08 D10 R11 ABCDG ...U .... positive regulation of B cell differentiation
+  GO:0010976  # BP    . uGOs     4   4 L07 D08 R12 ABCD  ...U .... positive regulation of neuron projection development
+  GO:0045661  # BP    . uGOs     3   3 L05 D05 R05 BCD   .R.. .... regulation of myoblast differentiation
+  GO:0010718  # BP    . uGOs     3   3 L05 D06 R08 ABCD  ...U .... positive regulation of epithelial to mesenchymal transition
+  GO:0002360  # BP    . uGOs     3   3 L04 D04 R10 ACDG  P... .... T cell lineage commitment
+  GO:0045621  # BP    . uGOs     3   3 L07 D09 R10 ABCDG ...U .... positive regulation of lymphocyte differentiation
+  GO:0002363  # BP    . uGOs     3   3 L05 D05 R11 ACDG  P... .... alpha-beta T cell lineage commitment
+  GO:0045667  # BP    . uGOs     2   2 L05 D05 R05 ABCD  .R.. .... regulation of osteoblast differentiation
+  GO:0045663  # BP    . uGOs     1   1 L06 D06 R06 BCD   ...U .... positive regulation of myoblast differentiation
+  GO:0045669  # BP    . uGOs     0   0 L06 D06 R06 ABCD  ...U .... positive regulation of osteoblast differentiation
+* GO:0055086  # BP    1 uGOs   216   6 L04 D05 R05 C     .... .... nucleobase-containing small molecule metabolic process
+  GO:0006182  # BP    . uGOs     0   0 L07 D11 R11 C     .... .... cGMP biosynthetic process
+**GO:0040007  # BP   10 uGOs    46   6 L01 D01 R01 K     .... .rdu growth
+  GO:0060560  # BP    . uGOs    84  24 L03 D03 R04 DK    P... .... developmental growth involved in morphogenesis
+  GO:0040008  # BP    . uGOs    60   9 L03 D03 R03 BK    .R.. .... regulation of growth
+  GO:0045927  # BP    . uGOs    39   5 L04 D04 R04 BK    ...U .... positive regulation of growth
+  GO:0048638  # BP    . uGOs    36  25 L04 D04 R04 BDK   .R.. .... regulation of developmental growth
+  GO:0048589  # BP    . uGOs    28  21 L02 D02 R02 DK    P... .rdu developmental growth
+  GO:1990138  # BP    . uGOs    16   4 L04 D04 R12 ACDK  P... .... neuron projection extension
+  GO:0016049  # BP    . uGOs    14   6 L02 D02 R02 CK    .... prdu cell growth
+  GO:0001558  # BP    . uGOs    14  12 L04 D05 R05 BCK   .R.. .... regulation of cell growth
+  GO:0048588  # BP    . uGOs    12  12 L03 D03 R05 CDK   P... .... developmental cell growth
+**GO:0002181  # BP    2 uGOs    33   0 L06 D06 R07 C     .... prdu cytoplasmic translation
+  GO:2000765  # BP    . uGOs     5   5 L08 D10 R10 BC    .R.. .... regulation of cytoplasmic translation
+**GO:0006914  # BP    6 uGOs    23   6 L03 D04 R04 C     .... prdu autophagy
+  GO:0016236  # BP    . uGOs    41  11 L04 D05 R05 C     .... prdu macroautophagy
+  GO:0010506  # BP    . uGOs    26   6 L06 D06 R06 BC    .R.. .... regulation of autophagy
+  GO:0016241  # BP    . uGOs    18   8 L07 D07 R07 BC    .R.. .... regulation of macroautophagy
+  GO:0010508  # BP    . uGOs    12   4 L07 D07 R07 BC    ...U .... positive regulation of autophagy
+  GO:0000422  # BP    . uGOs     6   3 L04 D05 R05 C     .... .rdu autophagy of mitochondrion
+**GO:0042254  # BP    4 uGOs    10   0 L05 D05 R05 C     .... prdu ribosome biogenesis
+  GO:0042255  # BP    . uGOs     9   2 L07 D07 R07 C     P... p... ribosome assembly
+  GO:0000028  # BP    . uGOs     3   2 L07 D07 R08 C     P... .... ribosomal small subunit assembly
+  GO:0042274  # BP    . uGOs     2   0 L05 D05 R06 C     P... p... ribosomal small subunit biogenesis
+**GO:0048511  # BP    4 uGOs     5   4 L01 D01 R01 M     .... .... rhythmic process
+  GO:0042752  # BP    . uGOs    20   6 L03 D03 R03 BM    .R.. .... regulation of circadian rhythm
+  GO:0007623  # BP    . uGOs    10   7 L02 D02 R02 M     .... .rdu circadian rhythm
+  GO:0032922  # BP    . uGOs     0   0 L03 D08 R08 BCM   .... .... circadian regulation of gene expression

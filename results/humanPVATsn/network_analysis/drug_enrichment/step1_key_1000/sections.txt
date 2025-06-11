@@ -1,0 +1,76 @@
+# Versions:
+#    go-basic.obo: fmt(1.2) rel(2025-06-01) 43,448 Terms; optional_attrs(relationship)
+#    goslim_generic.obo: fmt(1.2) rel(go/2025-06-01/subsets/goslim_generic.owl) 206 Terms
+
+# GROUP NAME: init
+# SECTION: Metabolic processes
+GO:0030163  # BP **   19 uGOs    39  15 L05 D05 R05 C     .... prdu protein catabolic process
+GO:0042592  # BP **   17 uGOs     4   3 L01 D01 R01 N     .... p... homeostatic process
+
+# SECTION: ECM oganisation
+GO:0007155  # BP **   26 uGOs    94   7 L02 D02 R02 C     .... .rdu cell adhesion
+GO:0030198  # BP **    3 uGOs    32   9 L05 D05 R05 C     .... prdu extracellular matrix organization
+
+# SECTION: Transcriptional control
+GO:0006310  # BP **    1 uGOs    90  11 L06 D07 R07 C     .... prdu DNA recombination
+GO:0006325  # BP **    8 uGOs    86   9 L04 D04 R04 C     .... prdu chromatin organization
+GO:0006281  # BP **   11 uGOs    81  17 L05 D07 R07 CH    .... prdu DNA repair
+GO:0006260  # BP **    4 uGOs    54   1 L06 D07 R07 C     .... prdu DNA replication
+GO:0007059  # BP **    8 uGOs    22   1 L03 D03 R04 C     .... prdu chromosome segregation
+GO:0006399  # BP *     2 uGOs    18   7 L06 D07 R07 C     .... .rdu tRNA metabolic process
+GO:0016071  # BP **   24 uGOs    14   7 L06 D07 R07 C     .... .rdu mRNA metabolic process
+GO:0031047  # BP **    5 uGOs    10   3 L09 D09 R09 BC    .... prd. regulatory ncRNA-mediated gene silencing
+GO:0032200  # BP **   10 uGOs     4   2 L06 D06 R06 C     .... p... telomere organization
+
+# SECTION: Mitochondrion organisation
+GO:0007005  # BP **   10 uGOs    12   7 L05 D05 R05 C     .... pr.u mitochondrion organization
+
+# SECTION: Cell signalling
+GO:0055085  # BP **   24 uGOs   223  47 L02 D04 R04 CE    .... .rdu transmembrane transport
+GO:0050896  # BP **  288 uGOs   180  15 L01 D01 R01 H     .... .rdu response to stimulus
+GO:0044419  # BP **   45 uGOs   166   5 L01 D01 R01 I     .... .... biological process involved in interspecies interaction between organisms
+GO:0034330  # BP **    8 uGOs   102   7 L04 D04 R04 C     .... .... cell junction organization
+GO:0016192  # BP **   21 uGOs    72  19 L02 D04 R04 CE    .... pr.. vesicle-mediated transport
+GO:0006913  # BP **    5 uGOs    35   2 L05 D06 R06 CE    .... .rdu nucleocytoplasmic transport
+GO:0072659  # BP **    2 uGOs     6   2 L05 D06 R06 CE    .... prdu protein localization to plasma membrane
+
+# SECTION: Immune or inflammatory response
+GO:0016032  # BP **    3 uGOs   116  50 L01 D01 R01 J     .... prdu viral process
+GO:0042060  # BP **   15 uGOs    54   1 L04 D04 R04 H     .... prdu wound healing
+GO:0006954  # BP **    5 uGOs    30   6 L04 D04 R04 H     .... prdu inflammatory response
+
+# SECTION: Nervous system
+GO:0050877  # BP **    6 uGOs   140  14 L03 D03 R03 A     .... .rdu nervous system process
+
+# SECTION: Cell motility or localisation
+GO:0048870  # BP **   14 uGOs   154  12 L02 D02 R02 C     .... prdu cell motility
+GO:0040011  # BP **   35 uGOs    18   6 L01 D01 R01 L     .... .rdu locomotion
+
+# SECTION: Intracellular organisation
+GO:0061024  # BP **    1 uGOs   212  30 L04 D04 R04 C     .... p... membrane organization
+GO:0007010  # BP **   21 uGOs    71   9 L05 D05 R05 C     .... prdu cytoskeleton organization
+GO:0007163  # BP **    1 uGOs    43  11 L02 D02 R02 C     .... .r.. establishment or maintenance of cell polarity
+
+# SECTION: Circulatory system
+GO:0003013  # BP **   17 uGOs   180   5 L03 D03 R03 A     .... .... circulatory system process
+
+# SECTION: Muscle system
+GO:0003012  # BP **    6 uGOs   201   4 L03 D03 R03 A     .... .r.. muscle system process
+
+# SECTION: Programmed cell death
+GO:0012501  # BP **   17 uGOs   212  12 L03 D03 R03 C     .... prdu programmed cell death
+
+# SECTION: Mitotic cell cycle
+GO:0000278  # BP **   18 uGOs    17   4 L03 D03 R03 C     .... prdu mitotic cell cycle
+
+# SECTION: Misc.
+GO:0008150  # BP *   645 uGOs   486  18 L00 D00 R00       .... .rdu biological_process
+GO:0065003  # BP *     9 uGOs   336  98 L05 D05 R05 C     .... .rdu protein-containing complex assembly
+GO:0030154  # BP **   70 uGOs   262  79 L03 D03 R03 CD    .... prdu cell differentiation
+GO:0055086  # BP *     1 uGOs   216   6 L04 D05 R05 C     .... .... nucleobase-containing small molecule metabolic process
+GO:0040007  # BP **   10 uGOs    46   6 L01 D01 R01 K     .... .rdu growth
+GO:0002181  # BP **    2 uGOs    33   0 L06 D06 R07 C     .... prdu cytoplasmic translation
+GO:0006914  # BP **    6 uGOs    23   6 L03 D04 R04 C     .... prdu autophagy
+GO:0042254  # BP **    4 uGOs    10   0 L05 D05 R05 C     .... prdu ribosome biogenesis
+GO:0048511  # BP **    4 uGOs     5   4 L01 D01 R01 M     .... .... rhythmic process
+

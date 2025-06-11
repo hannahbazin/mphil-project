@@ -1,0 +1,196 @@
+---
+title: "Pathway enrichment analysis of targets of significant drugs"
+author: "Hannah M. L. Bazin"
+date: "r doc_date()"
+output: BiocStyle::html_document:
+      toc: yes
+      toc_depth: 3
+      toc_float: yes
+      code_folding: "hide" 
+---
+
+# Set up
+
+## Load libraries
+
+```{r}
+
+library(dplyr)
+library(gprofiler2)
+library(igraph)
+
+```
+
+## Set latest g:Profiler
+
+```{r}
+
+set_base_url("https://biit.cs.ut.ee/gprofiler")
+
+```
+
+
+## Set working directory
+
+The working directory can be set by running the following command in the console: `setwd("/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project")`.
+
+# Step 1 of differentiation - key genes only - 1000 iterations
+
+## Load data
+
+```{r}
+
+# Drug–target assignments
+step1_targets_key_1000_path <- "/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project/results/humanPVATsn/network_analysis/proximity_significant_drugs/significant_targets_key_1000_step1.csv"
+step1_targets_df <- read.csv(step1_targets_key_1000_path)
+
+# Protein–protein interaction network
+combined_PPI_path <- "/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project/data/networks/combined_PPI.csv"
+ppi <- read.csv(combined_PPI_path)
+colnames(ppi) <- c("Gene_A", "Gene_B")
+
+```
+
+## Build PPI graph
+
+```{r}
+
+ppi_graph <- graph_from_data_frame(ppi, directed = FALSE)
+
+get_neighbours <- function(gene) {
+  if (gene %in% V(ppi_graph)$name) {
+    neighbors(ppi_graph, gene) %>% names()
+  } else {
+    return(character(0))
+  }
+}
+
+```
+
+## Collapse targets per drug
+
+```{r}
+
+step1_drug_target_list <- step1_targets_df %>%
+  group_by(Drug_Name) %>%
+  summarise(Targets = paste(unique(Drug_Target), collapse = ","))
+
+```
+
+## Expand targets for drugs with <6 targets
+
+```{r}
+
+step1_drug_target_list$Expanded_Targets <- NA
+
+for (i in 1:nrow(step1_drug_target_list)) {
+  targets <- unlist(strsplit(step1_drug_target_list$Targets[i], ","))
+  if (length(targets) < 6) {
+    extended <- unique(unlist(c(targets, unlist(lapply(targets, get_neighbours)))))
+    step1_drug_target_list$Expanded_Targets[i] <- paste(extended, collapse = ",")
+    cat(step1_drug_target_list$Drug_Name[i], "- extended from", length(targets), "to", length(extended), "targets\n")
+  } else {
+    step1_drug_target_list$Expanded_Targets[i] <- step1_drug_target_list$Targets[i]
+  }
+}
+
+```
+
+## Run g:Profiler Reactome enrichment per drug
+
+```{r}
+
+# Create folder to save results if it doesn't exist
+results_dir <- "/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project/results/humanPVATsn/network_analysis/drug_enrichment/step1_key_1000/"
+if (!dir.exists(results_dir)) {
+  dir.create(results_dir, recursive = TRUE)
+}
+
+for (i in 1:nrow(step1_drug_target_list)) {
+  
+  drug <- step1_drug_target_list$Drug_Name[i]
+  gene_list <- unlist(strsplit(step1_drug_target_list$Expanded_Targets[i], ","))
+  
+  cat("Running enrichment for:", drug, "-", length(gene_list), "genes\n")
+  
+  # Run pathway enrichment
+  enrichment <- gost(query = gene_list, organism = "hsapiens", sources = "GO:BP", significant = TRUE)
+  
+  # Check that enrichment worked, then save
+  if (!is.null(enrichment) && nrow(enrichment$result) > 0) {
+    
+    out_file <- paste0(results_dir, gsub("[^a-zA-Z0-9]", "_", drug), ".csv")
+    
+    # Convert list-columns (like `parents`) to character
+    enrichment_clean <- enrichment$result
+    enrichment_clean$parents <- sapply(enrichment_clean$parents, function(x) paste(x, collapse = "|"))
+    
+    # Drop unnecessary column
+    enrichment_clean <- enrichment_clean[, !(names(enrichment_clean) %in% c("evidence_codes"))]    
+    
+    # Save as CSV file
+    write.csv(enrichment_clean, out_file, row.names = FALSE)
+    
+  } else {
+    
+    cat("No enriched Reactome pathways for", drug, "\n")
+    
+  }
+}
+
+```
+
+## Combine all enrichments into one master dataframe
+
+```{r}
+
+# Path to your enrichment folder
+results_dir <- "/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project/results/humanPVATsn/network_analysis/drug_enrichment/step1_key_1000"
+
+# Get list of all CSV files
+files <- list.files(results_dir, pattern = "\\.csv$", full.names = TRUE)
+
+# Combine into one dataframe
+all_enrichments <- do.call(rbind, lapply(files, function(f) {
+  df <- read.csv(f)
+  df$Drug_Name <- gsub("_", " ", gsub("^enriched_reactome_|\\.csv$", "", basename(f)))
+  return(df)
+}))
+
+# Filter by significance
+filtered_enrichments <- all_enrichments %>%
+  filter(p_value < 1e-12)  # adjust if needed
+
+ # Save as CSV file
+write.csv(filtered_enrichments, "/Users/hannahbazin/Desktop/Cambridge/Academics/Han_Lab/MPhil/mphil-project/results/humanPVATsn/network_analysis/drug_enrichment/step1_key_1000/all_enrichments_1e_12.csv", row.names = FALSE)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

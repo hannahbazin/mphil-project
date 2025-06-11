@@ -1,0 +1,21 @@
+  GO:0071825  # BP    . uGOs    24   4 L05 D05 R05 A     .... .... protein-lipid complex organization
+  GO:0034368  # BP    . uGOs    16   1 L06 D06 R06 A     .... .... protein-lipid complex remodeling
+  GO:0006869  # BP    . uGOs    49  21 L04 D04 R04 B     P... .rdu lipid transport
+  GO:0015914  # BP    . uGOs    30   8 L05 D05 R05 B     .... .rdu phospholipid transport
+  GO:0010876  # BP    . uGOs     6   2 L03 D03 R03 B     .... prdu lipid localization
+  GO:0033700  # BP    . uGOs     3   0 L06 D06 R06 B     .... .rdu phospholipid efflux
+  GO:0033993  # BP    . uGOs   152  36 L03 D03 R03 C     .... .... response to lipid
+  GO:0071396  # BP    . uGOs    72  32 L04 D04 R04 AC    .... .... cellular response to lipid
+**GO:0006629  # BP   19 uGOs   494  15 L04 D04 R04 A     .... .rdu lipid metabolic process
+  GO:0006644  # BP    . uGOs    89  21 L05 D05 R05 A     .... .rdu phospholipid metabolic process
+  GO:0008654  # BP    . uGOs    66  20 L05 D06 R06 A     .... .rdu phospholipid biosynthetic process
+  GO:0006650  # BP    . uGOs    62  11 L06 D06 R06 A     .... .... glycerophospholipid metabolic process
+  GO:0046474  # BP    . uGOs    43   9 L06 D07 R07 A     .... .... glycerophospholipid biosynthetic process
+  GO:0046486  # BP    . uGOs    22   4 L05 D05 R05 A     .... .... glycerolipid metabolic process
+  GO:0046503  # BP    . uGOs    22   2 L05 D06 R06 A     .... .... glycerolipid catabolic process
+  GO:0006638  # BP    . uGOs     4   3 L05 D05 R05 A     .... .... neutral lipid metabolic process
+  GO:0045017  # BP    . uGOs     2   2 L05 D06 R06 A     .... .... glycerolipid biosynthetic process
+  GO:0065005  # BP    . uGOs    11   3 L06 D06 R06 A     .... .... protein-lipid complex assembly
+  GO:0019216  # BP    . uGOs   255  11 L06 D06 R06 AG    .R.. .... regulation of lipid metabolic process
+  GO:1905952  # BP    . uGOs    11   3 L04 D04 R04 BG    .R.. .... regulation of lipid localization
+  GO:0055088  # BP    . uGOs    12   8 L03 D03 R03 J     .... .... lipid homeostasis
