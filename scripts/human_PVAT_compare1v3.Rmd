@@ -517,7 +517,7 @@ condition_labels <- list("A only" = "healthy only", "B only" = "obese only", "co
 
 ```
 
-### Define function
+### Individual bar plots
 
 Define function to create and save bar plots.
 - For the A only and B only pathways, we rank them based on fold enrichment.
@@ -526,8 +526,103 @@ Define function to create and save bar plots.
 ```{r}
 
 create_and_save_bar_plot <- function(df, category, title_label, output_file) {
-
   # Assign a color per condition
+  fill_col <- case_when(
+    category == "A only" ~ "#0072B2",
+    category == "B only" ~ "#E69F00",
+    category == "common" ~ "#009E73"
+  )
+  if(category == "common") {
+
+    sorting_col <- "combined_p"
+
+    df_filtered <- df %>%
+      filter(status == category) %>%
+      # Sort by descending combined p value
+      arrange(desc(combined_p)) %>%
+      # Keep only those with more than 5 occurrences
+      filter(occurrence_A > 5 & occurrence_B > 5) %>%
+      # Keep top 20 pathways for visualisation
+      slice_head(n = 20) %>%
+      # Ensure factor levels are correctly ordered for plotting
+      mutate(Term_Description = factor(Term_Description, levels = Term_Description))
+
+    # Adjust x-axis for "common" category to ensure longest bars at the top
+    x_var <- -log10(df_filtered[[sorting_col]])  # Convert p-values for better visualisation
+    x_label <- "-log10(combined P value)"
+
+  } else {
+
+    sorting_col <- paste0("Fold_Enrichment_", substr(category, 1, 1))
+    occurrence_col <- paste0("occurrence_", substr(category, 1, 1))
+
+    df_filtered <- df %>%
+      filter(status == category) %>%
+      # Sort by descending fold enrichment
+      arrange(desc(.data[[sorting_col]])) %>%
+      # Keep only those with more than 5 occurrences
+      filter(.data[[occurrence_col]] > 5) %>% 
+      # Keep top 20 pathways for visualisation
+      slice_head(n = 20) %>%
+      # Ensure factor levels are correctly ordered for plotting
+      mutate(Term_Description = factor(Term_Description, levels = rev(Term_Description)))
+
+    x_var <- df_filtered[[sorting_col]]
+    x_label <- "Fold enrichment"
+
+    }
+
+  # Create bar plot
+  plot <- ggplot(df_filtered, aes(x = x_var, y = Term_Description)) +
+    geom_bar(stat = "identity", color = "black", fill = fill_col) +
+    labs(title = title_label, x = x_label,
+         y = "Pathway") +
+    theme_minimal() +
+    theme(legend.position = "none", plot.margin = margin(10, 20, 10, 10))
+
+  # Save plot
+  ggsave(output_file, plot, width = 12, height = 6, device = "pdf")
+  # Return plot
+  return(plot)
+
+}
+
+```
+
+Generate plots for each differentiation stage: early pre-adipocytes, intermediate pre-adipocytes, and mature adipocytes.
+
+```{r fig.width=12, fig.height=6}
+
+for (condition in conditions) {
+  
+  # Early adipocytes
+  early_plot <- create_and_save_bar_plot(early_df, condition, paste("Early pre-adipocytes: top 20 enriched pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/early_", gsub(" ", "_", condition_labels[[condition]]), ".pdf"))
+  
+  print(early_plot)
+
+  # Intermediate adipocytes
+  inter_plot <- create_and_save_bar_plot(intermediate_df, condition, paste("Intermediate pre-adipocytes: top 20 enriched pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/intermediate_", gsub(" ", "_", condition_labels[[condition]]), ".pdf"))
+  
+  print(inter_plot)
+  
+  # Mature adipocytes
+  mature_plot <- create_and_save_bar_plot(mature_df, condition, paste("Mature adipocytes: top 20 enriched pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/mature_", gsub(" ", "_", condition_labels[[condition]]), ".pdf"))
+  
+  print(mature_plot)
+  
+}
+
+```
+
+### Joint 3-panel figures
+
+This function creates a figure with three panels: healthy only, obese only, and common.
+
+```{r}
+
+create_pathway_plot <- function(df, category, title_label) {
+
+  # Assign a colour per condition
   fill_col <- case_when(
     category == "A only" ~ "#0072B2",
     category == "B only" ~ "#E69F00",
@@ -576,15 +671,20 @@ create_and_save_bar_plot <- function(df, category, title_label, output_file) {
   
   # Create bar plot
   plot <- ggplot(df_filtered, aes(x = x_var, y = Term_Description)) +
-    geom_bar(stat = "identity", color = "black", fill = fill_col) +
-    labs(title = title_label, x = x_label,
-         y = "Pathway") +
+    geom_bar(stat = "identity", color = "black", fill = fill_col, alpha = 0.8) +
+    labs(title = title_label, x = x_label, y = "Pathway") +
     theme_minimal() +
-    theme(legend.position = "none", plot.margin = margin(10, 20, 10, 10))
+    theme(
+      legend.position = "none",
+      plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+      axis.title.x = element_text(size = 11),
+      axis.title.y = element_text(size = 11),
+      axis.text.x = element_text(size = 9),
+      axis.text.y = element_text(size = 8),
+      plot.margin = margin(10, 10, 10, 10),
+      panel.grid.minor = element_blank()
+    )
   
-  # Save plot
-  ggsave(output_file, plot, width = 12, height = 6, device = "pdf")
-
   # Return plot
   return(plot)
   
@@ -592,32 +692,88 @@ create_and_save_bar_plot <- function(df, category, title_label, output_file) {
 
 ```
 
-### Call function
 
-Generate plots for each differentiation stage: early pre-adipocytes, intermediate pre-adipocytes, and mature adipocytes.
+```{r fig.width=12, fig.height=16}
 
-```{r fig.width=12, fig.height=6}
+# ====================  EARLY PREADIPOCYTES ====================
+# Create the three panels for early preadipocytes
+panel_A <- create_pathway_plot(early_df, "A only", "Enriched pathways in healthy sample only") + 
+  labs(tag = "A")
 
-for (condition in conditions) {
-  
-  # Early adipocytes
-  early_plot <- create_and_save_bar_plot(early_df, condition, paste("Early pre-adipocytes: top 20 enriched pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/early_", gsub(" ", "_", condition_labels[[condition]]), ".pdf"))
-  
-  print(early_plot)
+panel_B <- create_pathway_plot(early_df, "B only", "Enriched pathways in obese sample only") + 
+  labs(tag = "B")
 
-  # Intermediate adipocytes
-  inter_plot <- create_and_save_bar_plot(intermediate_df, condition, paste("Intermediate pre-adipocytes: top 20 enriched pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/intermediate_", gsub(" ", "_", condition_labels[[condition]]), ".pdf"))
-  
-  print(inter_plot)
-  
-  # Mature adipocytes
-  mature_plot <- create_and_save_bar_plot(mature_df, condition, paste("Mature adipocytes: top 20 enriched pathways for", condition_labels[[condition]]), paste0("results/humanPVATsn/pathfindR/comparison1v3/mature_", gsub(" ", "_", condition_labels[[condition]]), ".pdf"))
-  
-  print(mature_plot)
-  
-}
+panel_C <- create_pathway_plot(early_df, "common", "Enriched pathways in both healthy and obese samples") + 
+  labs(tag = "C")
+
+# Combine panels into a single figure
+combined_early_pathway_figure <- panel_A / panel_B / panel_C + 
+  plot_layout(heights = c(1, 1, 1)) &
+  theme(plot.tag = element_text(size = 16))
+
+# Save combined figure
+if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
+
+# Save as PDF
+pdf("results/humanPVATsn/final_figs/early_1v3_pathways.pdf", 
+    width = 12, height = 16)
+print(combined_early_pathway_figure)
+invisible(dev.off())
+
+# Display the figure
+combined_early_pathway_figure
+
+# ====================  INTERMEDIATE PREADIPOCYTES ====================
+# Create the three panels for intermediate preadipocytes
+panel_A_inter <- create_pathway_plot(intermediate_df, "A only", "Enriched pathways in healthy sample only") + 
+  labs(tag = "A")
+panel_B_inter <- create_pathway_plot(intermediate_df, "B only", "Enriched pathways in obese sample only") + 
+  labs(tag = "B")
+panel_C_inter <- create_pathway_plot(intermediate_df, "common", "Enriched pathways in both healthy and obese samples") + 
+  labs(tag = "C")
+
+# Combine panels into a single figure
+combined_intermediate_pathway_figure <- panel_A_inter / panel_B_inter / panel_C_inter + 
+  plot_layout(heights = c(1, 1, 1)) &
+  theme(plot.tag = element_text(size = 16))
+
+# Save combined figure
+# Save as PDF
+pdf("results/humanPVATsn/final_figs/intermediate_1v3_pathways.pdf", 
+    width = 12, height = 16)
+print(combined_intermediate_pathway_figure)
+invisible(dev.off())
+
+# Display the figure
+combined_intermediate_pathway_figure
+
+# ====================  MATURE ADIPOCYTES ====================
+# Create the three panels for mature adipocytes
+panel_A_mature <- create_pathway_plot(mature_df, "A only", "Enriched pathways in healthy sample only") + 
+  labs(tag = "A")
+panel_B_mature <- create_pathway_plot(mature_df, "B only", "Enriched pathways in obese sample only") + 
+  labs(tag = "B")
+panel_C_mature <- create_pathway_plot(mature_df, "common", "Enriched pathways in both healthy and obese samples") + 
+  labs(tag = "C")
+
+# Combine panels into a single figure
+combined_mature_pathway_figure <- panel_A_mature / panel_B_mature / panel_C_mature + 
+  plot_layout(heights = c(1, 1, 1)) &
+  theme(plot.tag = element_text(size = 16))
+
+# Save combined figure
+# Save as PDF
+pdf("results/humanPVATsn/final_figs/mature_1v3_pathways.pdf", 
+    width = 12, height = 16)
+print(combined_mature_pathway_figure)
+invisible(dev.off())
+
+# Display the figure
+combined_mature_pathway_figure
+
 
 ```
+
 
 # Cluster enriched terms
 
@@ -833,16 +989,6 @@ for (name in names(pathfindR_outputs)) {
 
 ```
 
-# Final plots
-
-## Early preadipocytes
-
-```{r fig.width=15, fig.height=20}
-
-test <- cluster_enriched_terms(h_early_output, plot_dend = FALSE, plot_clusters_graph = FALSE)
-enrichment_chart(test, plot_by_cluster = TRUE)
-
-```
 
 
 # Session info

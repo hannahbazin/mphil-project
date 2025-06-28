@@ -60,8 +60,8 @@ For consistency we reload the integrated Seurat object generated previously in t
 load(file = "data/analysis/anno_combined.RData")
 
 # Subset by adipocyte lineage cluster
-early <- subset(anno_combined, idents = "Early pre-adipocytes")
-inter <- subset(anno_combined, idents = "Intermediate pre-adipocytes")
+early <- subset(anno_combined, idents = "Early preadipocytes")
+inter <- subset(anno_combined, idents = "Intermediate preadipocytes")
 trans <- subset(anno_combined, idents = "Transitional adipocytes")
 mature <- subset(anno_combined, idents = "Mature adipocytes")
 
@@ -163,9 +163,13 @@ plot_top_DE_genes <- function(marker_df, top_n = 10, title = "Top differentially
     labs(title = title, y = expression("log"[2]*" fold change"), x = "Gene") +
     scale_y_continuous(limits = c(-axis_limit, axis_limit)) +
     scale_fill_manual(values = c("Up in obese" = "#E69F00", "Up in healthy" = "#0072B2"),
-                      labels = c("Up in obese" = "Upregulated in obese", "Up in healthy" = "Upregulated in healthy")
+                      labels = c("Up in obese" = "Up in obese", "Up in healthy" = "Up in healthy")
                       ) +
-    theme_minimal(base_size = 12)
+    theme_minimal(base_size = 16) +
+    theme(
+      legend.text = element_text(size = 16),
+      legend.title = element_text(size = 16)
+    )
 }
 
 ```
@@ -176,9 +180,16 @@ In the plots, genes with positive log₂ fold change are upregulated in healthy,
 
 ```{r fig.width=9, fig.height=6}
 
+output_dir <- "results/humanPVATsn/pathfindR/comparison1v3/per_adipo_cluster/"
+
+early_healthy_vs_obese <- read.csv(paste0(output_dir, "early_healthy_vs_obese_markers.csv"), row.names = 1)
+inter_healthy_vs_obese <- read.csv(paste0(output_dir, "inter_healthy_vs_obese_markers.csv"), row.names = 1)
+trans_healthy_vs_obese <- read.csv(paste0(output_dir, "trans_healthy_vs_obese_markers.csv"), row.names = 1)
+mature_healthy_vs_obese <- read.csv(paste0(output_dir, "mature_healthy_vs_obese_markers.csv"), row.names = 1)
+
 # Create bar plots for each adipocyte cluster showing the top 10 
-early_healthy_vs_obese_plot <- plot_top_DE_genes(early_healthy_vs_obese, top_n = 10, title = "Early pre-adipocytes: 10 most significant genes in healthy vs obese")
-inter_healthy_vs_obese_plot <- plot_top_DE_genes(inter_healthy_vs_obese, top_n = 10, title = "Intermediate pre-adipocytes: 10 most significant genes in healthy vs obese")
+early_healthy_vs_obese_plot <- plot_top_DE_genes(early_healthy_vs_obese, top_n = 10, title = "Early preadipocytes: 10 most significant genes in healthy vs obese")
+inter_healthy_vs_obese_plot <- plot_top_DE_genes(inter_healthy_vs_obese, top_n = 10, title = "Intermediate preadipocytes: 10 most significant genes in healthy vs obese")
 trans_healthy_vs_obese_plot <- plot_top_DE_genes(trans_healthy_vs_obese, top_n = 10, title = "Transitional adipocytes: 10 most significant genes in healthy vs obese")
 mature_healthy_vs_obese_plot <- plot_top_DE_genes(mature_healthy_vs_obese, top_n = 10, title = "Mature adipocytes: 10 most significant genes in healthy vs obese")
 
@@ -189,10 +200,10 @@ print(trans_healthy_vs_obese_plot)
 print(mature_healthy_vs_obese_plot)
 
 # Save bar plots
-ggsave("results/humanPVATsn/pathfindR/comparison1v3/per_adipo_cluster/early_healthy_vs_obese.pdf", early_healthy_vs_obese_plot, width = 9, height = 6, device = "pdf")
-ggsave("results/humanPVATsn/pathfindR/comparison1v3/per_adipo_cluster/inter_healthy_vs_obese.pdf", inter_healthy_vs_obese_plot, width = 9, height = 6, device = "pdf")
-ggsave("results/humanPVATsn/pathfindR/comparison1v3/per_adipo_cluster/trans_healthy_vs_obese.pdf", trans_healthy_vs_obese_plot, width = 9, height = 6, device = "pdf")
-ggsave("results/humanPVATsn/pathfindR/comparison1v3/per_adipo_cluster/mature_healthy_vs_obese.pdf", mature_healthy_vs_obese_plot, width = 9, height = 6, device = "pdf")
+ggsave("results/humanPVATsn/pathfindR/comparison1v3/per_adipo_cluster/early_healthy_vs_obese.pdf", early_healthy_vs_obese_plot, width = 9, height = 6, device = "svg")
+ggsave("results/humanPVATsn/pathfindR/comparison1v3/per_adipo_cluster/inter_healthy_vs_obese.pdf", inter_healthy_vs_obese_plot, width = 9, height = 6, device = "svg")
+ggsave("results/humanPVATsn/pathfindR/comparison1v3/per_adipo_cluster/trans_healthy_vs_obese.pdf", trans_healthy_vs_obese_plot, width = 9, height = 6, device = "svg")
+ggsave("results/humanPVATsn/pathfindR/comparison1v3/per_adipo_cluster/mature_healthy_vs_obese.pdf", mature_healthy_vs_obese_plot, width = 9, height = 6, device = "svg")
 
 ```
 
@@ -225,6 +236,133 @@ print(plot_data)
 
 ```
 
+# Final figure
+
+```{r fig.width=12, fig.height=10}
+
+library(ggplot2)
+library(dplyr)
+library(tibble)
+library(patchwork)
+
+# Updated function
+plot_top_DE_genes <- function(marker_df, top_n = 10, title = "Top differentially expressed genes") {
+  
+  # Reformat dataframe for plotting
+  marker_df <- marker_df %>%
+    rownames_to_column("gene") %>%
+    filter(p_val_adj < 0.05) %>%  # Only significant genes
+    arrange(desc(avg_log2FC)) %>%
+    mutate(direction = "Up in healthy") %>%
+    bind_rows(
+      marker_df %>%
+        rownames_to_column("gene") %>%
+        filter(p_val_adj < 0.05) %>%
+        arrange(avg_log2FC) %>%
+        mutate(direction = "Up in obese")
+    ) %>%
+    group_by(direction) %>%
+    slice_head(n = top_n) %>%
+    ungroup() %>%
+    mutate(direction = factor(direction, levels = c("Up in obese", "Up in healthy"))) %>%
+    arrange(direction, desc(abs(avg_log2FC))) %>%
+    mutate(gene = factor(gene, levels = rev(unique(gene))))
+  
+  # Compute axis limit
+  axis_limit <- max(abs(marker_df$avg_log2FC), na.rm = TRUE)
+  
+  # Plot
+  ggplot(marker_df, aes(x = gene, y = avg_log2FC, fill = direction)) +
+    geom_col(width = 0.7, color = "white", linewidth = 0.2) +
+    coord_flip() +
+    labs(
+      title = title, 
+      y = expression("log"[2]*" fold change"), 
+      x = "",
+      fill = ""
+    ) +
+    scale_y_continuous(
+      limits = c(-axis_limit * 1.1, axis_limit * 1.1),
+      expand = c(0, 0)
+    ) +
+    scale_fill_manual(
+      values = c("Up in obese" = "#E69F00", "Up in healthy" = "#0072B2"),
+      labels = c("Up in obese" = "Up in obese", "Up in healthy" = "Up in healthy")
+    ) +
+    theme_classic(base_size = 10) +
+    theme(
+      plot.title = element_text(size = 11, face = "bold", hjust = 0.5, margin = margin(b = 10)),
+      axis.title.x = element_text(size = 10, face = "bold"),
+      axis.title.y = element_text(size = 10, face = "bold"),
+      axis.text.x = element_text(size = 9, color = "black"),
+      axis.text.y = element_text(size = 8, color = "black", face = "italic"),
+      legend.text = element_text(size = 9),
+      legend.title = element_text(size = 10, face = "bold"),
+      legend.position = "bottom",
+      legend.margin = margin(t = 5),
+      legend.box.margin = margin(t = 5),
+      panel.grid.major.x = element_line(color = "grey90", linewidth = 0.3),
+      panel.grid.minor = element_blank(),
+      plot.margin = margin(t = 10, r = 10, b = 10, l = 10),
+      strip.background = element_blank(),
+      strip.text = element_text(size = 10, face = "bold")
+    )
+}
+
+# Load data
+output_dir <- "results/humanPVATsn/pathfindR/comparison1v3/per_adipo_cluster/"
+early_healthy_vs_obese <- read.csv(paste0(output_dir, "early_healthy_vs_obese_markers.csv"), row.names = 1)
+inter_healthy_vs_obese <- read.csv(paste0(output_dir, "inter_healthy_vs_obese_markers.csv"), row.names = 1)
+trans_healthy_vs_obese <- read.csv(paste0(output_dir, "trans_healthy_vs_obese_markers.csv"), row.names = 1)
+mature_healthy_vs_obese <- read.csv(paste0(output_dir, "mature_healthy_vs_obese_markers.csv"), row.names = 1)
+
+# Create individual plots
+plot_A <- plot_top_DE_genes(early_healthy_vs_obese, top_n = 10, title = "Early preadipocytes")
+plot_B <- plot_top_DE_genes(inter_healthy_vs_obese, top_n = 10, title = "Intermediate preadipocytes")
+plot_C <- plot_top_DE_genes(trans_healthy_vs_obese, top_n = 10, title = "Transitional adipocytes")
+plot_D <- plot_top_DE_genes(mature_healthy_vs_obese, top_n = 10, title = "Mature adipocytes")
+
+# Create four-panel figure using patchwork
+combined_figure <- (plot_A + plot_B) / (plot_C + plot_D) +
+  plot_annotation(
+    title = "Differential gene expression in healthy vs obese adipocyte clusters",
+    subtitle = "Top 10 most significant genes per cluster",
+    caption = "Positive log₂ fold change indicates upregulation in healthy; negative indicates upregulation in obese",
+    theme = theme(
+      plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
+      plot.subtitle = element_text(size = 12, hjust = 0.5, margin = margin(b = 15)),
+      plot.caption = element_text(size = 10, hjust = 0.5, margin = margin(t = 15))
+    )
+  ) +
+  plot_layout(
+    guides = "collect",
+    tag_level = "new"
+  ) &
+  theme(
+    legend.position = "bottom",
+    plot.tag = element_text(size = 14, face = "bold"),
+    plot.tag.position = c(0.02, 0.98)
+  )
+
+# Add panel labels A, B, C, D
+combined_figure <- combined_figure +
+  plot_layout(tag_level = "new") &
+  theme(plot.tag = element_text(size = 14, face = "bold"))
+
+# Display the figure
+print(combined_figure)
+
+# Save the combined figure
+ggsave(
+  "results/humanPVATsn/final_figs/1v3_combined_DE_genes_figure.pdf", 
+  combined_figure, 
+  width = 12, 
+  height = 10, 
+  dpi = 300,
+  device = "pdf"
+)
+
+```
 
 
 # Session info

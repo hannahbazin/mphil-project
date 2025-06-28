@@ -31,6 +31,7 @@ library(patchwork)
 library(ggplot2)
 library(ggpubr)
 library(tidyverse)
+library(pheatmap)
 
 ```
 
@@ -137,9 +138,9 @@ The filtering metrics are:
 
 From the violin plots, we identify the filtering thresholds and select cells as follows:
 
--   Filter cells that have unique feature counts over 6'000 or below 1'000.
--   Filter cells that have RNA counts over 40'000 and below 500.
--   Filter cells that have \>1% mitochondrial counts.
+-   Remove cells that have unique feature counts over 6'000 or below 1'000.
+-   Remove cells that have RNA counts over 40'000 and below 500.
+-   Remove cells that have \>1% mitochondrial counts.
 
 We use the same cut-off values in all three samples for consistency.
 
@@ -310,13 +311,116 @@ libs_combined_filt <- RunPCA(libs_combined, npcs = 30, seed.use = 42)
 
 ```
 
+Visualise heatmap of top 15 PCs
+
+```{r fig.width=16, fig.height=12}
+
+dim_heatmap <- DimHeatmap(libs_combined_filt, 
+                         dims = 1:15, 
+                         balanced = TRUE,
+                         cells = 500, # randomly sample 500 cells to reduce clutter
+                         fast = FALSE
+                         ) +
+  plot_annotation(
+    title = "Principal component analysis: top contributing genes",
+    subtitle = "Heatmap showing genes with highest loadings for PC1-15",
+    caption = "Yellow = high expression, Purple = low expression. 15 PCs selected for downstream UMAP analysis."
+  ) &
+  theme(
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 12, hjust = 0.5),
+    plot.caption = element_text(size = 10, hjust = 0.5),
+    axis.text.y = element_text(size = 7, hjust = 1),
+    axis.text = element_text(size = 8),
+    strip.text = element_text(size = 10, face = "bold"),
+    panel.spacing = unit(0.2, "cm")
+  )
+
+dim_heatmap
+
+```
+
+Visualise Variance Explained by Each Principal Component
+
+```{r fig.width=8, fig.height=5}
+
+# Calculate variance explained
+pca_obj <- libs_combined_filt[["pca"]]
+variance_explained <- (pca_obj@stdev)^2 / sum((pca_obj@stdev)^2) * 100
+
+# Calculate cumulative variance
+cumulative_variance <- cumsum(variance_explained[1:15])
+
+variance_df <- data.frame(
+  PC = paste0("PC", 1:15),
+  Variance = variance_explained[1:15],
+  Cumulative = cumulative_variance
+)
+
+variance_plot <- ggplot(variance_df, aes(x = factor(PC, levels = PC))) +
+  geom_bar(aes(y = Variance), stat = "identity", fill = "steelblue", alpha = 0.7) +
+  geom_line(aes(y = Cumulative, group = 1), color = "red", size = 1.2) +
+  geom_point(aes(y = Cumulative), color = "red", size = 2) +
+  geom_text(aes(y = Variance, label = paste0(round(Variance, 1), "%")), 
+            vjust = -0.3, size = 2.5) +
+  geom_text(aes(y = Cumulative, label = paste0(round(Cumulative, 1), "%")), 
+            vjust = -1.5, color = "red", size = 2.5) +
+  labs(title = "Variance explained by each principal component",
+       subtitle = paste0("Individual variance (bars) and cumulative variance (red line). PC1-15 capture ", 
+                        round(cumulative_variance[15], 1), "% of total variance"),
+       x = "Principal component", 
+       y = "Variance explained (%)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  annotate("text", x = 12, y = 75, 
+           label = paste0("Cumulative: ", round(cumulative_variance[15], 1), "%"), 
+           color = "red", size = 4, fontface = "bold")
+
+variance_plot
+
+```
+
+
+
+```{r}
+library(ggplot2)
+library(scales)
+
+variance_plot_dual <- ggplot(variance_df, aes(x = factor(PC, levels = PC))) +
+  geom_bar(aes(y = Variance), stat = "identity", fill = "steelblue", alpha = 0.7) +
+  geom_line(aes(y = Cumulative, group = 1), color = "red", size = 1.2) +
+  geom_point(aes(y = Cumulative), color = "red", size = 2) +
+  geom_text(aes(y = Variance, label = paste0(round(Variance, 1), "%")), 
+            vjust = -0.3, size = 2.5) +
+  scale_y_continuous(
+    name = "Individual Variance Explained (%)",
+    sec.axis = sec_axis(~., name = "Cumulative Variance Explained (%)")
+  ) +
+  labs(title = "Variance Explained by Principal Components",
+       subtitle = paste0("PC1-15 collectively capture ", round(cumulative_variance[15], 1), 
+                        "% of total variance, justifying their use for UMAP"),
+       x = "Principal Component") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.title.y.left = element_text(color = "steelblue"),
+    axis.title.y.right = element_text(color = "red")
+  )
+
+variance_plot_dual
+```
+
+
 ## Determine dimensionality of the dataset
 
 We plot an elbow plot to determine the dimensionality of the dataset. From this plot we can see that the line starts to flatten significantly around PC 15. Therefore in the downstream analysis we keep 15 dimensions of the dataset.
 
 ```{r cache = FALSE}
 
-elbow_plot <- ElbowPlot(libs_combined_filt, ndims = 25)
+elbow_plot <- ElbowPlot(libs_combined_filt, ndims = 30) + 
+  geom_vline(xintercept = 15, linetype = "dashed", color = "red") +
+  labs(title = "PCA Elbow Plot - 15 PCs selected for UMAP")
+
 
 # Save elbow plot as PDF
 if (!dir.exists("results/humanPVATsn")) dir.create("results/humanPVATsn")
@@ -338,6 +442,11 @@ We plot the PCA by sample origin to verify that the integration worked successfu
 
 DimPlot(libs_combined_filt, reduction = "pca", 
               group.by = "sampleType")
+
+```
+
+
+```{r}
 
 FeaturePlot(object = libs_combined_filt, reduction = "pca", features = "percent.mt")
 
@@ -384,12 +493,11 @@ p2
 
 The percentage of mitochondrial gene counts seems well distributed across the clusters, therefore we can continue with the downstream analysis.
 
-```{r}
-
+```{r fig.width=7, fig.height=5}
 mito_plot <- FeaturePlot(object = libs_combined_filt, reduction = "umap", features = "percent.mt") +
   ggtitle("UMAP coloured by percentage of mitochondrial genes")
 
-pdf("results/humanPVATsn/UMAP_mt_percent.pdf", width = 12, height = 6)
+pdf("results/humanPVATsn/UMAP_mt_percent.pdf", width = 7, height = 5)
 print(mito_plot)
 invisible(dev.off())
 
@@ -561,7 +669,7 @@ DotPlot(libs_combined_filt,
           )) +
   
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-  ggtitle("Early pre-adipocyte marker expression")
+  ggtitle("Early preadipocyte marker expression")
 
 ```
 
@@ -576,7 +684,7 @@ DotPlot(libs_combined_filt,
           )) +
   
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-  ggtitle("Intermediate pre-adipocyte marker expression")
+  ggtitle("Intermediate preadipocyte marker expression")
 
 ```
 
@@ -585,13 +693,13 @@ DotPlot(libs_combined_filt,
 DotPlot(libs_combined_filt,
         features = c(
 
-          # Pre-adipocyte markers
+          # Preadipocyte markers
           "PDGFRA", "LAMA2", "FBLN1", "FBN1", "FSTL1", "NEGR1", "EBF2", "DCN", "MGP", "PPARG"
           
           )) +
   
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-  ggtitle("Literature pre-adipocyte markers")
+  ggtitle("Literature preadipocyte markers")
 
 ```
 
@@ -605,7 +713,7 @@ DotPlot(libs_combined_filt,
           # Intermediate markers
           "COL15A1", "APOD", "EBF1",
           
-          # Pre-adipocyte
+          # Preadipocyte
           "NEGR1","EBF2","MGP", "PPARG",
           # "DCN"
           
@@ -655,7 +763,7 @@ annot_dot_plot <- DotPlot(libs_combined_filt,
           
           ## Adipocyte-related
           
-          # Pre-adipocytes
+          # Preadipocytes
           "NEGR1", "EBF2", "DCN", "MGP", "PDGFRA", "FBLN1", "FBLN2", "FBLN5", "COL3A1", "COL1A1", "COL1A2", "FSTL1", "GSN", "ADAMTSL3", "CREB5", "PPARG",
           
           # Mature brown adipocytes
@@ -714,6 +822,54 @@ annot_dot_plot
 
 ```
 
+## Heat map for mature thermogenic gene expression
+
+```{r fig.height=5, fig.width=10}
+
+# Load object
+load("data/analysis/anno_combined.RData")
+
+# Create a safe copy
+anno_combined_heatmap <- anno_combined
+DefaultAssay(anno_combined_heatmap) <- "RNA"
+
+# Set cluster order
+Idents(anno_combined_heatmap) <- factor(Idents(anno_combined_heatmap),
+                                        levels = c("Early preadipocytes", 
+                                                   "Intermediate preadipocytes", 
+                                                   "Transitional adipocytes", 
+                                                   "Mature adipocytes"))
+
+# Genes of interest
+genes_to_plot <- c("CREB5", "EBF2", "CD36", "ADIPOQ", "PLIN1", "PLIN4", "PLIN5", 
+                   "CIDEA", "CIDEC", "PPARG")
+
+# Average expression per cluster (log-normalised)
+avg_exp <- AverageExpression(anno_combined_heatmap, features = genes_to_plot, 
+                             return.seurat = TRUE)$RNA
+
+# Subset and convert to matrix
+raw_matrix <- as.matrix(avg_exp[genes_to_plot, ])
+
+# Format display numbers to 1 decimal
+display_vals <- matrix(sprintf("%.1f", raw_matrix),
+                       nrow = nrow(raw_matrix), byrow = FALSE)
+rownames(display_vals) <- rownames(raw_matrix)
+colnames(display_vals) <- colnames(raw_matrix)
+
+# Plot heatmap
+pheatmap(raw_matrix,
+         cluster_rows = FALSE,
+         cluster_cols = FALSE,
+         color = colorRampPalette(c("white", "firebrick3"))(100),
+         main = "Log-normalised expression of thermogenic genes across adipocyte differentiation",
+         display_numbers = display_vals,
+         fontsize_row = 12,
+         fontsize_col = 12,
+         angle_col = 45,
+         border_color = NA)
+
+```
 
 ## Cell type annotation 
 
@@ -745,12 +901,12 @@ We name the clusters with the corresponding cell type based on the dot plots gen
 
 anno_combined <- RenameIdents(libs_combined_filt, 
                               "0" = "Mature adipocytes", 
-                              "1" = "Intermediate pre-adipocytes", 
+                              "1" = "Intermediate preadipocytes", 
                               "2" = "Vascular endothelial cells",
                               "3" = "Macrophages",
                               "4" = "Vascular endothelial cells",
                               "5" = "Vascular endothelial cells", 
-                              "6" = "Early pre-adipocytes" , 
+                              "6" = "Early preadipocytes" , 
                               "7" = "Lymphatic endothelial cells", 
                               "8" = "PPARG+ EBF+ Vascular SMCs",
                               "9" = "Transitional adipocytes",  
@@ -758,61 +914,581 @@ anno_combined <- RenameIdents(libs_combined_filt,
                               "11" = "T cells",
                               "12" = "Vascular SMCs")
 
+save(anno_combined, file = "data/analysis/anno_combined.RData")
+
 ```
 
 # Final plots
+
+## Final QC violin plots
+
+```{r fig.height=20, fig.width=10, warning = FALSE}
+
+# Add sample IDs to metadata
+human1_copy <- human1
+human2_copy <- human2
+human3_copy <- human3
+
+human1_copy$sample <- "GSM5068996"
+human2_copy$sample <- "GSM5068997"
+human3_copy$sample <- "GSM5068998"
+
+# Merge into one object
+combined <- merge(human1_copy, y = list(human2_copy, human3_copy))
+
+# List of features to plot
+features <- c("nFeature_RNA", "nCount_RNA", "percent.mt")
+
+# Define y-axis zoom ranges per feature
+ylims <- list(
+  nFeature_RNA = c(0, 15000),
+  nCount_RNA = c(0, 60000),
+  percent.mt = c(0, 17)
+)
+
+# Create one violin plot per feature
+plots <- lapply(features, function(f) {
+  VlnPlot(combined, features = f, group.by = "sample") +
+    ggtitle(f) +
+    coord_cartesian(ylim = ylims[[f]])
+})
+
+# Combine plots: one row per feature
+final_QC_violin_plot <- wrap_plots(plots, ncol = 1)
+
+# Save to PDF
+pdf("results/humanPVATsn/final_figs/QC_violin_plots.pdf", width = 10, height = 15)
+print(final_QC_violin_plot)
+invisible(dev.off())
+
+# Display plot
+final_QC_violin_plot
+
+```
+
+## Final PCA plots
+
+### PC top contributing genes & Variance explained
+
+```{r fig.width=14, fig.height=20}
+
+library(patchwork)
+library(Seurat)
+library(ggplot2)
+
+# Panel A: PC top contributing genes heatmap
+# Create individual heatmaps with titles
+individual_heatmaps <- DimHeatmap(libs_combined_filt, 
+                                 dims = 1:15, 
+                                 balanced = TRUE,
+                                 cells = 500, # show randomly sampled 500 cells
+                                 fast = FALSE,
+                                 nfeatures = 20, # show only top 20 genes instead of 30
+                                 combine = FALSE)
+
+# Add PC titles to each heatmap
+for(i in 1:length(individual_heatmaps)) {
+  individual_heatmaps[[i]] <- individual_heatmaps[[i]] + 
+    ggtitle(paste0("PC", i)) +
+    theme(plot.title = element_text(size = 11, face = "bold", hjust = 0.5))
+}
+
+# Combine heatmaps
+dim_heatmap <- wrap_plots(individual_heatmaps, ncol = 3, guides = "collect") &
+  theme(
+    axis.text.y = element_text(size = 9, hjust = 1.0, vjust = 0.5),
+    axis.text = element_text(size = 8),
+    axis.title.x = element_text(size = 11),
+    axis.title.y = element_text(size = 11),
+    panel.spacing = unit(0.2, "cm")
+  ) &
+  labs(x = "Cell", y = "Gene")
+
+# Panel B: Variance explained
+# Calculate variance explained
+pca_obj <- libs_combined_filt[["pca"]]
+variance_explained <- (pca_obj@stdev)^2 / sum((pca_obj@stdev)^2) * 100
+# Calculate cumulative variance
+cumulative_variance <- cumsum(variance_explained[1:15])
+variance_df <- data.frame(
+ PC = paste0("PC", 1:15),
+ Variance = variance_explained[1:15],
+ Cumulative = cumulative_variance
+)
+
+variance_plot <- ggplot(variance_df, aes(x = factor(PC, levels = PC))) +
+ geom_bar(aes(y = Variance), stat = "identity", fill = "steelblue", alpha = 0.7) +
+ geom_line(aes(y = Cumulative, group = 1), color = "red", size = 1.2) +
+ geom_point(aes(y = Cumulative), color = "red", size = 2) +
+ geom_text(aes(y = Variance, label = paste0(round(Variance, 1), "%")), 
+           vjust = -0.3, size = 5) +
+ geom_text(aes(y = Cumulative, label = paste0(round(Cumulative, 1), "%")), 
+           vjust = -1.5, color = "red", size = 5) +
+ labs(x = "Principal component", 
+      y = "Variance explained (%)") +
+ theme_minimal() +
+ theme(
+   plot.title = element_text(size = 16, face = "bold"),
+   plot.subtitle = element_text(size = 14),
+   axis.title.x = element_text(size = 14),
+   axis.title.y = element_text(size = 14),
+   axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
+   axis.text.y = element_text(size = 12)
+ ) +
+ annotate("text", x = 12, y = 75, 
+          label = paste0("Cumulative: ", round(cumulative_variance[15], 1), "%"), 
+          color = "red", size = 6, fontface = "bold")
+
+
+# Combine panels A and B with proper tagging
+panel_A <- wrap_elements(dim_heatmap) + labs(tag = "A")
+panel_B <- variance_plot + labs(tag = "B")
+
+# Combine panels A and B
+combined_pca_figure <- panel_A / panel_B + 
+  plot_layout(heights = c(6, 4)) &
+  theme(plot.tag = element_text(size = 18, face = "plain"))
+
+# Save the combined figure
+if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
+
+pdf("results/humanPVATsn/final_figs/combined_pca_analysis.pdf", width = 14, height = 21)
+print(combined_pca_figure)
+invisible(dev.off())
+
+# Display the figure
+combined_pca_figure
+
+```
+```{r fig.width=14, fig.height=20}
+
+library(patchwork)
+library(Seurat)
+library(ggplot2)
+
+# Panel A: PC top contributing genes heatmap
+# Create individual heatmaps with titles
+individual_heatmaps <- DimHeatmap(libs_combined_filt, 
+                                 dims = 1:15, 
+                                 balanced = TRUE,
+                                 cells = 500, # show randomly sampled 500 cells
+                                 fast = FALSE,
+                                 nfeatures = 20, # show only top 20 genes instead of 30
+                                 combine = FALSE)
+
+# Add PC titles to each heatmap
+for(i in 1:length(individual_heatmaps)) {
+  individual_heatmaps[[i]] <- individual_heatmaps[[i]] + 
+    ggtitle(paste0("PC", i)) +
+    theme(plot.title = element_text(size = 11, face = "bold", hjust = 0.5))
+}
+
+# Combine heatmaps
+dim_heatmap <- wrap_plots(individual_heatmaps, ncol = 3, guides = "collect") &
+  theme(
+    axis.text.y = element_text(size = 9, hjust = 1.0, vjust = 0.5),
+    axis.text = element_text(size = 8),
+    axis.title.x = element_text(size = 11),
+    axis.title.y = element_text(size = 11),
+    panel.spacing = unit(0.2, "cm")
+  ) &
+  labs(x = "Cell", y = "Gene")
+
+# Panel B: Elbow plot with matching minimal style
+elbow_plot <- ElbowPlot(libs_combined_filt, ndims = 30) + 
+  geom_vline(xintercept = 15, linetype = "dashed", color = "red") +
+  labs(x = "Principal component", 
+       y = "Standard deviation") +
+  theme_minimal() +
+  theme(
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10)
+  ) +
+  annotate("text", x = 19, y = max(libs_combined_filt[["pca"]]@stdev[1:30]) * 0.8, 
+           label = "15 PCs selected", 
+           color = "red", size = 4, fontface = "bold")
+
+# Panel C: Variance explained
+# Calculate variance explained
+pca_obj <- libs_combined_filt[["pca"]]
+variance_explained <- (pca_obj@stdev)^2 / sum((pca_obj@stdev)^2) * 100
+# Calculate cumulative variance
+cumulative_variance <- cumsum(variance_explained[1:15])
+variance_df <- data.frame(
+ PC = paste0("PC", 1:15),
+ Variance = variance_explained[1:15],
+ Cumulative = cumulative_variance
+)
+
+variance_plot <- ggplot(variance_df, aes(x = factor(PC, levels = PC))) +
+ geom_bar(aes(y = Variance), stat = "identity", fill = "steelblue", alpha = 0.7) +
+ geom_line(aes(y = Cumulative, group = 1), color = "red", size = 1.2) +
+ geom_point(aes(y = Cumulative), color = "red", size = 2) +
+ geom_text(aes(y = Variance, label = paste0(round(Variance, 1), "%")), 
+           vjust = -0.3, size = 3) +
+ geom_text(aes(y = Cumulative, label = paste0(round(Cumulative, 1), "%")), 
+           vjust = -2.0, hjust = 0.75, color = "red", size = 3) +
+ labs(x = "Principal component", 
+      y = "Variance explained (%)") +
+ theme_minimal() +
+ theme(
+   axis.title.x = element_text(size = 12),
+   axis.title.y = element_text(size = 12),
+   axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+   axis.text.y = element_text(size = 10)
+ ) +
+ coord_cartesian(ylim = c(0, 95)) +
+ annotate("text", x = 12, y = 75, 
+          label = paste0("Cumulative: ", round(cumulative_variance[15], 1), "%"), 
+          color = "red", size = 4, fontface = "bold")
+
+# Combine panels with proper layout
+panel_A <- wrap_elements(dim_heatmap) + labs(tag = "A")
+panel_B <- elbow_plot + labs(tag = "B")
+panel_C <- variance_plot + labs(tag = "C")
+
+# Create layout: Panel A on top, Panels B and C side by side below
+combined_pca_figure <- panel_A / (panel_B | panel_C) + 
+  plot_layout(heights = c(4, 2)) &
+  theme(plot.tag = element_text(size = 18, face = "plain"))
+
+# Save the combined figure
+if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
+
+pdf("results/humanPVATsn/final_figs/combined_pca_analysis.pdf", width = 14, height = 18)
+print(combined_pca_figure)
+invisible(dev.off())
+
+# Display the figure
+combined_pca_figure
+
+```
+
+
+
+
+```{r fig.width=14, fig.height=12}
+
+dim_heatmap <- DimHeatmap(libs_combined_filt, 
+                         dims = 1:15, 
+                         balanced = TRUE,
+                         cells = 500, # randomly sample 500 cells to reduce clutter
+                         fast = FALSE
+                         ) +
+  plot_annotation(
+    title = "Principal component analysis: top contributing genes",
+    subtitle = "Heatmap showing genes with highest loadings for PC1-15",
+    caption = "Yellow = high expression, Purple = low expression. 15 PCs selected for downstream UMAP analysis."
+  ) &
+  theme(
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 12, hjust = 0.5),
+    plot.caption = element_text(size = 10, hjust = 0.5),
+    axis.text.y = element_text(size = 7, hjust = 1),
+    axis.text = element_text(size = 8),
+    strip.text = element_text(size = 10, face = "bold"),
+    panel.spacing = unit(0.2, "cm")
+  )
+
+# Save as pdf
+pdf("results/humanPVATsn/final_figs/final_pc_heatmap.pdf", width = 14, height = 12)
+print(dim_heatmap)
+invisible(dev.off())
+
+dim_heatmap
+
+```
+
+
+```{r fig.width=14, fig.height=8}
+
+# Calculate variance explained
+pca_obj <- libs_combined_filt[["pca"]]
+variance_explained <- (pca_obj@stdev)^2 / sum((pca_obj@stdev)^2) * 100
+
+# Calculate cumulative variance
+cumulative_variance <- cumsum(variance_explained[1:15])
+variance_df <- data.frame(
+  PC = paste0("PC", 1:15),
+  Variance = variance_explained[1:15],
+  Cumulative = cumulative_variance
+)
+
+variance_plot <- ggplot(variance_df, aes(x = factor(PC, levels = PC))) +
+  geom_bar(aes(y = Variance), stat = "identity", fill = "steelblue", alpha = 0.7) +
+  geom_line(aes(y = Cumulative, group = 1), color = "red", size = 1.2) +
+  geom_point(aes(y = Cumulative), color = "red", size = 2) +
+  geom_text(aes(y = Variance, label = paste0(round(Variance, 1), "%")), 
+            vjust = -0.3, size = 5) +
+  geom_text(aes(y = Cumulative, label = paste0(round(Cumulative, 1), "%")), 
+            vjust = -1.5, color = "red", size = 5) +
+  labs(title = "Variance explained by each principal component",
+       subtitle = paste0("Individual variance (bars) and cumulative variance (red line). PC1-15 capture ", 
+                        round(cumulative_variance[15], 1), "% of total variance"),
+       x = "Principal component", 
+       y = "Variance explained (%)") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    plot.subtitle = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
+    axis.text.y = element_text(size = 12)
+  ) +
+  annotate("text", x = 12, y = 75, 
+           label = paste0("Cumulative: ", round(cumulative_variance[15], 1), "%"), 
+           color = "red", size = 6, fontface = "bold")
+
+# Save as pdf
+pdf("results/humanPVATsn/final_figs/pca_variance_plot.pdf", width = 14, height = 8)
+print(variance_plot)
+invisible(dev.off())
+
+variance_plot
+
+```
+
+### Sample distribution & Mitochondrial plot
+
+```{r fig.width=14, fig.height=10}
+
+library(patchwork)
+
+# Sample type plot for comparison
+sample_plot <- DimPlot(libs_combined_filt, reduction = "umap", group.by = "sampleType") +
+  labs(title = NULL) +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 11),
+    legend.title = element_text(size = 10, face = "bold"),
+    legend.text = element_text(size = 9),
+    panel.border = element_rect(color = "black", fill = NA, size = 0.5)
+  )
+
+# Mitochondrial plot
+mito_plot <- FeaturePlot(object = libs_combined_filt, reduction = "umap", features = "percent.mt") +
+  scale_color_viridis_c(name = "Mitochondrial\ngenes (%)", option = "plasma") +
+  labs(title = NULL) +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 11),
+    legend.title = element_text(size = 10, face = "bold"),
+    legend.text = element_text(size = 9),
+    panel.border = element_rect(color = "black", fill = NA, size = 0.5)
+  )
+
+# Split by sample type plot
+split_plot <- DimPlot(libs_combined_filt,
+                     reduction = "umap",
+                     split.by = "sampleType",
+                     group.by = "sampleType",
+                     ncol = 3) +
+  labs(title = NULL) +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 11),
+    legend.title = element_text(size = 10, face = "bold"),
+    legend.text = element_text(size = 9),
+    panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+    strip.text = element_text(size = 10, face = "bold")
+  )
+
+# Combine all plots with panel labels
+combined_plot <- (mito_plot | sample_plot) / split_plot
+
+# Add panel labels
+final_plot <- combined_plot + plot_annotation(
+  tag_levels = 'A'
+) & 
+theme(plot.tag = element_text(size = 16, face = "plain"))
+
+# Save as PDF
+pdf("results/humanPVATsn/final_figs/umap_qc_overview.pdf", width = 14, height = 10)
+print(final_plot)
+invisible(dev.off())
+
+# Display plot
+final_plot
+
+```
+
+## Final snRNAseq plot
+
+```{r fig.width=14, fig.height=18}
+
+library(patchwork)
+library(Seurat)
+library(ggplot2)
+
+# Define cluster colours (keeping your original colors)
+namedclusterColours <-
+  list(
+    "Mature adipocytes" = "#895129", 
+    "Intermediate preadipocytes" = "#FFA500", 
+    "Vascular endothelial cells" = "#56cafb",
+    "Macrophages" = "#A300A3",
+    "Early preadipocytes" = "#FFED29", 
+    "Lymphatic endothelial cells" = "#00c04b", 
+    "PPARG+ EBF+ Vascular SMCs" = "#FF1919",
+    "Vascular SMCs" = "#FF6F61",
+    "Transitional adipocytes" = "#BE6400",
+    "T cells" = "#fdb0c0"
+  )
+
+# Define custom order for legend
+custom_order <- c("Early preadipocytes", "Intermediate preadipocytes", "Transitional adipocytes", "Mature adipocytes",
+                  "PPARG+ EBF+ Vascular SMCs", "Vascular SMCs", "Vascular endothelial cells", "Lymphatic endothelial cells",
+                  "Macrophages", "T cells")
+
+# Set default assay and identities
+DefaultAssay(anno_combined) <- "integrated"
+Idents(anno_combined) <- factor(Idents(anno_combined), levels = custom_order)
+
+# Panel A: Unannotated UMAP
+unnannot_umap <- DimPlot(libs_combined_filt, reduction = "umap", label = TRUE) +
+  labs(title = NULL) +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 11, face = "bold"),
+    legend.title = element_text(size = 10, face = "bold"),
+    legend.text = element_text(size = 10),
+    panel.border = element_rect(color = "black", fill = NA, size = 0.5)
+  )
+
+# Panel B: Annotated UMAP
+annot_umap <- DimPlot(anno_combined, cols = namedclusterColours) +
+  labs(title = NULL) +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 11, face = "plain"),
+    axis.title.x = element_text(size = 11, face = "plain"),
+    axis.title.y = element_text(size = 11, face = "plain"),
+    legend.title = element_text(size = 10, face = "plain"),
+    legend.text = element_text(size = 10),
+    panel.border = element_rect(color = "black", fill = NA, size = 0.5)
+  )
+
+# Panel C: Dot plot
+# Set factor levels for dot plot
+anno_combined2 <- anno_combined
+Idents(anno_combined2) <- factor(Idents(anno_combined2),
+                                 levels = c("T cells", "Macrophages", "Lymphatic endothelial cells", "Vascular endothelial cells", 
+                                            "Vascular SMCs", "PPARG+ EBF+ Vascular SMCs", "Mature adipocytes", "Transitional adipocytes",
+                                            "Intermediate preadipocytes", "Early preadipocytes"))
+
+DefaultAssay(anno_combined2) <- "RNA"
+
+# Define marker genes to plot (keeping your original list)
+markers_to_plot <- c(
+          ## Adipocyte-related
+          # Preadipocytes
+          "NEGR1", "EBF2", "ABCA10", "DCN", "MGP", "PDGFRA", "FBLN1", "COL1A1", "COL1A2", "FSTL1", "CREB5", "PPARG",
+          # Mature brown adipocytes
+          "ADIPOQ", "PLIN1", "PLIN4", "PLIN5", "CIDEA", "CIDEC", "LPL", "GHR",
+          ## Muscle cells
+          # vSMCs
+          "PDGFRB", "NOTCH3", "GUCY1A2", "GUCY1A1", "MYH11", "MYO1D", "RYR2", "TRPC6", "ACTA2", "CNN1",
+          ## Endothelial cells
+          # General endothelial cells
+          "VWF", "PECAM1", "CDH5", "ANO2",
+          # Vascular endothelial cells
+          "VEGFC", "ROR2", "KDR",  "PLVAP", "EMCN",
+          # Arterial endothelial cells
+          "FLT1", "TEK", "EFNB2", "NOTCH4",
+          # Lymphatic endothelial cells
+          "PROX1", "FLT4",
+          ## Immune cells
+          # Macrophages
+          "MRC1", "F13A1", "CD163", "LYVE1", "SIGLEC1", "FRMD4B",
+          # T cells
+          "BCL11B", "LCK", "PTPRC", "CD247",
+          ## Other
+          # Circadian rhythm
+          "CRY2", "CSNK1E"
+        )
+
+dot_plot <- DotPlot(anno_combined2, features = markers_to_plot, dot.scale = 7, cols = "PiYG") +
+  labs(title = NULL, x = "Marker gene", y = "Cell type") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 90, size = 10, hjust = 1, vjust = 0.5),
+    axis.text.y = element_text(size = 11),
+    axis.title.x = element_text(size = 11, face = "bold"),
+    axis.title.y = element_text(size = 11, face = "bold"),
+    legend.title = element_text(size = 10, face = "bold"),
+    legend.text = element_text(size = 10),
+    panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+    panel.grid.major = element_line(linetype = "dotted", colour = "grey90"),
+    panel.grid.minor = element_blank()
+  )
+
+# Panel D: Violin plots
+DefaultAssay(anno_combined) <- "RNA"
+features_to_plot <- c("EBF2", "PDGFRA", "MYH11", "PPARG", "CIDEA", "PDGFRB")
+
+# Generate individual violin plots
+violin_plots <- lapply(features_to_plot, function(gene) {
+  VlnPlot(anno_combined, features = gene, pt.size = 0, cols = unlist(namedclusterColours)) +
+    labs(title = gene) +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 8),
+      axis.text.y = element_text(size = 8),
+      axis.title.x = element_blank(),
+      axis.title.y = element_text(size = 11, face = "bold"),
+      plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
+      legend.position = "right",
+      legend.text = element_text(size = 10),
+      panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+    )
+})
+
+# Combine violin plots
+violin_combined <- wrap_plots(violin_plots, ncol = 3, nrow = 2, guides = "collect")
+
+# Create the complete layout with all four panels
+# Manually assign tags to each major panel
+top_row <- unnannot_umap | annot_umap
+middle_row <- dot_plot
+bottom_row <- violin_combined
+#bottom_row <- plot_spacer() + violin_combined + plot_layout(widths = c(0.05, 1))
+# bottom_row <- wrap_elements(violin_combined)
+
+# Create final layout
+complete_figure <- top_row / middle_row / bottom_row
+
+# Apply tags manually to ensure D appears
+final_figure <- complete_figure +
+  plot_layout(heights = c(0.8, 1.3, 1.3)) +
+  plot_annotation(tag_levels = list(c("A", "B", "C", "D"))) &
+  theme(plot.tag = element_text(size = 19, face = "plain"))
+
+# Save the complete figure
+if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
+
+pdf("results/humanPVATsn/final_figs/complete_PVAT_analysis.pdf", width = 15, height = 17)
+print(final_figure)
+invisible(dev.off())
+
+# Display the figure
+final_figure
+
+```
+
 
 ## Final UMAP plots
 
 These are the final plots from the analysis.
 
 ### Unannotated UMAP plots
-
-We show proper integration of all three samples by colouring the UMAP by sample origin.
-
-```{r}
-
-# Plot UMAP by sample type
-umap_plot <- DimPlot(libs_combined_filt,
-              reduction = "umap",
-              group.by = "sampleType") +
-  ggtitle("Unannotated UMAP coloured by sample (snRNA-seq)") +
-  theme(plot.title = element_text(hjust = 0, face = "bold", size = 16))
-
-# Save and display plot
-if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
-
-pdf("results/humanPVATsn/final_figs/final_umap_integration.pdf", width = 12, height = 8)
-print(umap_plot)
-invisible(dev.off())
-
-umap_plot
-
-```
-
-
-We plot the unannotated UMAP split by sample origin.
-
-```{r fig.height=6, fig.width=14}
-
-# Plot UMAP by sample type
-plot1 <- DimPlot(libs_combined_filt,
-              reduction = "umap",
-              split.by = "sampleType",
-              label = TRUE) +
-  ggtitle("Unannotated UMAP of PVAT Cells Split By Sample (snRNA-seq)") +
-  theme(plot.title = element_text(hjust = 0, face = "bold", size = 18))
-
-# Save and display plot
-if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
-
-pdf("results/humanPVATsn/final_figs/final_umap_by_sample.pdf", width = 14, height = 6)
-print(plot1)
-invisible(dev.off())
-
-plot1
-
-```
 
 We plot the unannotated UMAP of all three samples integrated into one.
 
@@ -825,7 +1501,7 @@ unnannot_umap <- DimPlot(libs_combined_filt, reduction = "umap", ncol = 3, label
 # Save and display plot
 if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
 
-pdf("results/humanPVATsn/final_figs/final_umap_nbs.pdf", width = 12, height = 8)
+pdf("results/humanPVATsn/final_figs/final_umap_nbs.pdf", width = 14, height = 8)
 print(unnannot_umap)
 invisible(dev.off())
 
@@ -840,16 +1516,16 @@ We plot the annotated UMAP coloured by cluster identity.
 ```{r fig.height=5, fig.width=12}
 
 # Load object
-load("data/analysis/anno_combined.RData")
+# load("data/analysis/anno_combined.RData")
 
 # Define cluster colours
 namedclusterColours <-
   list(
     "Mature adipocytes" = "#895129", 
-    "Intermediate pre-adipocytes" = "#FFA500", 
+    "Intermediate preadipocytes" = "#FFA500", 
     "Vascular endothelial cells" = "#56cafb",
     "Macrophages" = "#A300A3",
-    "Early pre-adipocytes" = "#FFED29", 
+    "Early preadipocytes" = "#FFED29", 
     "Lymphatic endothelial cells" = "#00c04b", 
     "PPARG+ EBF+ Vascular SMCs" = "#FF1919",
     "Vascular SMCs" = "#FF6F61",
@@ -861,7 +1537,7 @@ namedclusterColours <-
 DefaultAssay(anno_combined) <- "integrated"
 
 # Define custom order for legend
-custom_order <- c("Early pre-adipocytes", "Intermediate pre-adipocytes", "Transitional adipocytes", "Mature adipocytes",
+custom_order <- c("Early preadipocytes", "Intermediate preadipocytes", "Transitional adipocytes", "Mature adipocytes",
                   "PPARG+ EBF+ Vascular SMCs", "Vascular SMCs", "Vascular endothelial cells", "Lymphatic endothelial cells",
                   "Macrophages", "T cells")
 
@@ -872,13 +1548,16 @@ Idents(anno_combined) <- factor(Idents(anno_combined), levels = custom_order)
 final_umap <- DimPlot(anno_combined,
                       cols = namedclusterColours) +
   ggtitle("UMAP visualisation of human PVAT cell populations (snRNA-seq)") +
-  theme(plot.title = element_text(face = "bold", size = 16))
+  theme(plot.title = element_text(face = "bold", size = 16),
+        legend.text = element_text(size = 20),
+        legend.key.size = unit(1.5, "lines")
+        )
   
 
 # Save and display plot
 if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
 
-pdf("results/humanPVATsn/final_figs/final_umap_annot.pdf", width = 12, height = 8)
+pdf("results/humanPVATsn/final_figs/final_umap_annot.pdf", width = 14, height = 8)
 print(final_umap)
 invisible(dev.off())
 
@@ -921,7 +1600,7 @@ anno_combined2 <- anno_combined
 Idents(anno_combined2) <- factor(Idents(anno_combined2),
                                  levels = c("T cells", "Macrophages", "Lymphatic endothelial cells", "Vascular endothelial cells", 
                                             "Vascular SMCs", "PPARG+ EBF+ Vascular SMCs", "Mature adipocytes", "Transitional adipocytes",
-                                            "Intermediate pre-adipocytes", "Early pre-adipocytes"))
+                                            "Intermediate preadipocytes", "Early preadipocytes"))
 
 # Set default assay
 DefaultAssay(anno_combined2) <- "RNA"
@@ -930,7 +1609,7 @@ DefaultAssay(anno_combined2) <- "RNA"
 markers_to_plot <- c(
           ## Adipocyte-related
           
-          # Pre-adipocytes
+          # Preadipocytes
           "NEGR1", "EBF2", "ABCA10", "DCN", "MGP", "PDGFRA", "FBLN1", "COL1A1", "COL1A2", "FSTL1", "CREB5", "PPARG",
           # Mature brown adipocytes
           "ADIPOQ", "PLIN1", "PLIN4", "PLIN5", "CIDEA", "CIDEC", "LPL", "GHR",
@@ -953,18 +1632,14 @@ markers_to_plot <- c(
           # Macrophages
           "MRC1", "F13A1", "CD163", "LYVE1", "SIGLEC1", "FRMD4B",
           # T cells
-          "BCL11B", "LCK", "PTPRC", "CD247",
-          
-          ## Other
-          # Circadian rhythm
-          "CRY2", "CSNK1E"
+          "BCL11B", "LCK", "PTPRC", "CD247"
         )
 
 # Generate dot plot
 final_dotplot <- DotPlot(anno_combined2, features = markers_to_plot, dot.scale = 7, cols = "PiYG") +
   ggtitle("Expression of marker genes across PVAT cell types (snRNA-seq)") + 
   t4 + 
-  xlab("Marker Gene") + ylab("Cell Type")
+  xlab("Marker gene") + ylab("Cell type")
 
 # Save and display plot
 if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
@@ -978,6 +1653,58 @@ final_dotplot
 ```
 
 
+## Final violin plots
+
+We plot violin plots of marker genes to show distribution of expression across clusters.
+
+```{r fig.width=30, fig.height=20}
+
+# Set default assay to RNA for expression plots
+DefaultAssay(anno_combined) <- "RNA"
+
+# Define theme
+t1 <- theme(
+  plot.title = element_text(size = 22, face = "bold", hjust = 0.5),
+  legend.position = "right",
+  legend.text = element_text(size = 30),
+  legend.title = element_text(size = 30),
+  plot.margin = margin(10, 10, 10, 50)
+)
+
+# Define genes to plot
+features_to_plot <- c("EBF2", "PDGFRA", "MYH11", "PPARG", "CIDEA",  "PDGFRB")
+
+# Generate violin plots
+violin_plots <- lapply(features_to_plot, function(gene) {
+  VlnPlot(anno_combined, features = gene, pt.size = 0, cols = unlist(namedclusterColours)) +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 20),
+      axis.text.y = element_text(size = 20),
+      axis.title.x = element_blank(),
+      axis.title.y = element_text(size = 20, face = "bold"),
+      plot.title = element_text(size = 25, face = "bold", hjust = 0.5),
+      legend.text = element_text(size = 25),
+      legend.title = element_text(size = 20)
+    )
+})
+
+# Arrange plots in a 2x3 grid and add main title
+final_violin_plot <- wrap_plots(violin_plots, ncol = 3, nrow = 2, guides = "collect") +
+  plot_annotation(title = "Violin plot of marker gene expression in PVAT",
+                  theme = t1)
+
+# Save figure
+if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
+
+pdf("results/humanPVATsn/final_figs/violin_plots.pdf", width = 30, height = 15)
+print(final_violin_plot)
+invisible(dev.off())
+
+# Display plot
+final_violin_plot
+
+```
+
 ## Final feature plots
 
 We plot feature plots of marker genes to show the expression specific to some clusters.
@@ -988,7 +1715,7 @@ DefaultAssay(anno_combined) <- "RNA"
 
 feature_plot <- FeaturePlot(anno_combined,
                             features = c(
-                              # Pre-adipocyte
+                              # Preadipocyte
                               "ABCA10","PDGFRA", "EBF2", 
                               # Mature adipocyte
                               "PLIN4", "CIDEA", "ADIPOQ",
@@ -1016,77 +1743,291 @@ final_feature
 
 ```
 
-Checking GLDN expression as per Sonia's request
+
+## Final heat maps
+
+### Genes: marker genes in full differentiation with Seurat function
 
 ```{r fig.height=7, fig.width=10}
 
-DefaultAssay(anno_combined) <- "RNA"
+# Load object
+load("data/analysis/anno_combined.RData")
 
-FeaturePlot(anno_combined, features = "GLDN")
+# Create a safe copy
+anno_combined_heatmap <- anno_combined
+DefaultAssay(anno_combined_heatmap) <- "RNA"
 
-VlnPlot(anno_combined, features = "GLDN", cols = unlist(namedclusterColours)) +
-    theme(
-      axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 14),
-      axis.text.y = element_text(size = 14),
-      axis.title.x = element_blank(),
-      axis.title.y = element_text(size = 16, face = "bold"),
-      plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-      plot.margin = margin(10, 10, 10, 50)
-    )
+# Define the 4 clusters of interest
+adipocyte_clusters <- c("Early preadipocytes", 
+                        "Intermediate preadipocytes", 
+                        "Transitional adipocytes", 
+                        "Mature adipocytes")
 
-```
+# Subset the object
+subset_obj <- subset(anno_combined_heatmap, idents = adipocyte_clusters)
 
+# Reorder the identity levels
+Idents(subset_obj) <- factor(Idents(subset_obj), levels = adipocyte_clusters)
 
-## Final violin plots
+# Genes of interest
+genes_to_plot <- c("CREB5", "EBF2", "CD36", "ADIPOQ", "PLIN1", "PLIN4", "PLIN5", 
+                   "CIDEA", "CIDEC", "PPARG")
 
-We plot violin plots of marker genes to show distribution of expression across clusters.
-
-```{r fig.width=30, fig.height=20}
-
-# Set default assay to RNA for expression plots
-DefaultAssay(anno_combined) <- "RNA"
-
-# Define theme
-t1 <- theme(
-  plot.title = element_text(size = 22, face = "bold", hjust = 0.5),
-  legend.position = "right",
-  legend.text = element_text(size = 20),
-  plot.margin = margin(10, 10, 10, 50)
+# Cluster colours
+cluster_colours <- c(
+  "Early preadipocytes" = "#FDD866",
+  "Intermediate preadipocytes" = "#FDB463",
+  "Transitional adipocytes" = "#D95F0E",
+  "Mature adipocytes" = "#8C2D04"
 )
 
-# Define genes to plot
-features_to_plot <- c("EBF2", "PDGFRA", "MYH11", "PPARG", "CIDEA",  "PDGFRB")
+subset_obj <- ScaleData(subset_obj, features = genes_to_plot, assay = "RNA")
 
-# Generate violin plots
-violin_plots <- lapply(features_to_plot, function(gene) {
-  VlnPlot(anno_combined, features = gene, pt.size = 0, cols = unlist(namedclusterColours)) +
-    theme(
-      axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 14),
-      axis.text.y = element_text(size = 14),
-      axis.title.x = element_blank(),
-      axis.title.y = element_text(size = 16, face = "bold"),
-      plot.title = element_text(size = 16, face = "bold", hjust = 0.5)
-    )
-})
+# Plot heatmap
+heat_map <- DoHeatmap(subset_obj,
+                      features = genes_to_plot,
+                      assay = "RNA",
+                      size = 4,
+                      angle = 45,
+                      group.colors = cluster_colours
+                      ) +
+  theme(axis.text.y = element_text(size = 10))
 
-# Arrange plots in a 2x3 grid and add main title
-final_violin_plot <- wrap_plots(violin_plots, ncol = 3, nrow = 2, guides = "collect") +
-  plot_annotation(title = "Violin plot of marker gene expression in PVAT",
-                  theme = t1)
 
-# Save figure
-if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
-
-pdf("results/humanPVATsn/final_figs/violin_plots.pdf", width = 25, height = 15)
-print(final_violin_plot)
+# Save to PDF
+pdf("results/humanPVATsn/final_figs/full_diff_heatmap.pdf", width = 10, height = 7)
+print(heat_map)
 invisible(dev.off())
 
 # Display plot
-final_violin_plot
+heat_map
 
 ```
 
-Violin plot for poster MPhil symposium.
+### Genes: amyloid-beta gene expression with AverageExpression
+
+```{r fig.height=5, fig.width=10}
+
+# Load annotated Seurat object if not already loaded
+load("data/analysis/anno_combined.RData")
+
+# Create a safe copy to preserve the original object
+anno_combined_heatmap <- anno_combined
+
+# Set default assay to RNA
+DefaultAssay(anno_combined_heatmap) <- "RNA"
+
+# Set cluster order manually
+Idents(anno_combined_heatmap) <- factor(Idents(anno_combined_heatmap),
+                                        levels = c("Early preadipocytes", 
+                                                   "Intermediate preadipocytes", 
+                                                   "Transitional adipocytes", 
+                                                   "Mature adipocytes"))
+
+# Genes of interest
+genes_to_plot <- c("LRP1", "MME", "CD36")
+
+# Scale the specific genes in the RNA assay so that we compare expression among only these clusters and not all of them
+subset_obj <- ScaleData(subset_obj, features = genes_to_plot, assay = "RNA")
+
+# Get average expression per cluster
+avg_exp <- AverageExpression(anno_combined_heatmap, features = genes_to_plot, 
+                             return.seurat = TRUE)$RNA
+
+# Convert to matrix
+expr_matrix <- as.matrix(avg_exp[genes_to_plot, ])
+
+# Plot heatmap
+heat_map <- pheatmap(expr_matrix,
+         cluster_rows = FALSE,
+         cluster_cols = FALSE,
+         color = colorRampPalette(c("white", "firebrick3"))(100),
+         main = "Log-normalised expression of LRP1, MME, and CD36 across adipocyte differentiation",
+         display_numbers = TRUE,
+         fontsize_row = 12,
+         fontsize_col = 12,
+         fontsize_number = 10,
+         angle_col = 45)
+
+# Save to PDF
+pdf("results/humanPVATsn/final_figs/amyloid_gene_heatmap.pdf", width = 10, height = 7)
+print(heat_map)
+invisible(dev.off())
+
+# Display plot
+heat_map
+
+```
+
+
+### Genes: amyloid-beta gene expression with Seurat
+
+```{r fig.height=5, fig.width=10}
+
+# Load object
+load("data/analysis/anno_combined.RData")
+
+# Create a safe copy
+anno_combined_heatmap <- anno_combined
+DefaultAssay(anno_combined_heatmap) <- "RNA"
+
+# Define the 4 clusters of interest
+adipocyte_clusters <- c("Early preadipocytes", 
+                        "Intermediate preadipocytes", 
+                        "Transitional adipocytes", 
+                        "Mature adipocytes")
+
+# Subset the object
+subset_obj <- subset(anno_combined_heatmap, idents = adipocyte_clusters)
+
+# Reorder the identity levels
+Idents(subset_obj) <- factor(Idents(subset_obj), levels = adipocyte_clusters)
+
+# Genes of interest
+# genes_to_plot <- c("LRP1", "MME", "CD36", "MAPT", "APP", "GSN", "B2M", "C3", "IGF1R", "INSR", "FYN", "CACNA2D1", "IGF1", "ABCC1", "LGMN")
+
+genes_to_plot <- c("LRP1", "MME", "CD36")
+
+# Cluster colours
+cluster_colours <- c(
+  "Early preadipocytes" = "#FDD866",
+  "Intermediate preadipocytes" = "#FDB463",
+  "Transitional adipocytes" = "#D95F0E",
+  "Mature adipocytes" = "#8C2D04"
+)
+
+# Scale the specific genes in the RNA assay so that we compare expression among only these clusters and not all of them
+subset_obj <- ScaleData(subset_obj, features = genes_to_plot, assay = "RNA")
+
+# Plot heatmap
+heat_map <- DoHeatmap(subset_obj,
+                      features = genes_to_plot,
+                      assay = "RNA",
+                      size = 4,
+                      angle = 45,
+                      group.colors = cluster_colours
+                      ) +
+  theme(axis.text.y = element_text(size = 10))
+
+
+# Save to PDF
+pdf("results/humanPVATsn/final_figs/amyloid_gene_heatmap_seurat.pdf", width = 10, height = 7)
+print(heat_map)
+invisible(dev.off())
+
+# Display plot
+heat_map
+
+```
+
+
+### Pathways: sympathetic interaction
+
+```{r fig.height=5, fig.width=11}
+
+# Create matrix of fold enrichment values
+neuro_pathways <- matrix(c(
+  0.0, 12.3, 16.7,  # Synaptic membrane adhesion
+  5.4, 6.0, 7.3,     # Axon guidance
+  0.0, 12.3, 11.1,  # Dendritic spine maintenance
+  22.0, 12.3, 16.7  # Axon extension involved in axon guidance
+), 
+nrow = 4, byrow = TRUE)
+
+rownames(neuro_pathways) <- c("Synaptic membrane adhesion",
+                              "Axon guidance",
+                              "Dendritic spine maintenance",
+                              "Axon extension involved in axon guidance")
+
+colnames(neuro_pathways) <- c("Step 1", "Step 2", "Step 3")
+
+# Format values to 1 decimal place for display
+display_vals <- matrix(sprintf("%.1f", neuro_pathways),
+                       nrow = nrow(neuro_pathways),
+                       byrow = FALSE)
+rownames(display_vals) <- rownames(neuro_pathways)
+colnames(display_vals) <- colnames(neuro_pathways)
+
+# Plot heatmap
+neuro_heatmap <- pheatmap(neuro_pathways,
+         cluster_rows = FALSE,
+         cluster_cols = FALSE,
+         color = colorRampPalette(c("white", "steelblue"))(100),
+         main = "Progressive enrichment of neurogenic pathways during adipocyte differentiation",
+         display_numbers = display_vals,
+         fontsize_row = 12,
+         fontsize_col = 12,
+         fontsize_number = 10,
+         angle_col = 45)
+
+
+# Save to PDF
+pdf("results/humanPVATsn/final_figs/neurogenic_heatmap.pdf", width = 11, height = 5)
+print(neuro_heatmap)
+invisible(dev.off())
+
+# Display plot
+neuro_heatmap
+
+
+```
+
+### Pathways: amyloid-beta pathways
+
+```{r fig.height=4, fig.width=10}
+
+# Create matrix of fold enrichment values
+amyloid_pathways <- matrix(c(
+  3.5, 5.2, 8.9,  # Amyloid fibril formation
+  3.4, 5.0, 8.0,     # Cellular response to amyloid-beta
+  0.0, 12.6, 11.1  # Amyloid-beta clearance capacity
+), 
+nrow = 3, byrow = TRUE)
+
+rownames(amyloid_pathways) <- c("Amyloid fibril formation",
+                              "Cellular response to amyloid-beta",
+                              "Amyloid-beta clearance capacity")
+
+colnames(amyloid_pathways) <- c("Step 1", "Step 2", "Step 3")
+
+# Format values to 1 decimal place for display
+display_vals <- matrix(sprintf("%.1f", amyloid_pathways),
+                       nrow = nrow(amyloid_pathways),
+                       byrow = FALSE)
+rownames(display_vals) <- rownames(amyloid_pathways)
+colnames(display_vals) <- colnames(amyloid_pathways)
+
+# Plot heatmap
+amyloid_heatmap <- pheatmap(amyloid_pathways,
+         cluster_rows = FALSE,
+         cluster_cols = FALSE,
+         color = colorRampPalette(c("white", "steelblue"))(100),
+         main = "Progressive enrichment of amyloid-related pathways during adipocyte differentiation",
+         display_numbers = display_vals,
+         fontsize_row = 12,
+         fontsize_col = 12,
+         fontsize_number = 10,
+         angle_col = 45)
+
+
+# Save to PDF
+pdf("results/humanPVATsn/final_figs/amyloid_heatmap.pdf", width = 10, height = 4)
+print(amyloid_heatmap)
+invisible(dev.off())
+
+# Display plot
+amyloid_heatmap
+
+
+```
+
+
+
+
+
+
+
+## Symposium violin plot for poster
 
 ```{r fig.width=15, fig.height=20}
 
@@ -1130,14 +2071,6 @@ invisible(dev.off())
 
 # Display plot
 final_violin_plot
-
-```
-
-# Save final integrated Seurat object
-
-```{r}
-
-save(anno_combined, file = "data/analysis/anno_combined.RData")
 
 ```
 
