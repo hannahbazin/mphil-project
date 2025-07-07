@@ -32,6 +32,7 @@ library(ggplot2)
 library(ggpubr)
 library(tidyverse)
 library(pheatmap)
+library(RColorBrewer)
 
 ```
 
@@ -918,6 +919,250 @@ save(anno_combined, file = "data/analysis/anno_combined.RData")
 
 ```
 
+
+# Old plots
+
+## UMAP plots
+
+These are the final plots from the analysis.
+
+### Unannotated UMAP plots
+
+We plot the unannotated UMAP of all three samples integrated into one.
+
+```{r fig.height=5, fig.width=10}
+
+unnannot_umap <- DimPlot(libs_combined_filt, reduction = "umap", ncol = 3, label = TRUE) +
+  ggtitle("Unannotated UMAP of PVAT Cells (snRNA-seq)") +
+  theme(plot.title = element_text(face = "bold", size = 16))
+
+# Save and display plot
+if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
+
+pdf("results/humanPVATsn/final_figs/final_umap_nbs.pdf", width = 14, height = 8)
+print(unnannot_umap)
+invisible(dev.off())
+
+unnannot_umap
+
+```
+
+### Annotated UMAP plots
+
+We plot the annotated UMAP coloured by cluster identity.
+
+```{r fig.height=5, fig.width=12}
+
+# Load object
+# load("data/analysis/anno_combined.RData")
+
+# Define cluster colours
+namedclusterColours <-
+  list(
+    "Mature adipocytes" = "#895129", 
+    "Intermediate preadipocytes" = "#FFA500", 
+    "Vascular endothelial cells" = "#56cafb",
+    "Macrophages" = "#A300A3",
+    "Early preadipocytes" = "#FFED29", 
+    "Lymphatic endothelial cells" = "#00c04b", 
+    "PPARG+ EBF+ Vascular SMCs" = "#FF1919",
+    "Vascular SMCs" = "#FF6F61",
+    "Transitional adipocytes" = "#BE6400",
+    "T cells" = "#fdb0c0"
+  )
+
+# Set default assay
+DefaultAssay(anno_combined) <- "integrated"
+
+# Define custom order for legend
+custom_order <- c("Early preadipocytes", "Intermediate preadipocytes", "Transitional adipocytes", "Mature adipocytes",
+                  "PPARG+ EBF+ Vascular SMCs", "Vascular SMCs", "Vascular endothelial cells", "Lymphatic endothelial cells",
+                  "Macrophages", "T cells")
+
+# Ensure Idents are explicitly set with correct levels
+Idents(anno_combined) <- factor(Idents(anno_combined), levels = custom_order)
+
+# Generate UMAP plot with reordered legend
+final_umap <- DimPlot(anno_combined,
+                      cols = namedclusterColours) +
+  ggtitle("UMAP visualisation of human PVAT cell populations (snRNA-seq)") +
+  theme(plot.title = element_text(face = "bold", size = 16),
+        legend.text = element_text(size = 20),
+        legend.key.size = unit(1.5, "lines")
+        )
+  
+
+# Save and display plot
+if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
+
+pdf("results/humanPVATsn/final_figs/final_umap_annot.pdf", width = 14, height = 8)
+print(final_umap)
+invisible(dev.off())
+
+final_umap
+
+```
+
+## Dot plot
+
+We plot a dot plot showing the expression of marker genes across clusters.
+- Dot size: percent expressed, i.e. how many cells in the given cluster express the gene.
+- Dot colour: average expression, i.e. the expression level in cells that do express the given gene.
+
+```{r fig.height = 7, fig.width = 16}
+
+# Create a custom PiYG palette with white at 0
+piyg_colours <- colorRampPalette(brewer.pal(n = 11, name = "PiYG"))(99)
+piyg_colours <- append(piyg_colours[1:49], "white", after = 49)
+
+# Set the theme
+t4 <- theme(                              
+  plot.background = element_blank(), 
+  panel.grid.major = element_line(linetype = "dotted", colour = "grey"),
+  panel.grid.minor = element_blank(), 
+  panel.border = element_blank(), 
+  panel.background = element_blank(),
+  axis.line = element_line(linewidth = .4),
+  axis.line.x = element_line(),
+  axis.line.y = element_line(),
+  axis.text.x  = element_text(angle = 90, size = 15, hjust = 1, vjust = 0.5),
+  axis.text.y = element_text(size = 15),
+  axis.ticks.x = element_line(linetype = "dotted"),
+  axis.ticks.length = unit(0.3,"cm"),
+  axis.title.x = element_text(face="bold", size=18), 
+  axis.title.y = element_text(face="bold", size=18),
+  plot.title = element_text(face="bold", size=20),
+  strip.text = element_text(size = 10),
+  legend.title = element_text(size = 18),
+  legend.text = element_text(size = 15)
+)
+
+# Set factor levels of cellular identities
+anno_combined2 <- anno_combined
+Idents(anno_combined2) <- factor(Idents(anno_combined2),
+                                 levels = c("T cells", "Macrophages", "Lymphatic endothelial cells", "Vascular endothelial cells", 
+                                            "Vascular SMCs", "PPARG+ EBF+ Vascular SMCs", "Mature adipocytes", "Transitional adipocytes",
+                                            "Intermediate preadipocytes", "Early preadipocytes"))
+
+# Set default assay
+DefaultAssay(anno_combined2) <- "RNA"
+
+# Define marker genes to plot
+markers_to_plot <- c(
+          ## Adipocyte-related
+          
+          # Preadipocytes
+          "NEGR1", "EBF2", "ABCA10", "DCN", "MGP", "PDGFRA", "FBLN1", "COL1A1", "COL1A2", "FSTL1", "CREB5", "PPARG",
+          # Mature brown adipocytes
+          "ADIPOQ", "PLIN1", "PLIN4", "PLIN5", "CIDEA", "CIDEC", "LPL", "GHR",
+          
+          ## Muscle cells
+          # vSMCs
+          "PDGFRB", "NOTCH3", "GUCY1A2", "GUCY1A1", "MYH11", "MYO1D", "RYR2", "TRPC6", "ACTA2", "CNN1",
+          
+          ## Endothelial cells
+          # General endothelial cells
+          "VWF", "PECAM1", "CDH5", "ANO2",
+          # Vascular endothelial cells
+          "VEGFC", "ROR2", "KDR",  "PLVAP", "EMCN",
+          # Arterial endothelial cells
+          "FLT1", "TEK", "EFNB2", "NOTCH4",
+          # Lymphatic endothelial cells
+          "PROX1", "FLT4",
+          
+          ## Immune cells
+          # Macrophages
+          "MRC1", "F13A1", "CD163", "LYVE1", "SIGLEC1", "FRMD4B",
+          # T cells
+          "BCL11B", "LCK", "PTPRC", "CD247"
+        )
+
+# Generate dot plot
+final_dotplot <- DotPlot(anno_combined2, features = markers_to_plot, dot.scale = 7) +
+  scale_color_gradientn(colours = c("white", "lightblue", "blue", "darkblue")) +
+  ggtitle("Expression of marker genes across PVAT cell types (snRNA-seq)") + 
+  t4 + 
+  xlab("Marker gene") + ylab("Cell type")
+
+# Save and display plot
+if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
+
+pdf("results/humanPVATsn/final_figs/final_marker_dot_plot.pdf", width = 17, height = 8)
+print(final_dotplot)
+invisible(dev.off())
+
+final_dotplot
+
+```
+
+
+## Violin plots
+
+We plot violin plots of marker genes to show distribution of expression across clusters.
+
+```{r fig.width=30, fig.height=20}
+
+# Define cluster colours
+namedclusterColours <-
+  list(
+    "Mature adipocytes" = "#895129", 
+    "Intermediate preadipocytes" = "#FFA500", 
+    "Vascular endothelial cells" = "#56cafb",
+    "Macrophages" = "#A300A3",
+    "Early preadipocytes" = "#FFED29", 
+    "Lymphatic endothelial cells" = "#00c04b", 
+    "PPARG+ EBF+ Vascular SMCs" = "#FF1919",
+    "Vascular SMCs" = "#FF6F61",
+    "Transitional adipocytes" = "#BE6400",
+    "T cells" = "#fdb0c0"
+  )
+
+# Set default assay to RNA for expression plots
+DefaultAssay(anno_combined) <- "RNA"
+
+# Define theme
+t1 <- theme(
+  plot.title = element_text(size = 22, face = "bold", hjust = 0.5),
+  legend.position = "right",
+  legend.text = element_text(size = 30),
+  legend.title = element_text(size = 30),
+  plot.margin = margin(10, 10, 10, 50)
+)
+
+# Define genes to plot
+features_to_plot <- c("EBF2", "PDGFRA", "MYH11", "PPARG", "CIDEA",  "PDGFRB")
+
+# Generate violin plots
+violin_plots <- lapply(features_to_plot, function(gene) {
+  VlnPlot(anno_combined, features = gene, pt.size = 0, cols = unlist(namedclusterColours)) +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 20),
+      axis.text.y = element_text(size = 20),
+      axis.title.x = element_blank(),
+      axis.title.y = element_text(size = 20, face = "bold"),
+      plot.title = element_text(size = 25, face = "bold", hjust = 0.5),
+      legend.text = element_text(size = 25),
+      legend.title = element_text(size = 20)
+    )
+})
+
+# Arrange plots in a 2x3 grid and add main title
+final_violin_plot <- wrap_plots(violin_plots, ncol = 3, nrow = 2, guides = "collect") +
+  plot_annotation(title = "Violin plot of marker gene expression in PVAT",
+                  theme = t1)
+
+# Save figure
+if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
+
+pdf("results/humanPVATsn/final_figs/violin_plots.pdf", width = 30, height = 15)
+print(final_violin_plot)
+invisible(dev.off())
+
+# Display plot
+final_violin_plot
+
+```
+
 # Final plots
 
 ## Final QC violin plots
@@ -1318,7 +1563,7 @@ final_plot
 
 ```
 
-## Final snRNAseq plot
+## Final full snRNAseq plot
 
 ```{r fig.width=14, fig.height=18}
 
@@ -1326,7 +1571,7 @@ library(patchwork)
 library(Seurat)
 library(ggplot2)
 
-# Define cluster colours (keeping your original colors)
+# Define cluster colours
 namedclusterColours <-
   list(
     "Mature adipocytes" = "#895129", 
@@ -1355,10 +1600,10 @@ unnannot_umap <- DimPlot(libs_combined_filt, reduction = "umap", label = TRUE) +
   labs(title = NULL) +
   theme_minimal() +
   theme(
-    axis.text = element_text(size = 10),
-    axis.title = element_text(size = 11, face = "bold"),
-    legend.title = element_text(size = 10, face = "bold"),
-    legend.text = element_text(size = 10),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 15, face = "bold"),
+    legend.title = element_text(size = 15, face = "bold"),
+    legend.text = element_text(size = 12),
     panel.border = element_rect(color = "black", fill = NA, size = 0.5)
   )
 
@@ -1367,12 +1612,10 @@ annot_umap <- DimPlot(anno_combined, cols = namedclusterColours) +
   labs(title = NULL) +
   theme_minimal() +
   theme(
-    axis.text = element_text(size = 10),
-    axis.title = element_text(size = 11, face = "plain"),
-    axis.title.x = element_text(size = 11, face = "plain"),
-    axis.title.y = element_text(size = 11, face = "plain"),
-    legend.title = element_text(size = 10, face = "plain"),
-    legend.text = element_text(size = 10),
+    axis.text = element_text(size = 12),
+    axis.title.x = element_text(size = 15, face = "bold"),
+    axis.title.y = element_text(size = 15, face = "bold"),
+    legend.text = element_text(size = 12),
     panel.border = element_rect(color = "black", fill = NA, size = 0.5)
   )
 
@@ -1386,7 +1629,7 @@ Idents(anno_combined2) <- factor(Idents(anno_combined2),
 
 DefaultAssay(anno_combined2) <- "RNA"
 
-# Define marker genes to plot (keeping your original list)
+# Define marker genes to plot
 markers_to_plot <- c(
           ## Adipocyte-related
           # Preadipocytes
@@ -1395,36 +1638,31 @@ markers_to_plot <- c(
           "ADIPOQ", "PLIN1", "PLIN4", "PLIN5", "CIDEA", "CIDEC", "LPL", "GHR",
           ## Muscle cells
           # vSMCs
-          "PDGFRB", "NOTCH3", "GUCY1A2", "GUCY1A1", "MYH11", "MYO1D", "RYR2", "TRPC6", "ACTA2", "CNN1",
+          "PDGFRB", "NOTCH3", "GUCY1A2", "GUCY1A1", "MYH11", "RYR2", "CNN1",
           ## Endothelial cells
           # General endothelial cells
-          "VWF", "PECAM1", "CDH5", "ANO2",
-          # Vascular endothelial cells
-          "VEGFC", "ROR2", "KDR",  "PLVAP", "EMCN",
-          # Arterial endothelial cells
-          "FLT1", "TEK", "EFNB2", "NOTCH4",
+          "VWF", "PECAM1",
+          # Vascular/arterial endothelial cells
+          "VEGFC", "ROR2",
           # Lymphatic endothelial cells
           "PROX1", "FLT4",
           ## Immune cells
           # Macrophages
-          "MRC1", "F13A1", "CD163", "LYVE1", "SIGLEC1", "FRMD4B",
+          "MRC1", "CD163", "LYVE1",
           # T cells
-          "BCL11B", "LCK", "PTPRC", "CD247",
-          ## Other
-          # Circadian rhythm
-          "CRY2", "CSNK1E"
+          "BCL11B", "LCK"
         )
 
 dot_plot <- DotPlot(anno_combined2, features = markers_to_plot, dot.scale = 7, cols = "PiYG") +
   labs(title = NULL, x = "Marker gene", y = "Cell type") +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 90, size = 10, hjust = 1, vjust = 0.5),
-    axis.text.y = element_text(size = 11),
-    axis.title.x = element_text(size = 11, face = "bold"),
-    axis.title.y = element_text(size = 11, face = "bold"),
-    legend.title = element_text(size = 10, face = "bold"),
-    legend.text = element_text(size = 10),
+    axis.text.x = element_text(angle = 90, size = 12, hjust = 1, vjust = 0.5),
+    axis.text.y = element_text(size = 10),
+    axis.title.x = element_text(size = 15, face = "bold"),
+    axis.title.y = element_text(size = 15, face = "bold"),
+    legend.title = element_text(size = 15, face = "bold"),
+    legend.text = element_text(size = 12),
     panel.border = element_rect(color = "black", fill = NA, size = 0.5),
     panel.grid.major = element_line(linetype = "dotted", colour = "grey90"),
     panel.grid.minor = element_blank()
@@ -1440,13 +1678,14 @@ violin_plots <- lapply(features_to_plot, function(gene) {
     labs(title = gene) +
     theme_minimal() +
     theme(
-      axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 8),
-      axis.text.y = element_text(size = 8),
+      # axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 8),
+      axis.text.x = element_blank(),
+      axis.text.y = element_text(size = 12),
       axis.title.x = element_blank(),
-      axis.title.y = element_text(size = 11, face = "bold"),
-      plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
+      axis.title.y = element_text(size = 15, face = "bold"),
+      plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
       legend.position = "right",
-      legend.text = element_text(size = 10),
+      legend.text = element_text(size = 12),
       panel.border = element_rect(color = "black", fill = NA, size = 0.5),
     )
 })
@@ -1459,7 +1698,7 @@ violin_combined <- wrap_plots(violin_plots, ncol = 3, nrow = 2, guides = "collec
 top_row <- unnannot_umap | annot_umap
 middle_row <- dot_plot
 bottom_row <- violin_combined
-#bottom_row <- plot_spacer() + violin_combined + plot_layout(widths = c(0.05, 1))
+# bottom_row <- plot_spacer() + violin_combined + plot_layout(widths = c(0.05, 1))
 # bottom_row <- wrap_elements(violin_combined)
 
 # Create final layout
@@ -1467,241 +1706,19 @@ complete_figure <- top_row / middle_row / bottom_row
 
 # Apply tags manually to ensure D appears
 final_figure <- complete_figure +
-  plot_layout(heights = c(0.8, 1.3, 1.3)) +
+  plot_layout(heights = c(0.8, 1.3, 1.0)) +
   plot_annotation(tag_levels = list(c("A", "B", "C", "D"))) &
-  theme(plot.tag = element_text(size = 19, face = "plain"))
+  theme(plot.tag = element_text(size = 23, face = "plain"))
 
 # Save the complete figure
 if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
 
-pdf("results/humanPVATsn/final_figs/complete_PVAT_analysis.pdf", width = 15, height = 17)
+pdf("results/humanPVATsn/final_figs/complete_PVAT_analysis.pdf", width = 13, height = 16)
 print(final_figure)
 invisible(dev.off())
 
 # Display the figure
 final_figure
-
-```
-
-
-## Final UMAP plots
-
-These are the final plots from the analysis.
-
-### Unannotated UMAP plots
-
-We plot the unannotated UMAP of all three samples integrated into one.
-
-```{r fig.height=5, fig.width=10}
-
-unnannot_umap <- DimPlot(libs_combined_filt, reduction = "umap", ncol = 3, label = TRUE) +
-  ggtitle("Unannotated UMAP of PVAT Cells (snRNA-seq)") +
-  theme(plot.title = element_text(face = "bold", size = 16))
-
-# Save and display plot
-if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
-
-pdf("results/humanPVATsn/final_figs/final_umap_nbs.pdf", width = 14, height = 8)
-print(unnannot_umap)
-invisible(dev.off())
-
-unnannot_umap
-
-```
-
-### Annotated UMAP plots
-
-We plot the annotated UMAP coloured by cluster identity.
-
-```{r fig.height=5, fig.width=12}
-
-# Load object
-# load("data/analysis/anno_combined.RData")
-
-# Define cluster colours
-namedclusterColours <-
-  list(
-    "Mature adipocytes" = "#895129", 
-    "Intermediate preadipocytes" = "#FFA500", 
-    "Vascular endothelial cells" = "#56cafb",
-    "Macrophages" = "#A300A3",
-    "Early preadipocytes" = "#FFED29", 
-    "Lymphatic endothelial cells" = "#00c04b", 
-    "PPARG+ EBF+ Vascular SMCs" = "#FF1919",
-    "Vascular SMCs" = "#FF6F61",
-    "Transitional adipocytes" = "#BE6400",
-    "T cells" = "#fdb0c0"
-  )
-
-# Set default assay
-DefaultAssay(anno_combined) <- "integrated"
-
-# Define custom order for legend
-custom_order <- c("Early preadipocytes", "Intermediate preadipocytes", "Transitional adipocytes", "Mature adipocytes",
-                  "PPARG+ EBF+ Vascular SMCs", "Vascular SMCs", "Vascular endothelial cells", "Lymphatic endothelial cells",
-                  "Macrophages", "T cells")
-
-# Ensure Idents are explicitly set with correct levels
-Idents(anno_combined) <- factor(Idents(anno_combined), levels = custom_order)
-
-# Generate UMAP plot with reordered legend
-final_umap <- DimPlot(anno_combined,
-                      cols = namedclusterColours) +
-  ggtitle("UMAP visualisation of human PVAT cell populations (snRNA-seq)") +
-  theme(plot.title = element_text(face = "bold", size = 16),
-        legend.text = element_text(size = 20),
-        legend.key.size = unit(1.5, "lines")
-        )
-  
-
-# Save and display plot
-if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
-
-pdf("results/humanPVATsn/final_figs/final_umap_annot.pdf", width = 14, height = 8)
-print(final_umap)
-invisible(dev.off())
-
-final_umap
-
-```
-
-## Final dot plot
-
-We plot a dot plot showing the expression of marker genes across clusters.
-- Dot size: percent expressed, i.e. how many cells in the given cluster express the gene.
-- Dot colour: average expression, i.e. the expression level in cells that do express the given gene.
-
-```{r fig.height = 7, fig.width = 16}
-
-# Set the theme
-t4 <- theme(                              
-  plot.background = element_blank(), 
-  panel.grid.major = element_line(linetype = "dotted", colour = "grey"),
-  panel.grid.minor = element_blank(), 
-  panel.border = element_blank(), 
-  panel.background = element_blank(),
-  axis.line = element_line(linewidth = .4),
-  axis.line.x = element_line(),
-  axis.line.y = element_line(),
-  axis.text.x  = element_text(angle = 90, size = 15, hjust = 1, vjust = 0.5),
-  axis.text.y = element_text(size = 15),
-  axis.ticks.x = element_line(linetype = "dotted"),
-  axis.ticks.length = unit(0.3,"cm"),
-  axis.title.x = element_text(face="bold", size=18), 
-  axis.title.y = element_text(face="bold", size=18),
-  plot.title = element_text(face="bold", size=20),
-  strip.text = element_text(size = 10),
-  legend.title = element_text(size = 18),
-  legend.text = element_text(size = 15)
-)
-
-# Set factor levels of cellular identities
-anno_combined2 <- anno_combined
-Idents(anno_combined2) <- factor(Idents(anno_combined2),
-                                 levels = c("T cells", "Macrophages", "Lymphatic endothelial cells", "Vascular endothelial cells", 
-                                            "Vascular SMCs", "PPARG+ EBF+ Vascular SMCs", "Mature adipocytes", "Transitional adipocytes",
-                                            "Intermediate preadipocytes", "Early preadipocytes"))
-
-# Set default assay
-DefaultAssay(anno_combined2) <- "RNA"
-
-# Define marker genes to plot
-markers_to_plot <- c(
-          ## Adipocyte-related
-          
-          # Preadipocytes
-          "NEGR1", "EBF2", "ABCA10", "DCN", "MGP", "PDGFRA", "FBLN1", "COL1A1", "COL1A2", "FSTL1", "CREB5", "PPARG",
-          # Mature brown adipocytes
-          "ADIPOQ", "PLIN1", "PLIN4", "PLIN5", "CIDEA", "CIDEC", "LPL", "GHR",
-          
-          ## Muscle cells
-          # vSMCs
-          "PDGFRB", "NOTCH3", "GUCY1A2", "GUCY1A1", "MYH11", "MYO1D", "RYR2", "TRPC6", "ACTA2", "CNN1",
-          
-          ## Endothelial cells
-          # General endothelial cells
-          "VWF", "PECAM1", "CDH5", "ANO2",
-          # Vascular endothelial cells
-          "VEGFC", "ROR2", "KDR",  "PLVAP", "EMCN",
-          # Arterial endothelial cells
-          "FLT1", "TEK", "EFNB2", "NOTCH4",
-          # Lymphatic endothelial cells
-          "PROX1", "FLT4",
-          
-          ## Immune cells
-          # Macrophages
-          "MRC1", "F13A1", "CD163", "LYVE1", "SIGLEC1", "FRMD4B",
-          # T cells
-          "BCL11B", "LCK", "PTPRC", "CD247"
-        )
-
-# Generate dot plot
-final_dotplot <- DotPlot(anno_combined2, features = markers_to_plot, dot.scale = 7, cols = "PiYG") +
-  ggtitle("Expression of marker genes across PVAT cell types (snRNA-seq)") + 
-  t4 + 
-  xlab("Marker gene") + ylab("Cell type")
-
-# Save and display plot
-if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
-
-pdf("results/humanPVATsn/final_figs/final_marker_dot_plot.pdf", width = 17, height = 8)
-print(final_dotplot)
-invisible(dev.off())
-
-final_dotplot
-
-```
-
-
-## Final violin plots
-
-We plot violin plots of marker genes to show distribution of expression across clusters.
-
-```{r fig.width=30, fig.height=20}
-
-# Set default assay to RNA for expression plots
-DefaultAssay(anno_combined) <- "RNA"
-
-# Define theme
-t1 <- theme(
-  plot.title = element_text(size = 22, face = "bold", hjust = 0.5),
-  legend.position = "right",
-  legend.text = element_text(size = 30),
-  legend.title = element_text(size = 30),
-  plot.margin = margin(10, 10, 10, 50)
-)
-
-# Define genes to plot
-features_to_plot <- c("EBF2", "PDGFRA", "MYH11", "PPARG", "CIDEA",  "PDGFRB")
-
-# Generate violin plots
-violin_plots <- lapply(features_to_plot, function(gene) {
-  VlnPlot(anno_combined, features = gene, pt.size = 0, cols = unlist(namedclusterColours)) +
-    theme(
-      axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 20),
-      axis.text.y = element_text(size = 20),
-      axis.title.x = element_blank(),
-      axis.title.y = element_text(size = 20, face = "bold"),
-      plot.title = element_text(size = 25, face = "bold", hjust = 0.5),
-      legend.text = element_text(size = 25),
-      legend.title = element_text(size = 20)
-    )
-})
-
-# Arrange plots in a 2x3 grid and add main title
-final_violin_plot <- wrap_plots(violin_plots, ncol = 3, nrow = 2, guides = "collect") +
-  plot_annotation(title = "Violin plot of marker gene expression in PVAT",
-                  theme = t1)
-
-# Save figure
-if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
-
-pdf("results/humanPVATsn/final_figs/violin_plots.pdf", width = 30, height = 15)
-print(final_violin_plot)
-invisible(dev.off())
-
-# Display plot
-final_violin_plot
 
 ```
 
@@ -1798,6 +1815,57 @@ heat_map <- DoHeatmap(subset_obj,
 pdf("results/humanPVATsn/final_figs/full_diff_heatmap.pdf", width = 10, height = 7)
 print(heat_map)
 invisible(dev.off())
+
+# Display plot
+heat_map
+
+```
+
+### Genes: innervation exploration
+
+```{r fig.height=7, fig.width=10}
+
+# Load object
+load("data/analysis/anno_combined.RData")
+
+# Create a safe copy
+anno_combined_heatmap <- anno_combined
+DefaultAssay(anno_combined_heatmap) <- "RNA"
+
+# Define the 4 clusters of interest
+adipocyte_clusters <- c("Early preadipocytes", 
+                        "Intermediate preadipocytes", 
+                        "Transitional adipocytes", 
+                        "Mature adipocytes")
+
+# Subset the object
+subset_obj <- subset(anno_combined_heatmap, idents = adipocyte_clusters)
+
+# Reorder the identity levels
+Idents(subset_obj) <- factor(Idents(subset_obj), levels = adipocyte_clusters)
+
+# Genes of interest
+genes_to_plot <- c("PRDM16", "CLSTN3B")
+
+# Cluster colours
+cluster_colours <- c(
+  "Early preadipocytes" = "#FDD866",
+  "Intermediate preadipocytes" = "#FDB463",
+  "Transitional adipocytes" = "#D95F0E",
+  "Mature adipocytes" = "#8C2D04"
+)
+
+subset_obj <- ScaleData(subset_obj, features = genes_to_plot, assay = "RNA")
+
+# Plot heatmap
+heat_map <- DoHeatmap(subset_obj,
+                      features = genes_to_plot,
+                      assay = "RNA",
+                      size = 4,
+                      angle = 45,
+                      group.colors = cluster_colours
+                      ) +
+  theme(axis.text.y = element_text(size = 10))
 
 # Display plot
 heat_map
