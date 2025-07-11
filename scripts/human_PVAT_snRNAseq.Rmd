@@ -1163,7 +1163,25 @@ final_violin_plot
 
 ```
 
+# Save object
+
+```{r}
+
+save(libs_combined_filt, file = "data/analysis/libs_combined_filt.RData")
+
+```
+
+
 # Final plots
+
+## Load object
+
+```{r}
+
+load("data/analysis/libs_combined_filt.RData")
+
+```
+
 
 ## Final QC violin plots
 
@@ -1235,106 +1253,17 @@ individual_heatmaps <- DimHeatmap(libs_combined_filt,
 for(i in 1:length(individual_heatmaps)) {
   individual_heatmaps[[i]] <- individual_heatmaps[[i]] + 
     ggtitle(paste0("PC", i)) +
-    theme(plot.title = element_text(size = 11, face = "bold", hjust = 0.5))
+    theme(plot.title = element_text(size = 14, face = "bold", hjust = 0.5))
 }
 
 # Combine heatmaps
 dim_heatmap <- wrap_plots(individual_heatmaps, ncol = 3, guides = "collect") &
   theme(
-    axis.text.y = element_text(size = 9, hjust = 1.0, vjust = 0.5),
-    axis.text = element_text(size = 8),
-    axis.title.x = element_text(size = 11),
-    axis.title.y = element_text(size = 11),
-    panel.spacing = unit(0.2, "cm")
-  ) &
-  labs(x = "Cell", y = "Gene")
-
-# Panel B: Variance explained
-# Calculate variance explained
-pca_obj <- libs_combined_filt[["pca"]]
-variance_explained <- (pca_obj@stdev)^2 / sum((pca_obj@stdev)^2) * 100
-# Calculate cumulative variance
-cumulative_variance <- cumsum(variance_explained[1:15])
-variance_df <- data.frame(
- PC = paste0("PC", 1:15),
- Variance = variance_explained[1:15],
- Cumulative = cumulative_variance
-)
-
-variance_plot <- ggplot(variance_df, aes(x = factor(PC, levels = PC))) +
- geom_bar(aes(y = Variance), stat = "identity", fill = "steelblue", alpha = 0.7) +
- geom_line(aes(y = Cumulative, group = 1), color = "red", size = 1.2) +
- geom_point(aes(y = Cumulative), color = "red", size = 2) +
- geom_text(aes(y = Variance, label = paste0(round(Variance, 1), "%")), 
-           vjust = -0.3, size = 5) +
- geom_text(aes(y = Cumulative, label = paste0(round(Cumulative, 1), "%")), 
-           vjust = -1.5, color = "red", size = 5) +
- labs(x = "Principal component", 
-      y = "Variance explained (%)") +
- theme_minimal() +
- theme(
-   plot.title = element_text(size = 16, face = "bold"),
-   plot.subtitle = element_text(size = 14),
-   axis.title.x = element_text(size = 14),
-   axis.title.y = element_text(size = 14),
-   axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
-   axis.text.y = element_text(size = 12)
- ) +
- annotate("text", x = 12, y = 75, 
-          label = paste0("Cumulative: ", round(cumulative_variance[15], 1), "%"), 
-          color = "red", size = 6, fontface = "bold")
-
-
-# Combine panels A and B with proper tagging
-panel_A <- wrap_elements(dim_heatmap) + labs(tag = "A")
-panel_B <- variance_plot + labs(tag = "B")
-
-# Combine panels A and B
-combined_pca_figure <- panel_A / panel_B + 
-  plot_layout(heights = c(6, 4)) &
-  theme(plot.tag = element_text(size = 18, face = "plain"))
-
-# Save the combined figure
-if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
-
-pdf("results/humanPVATsn/final_figs/combined_pca_analysis.pdf", width = 14, height = 21)
-print(combined_pca_figure)
-invisible(dev.off())
-
-# Display the figure
-combined_pca_figure
-
-```
-```{r fig.width=14, fig.height=20}
-
-library(patchwork)
-library(Seurat)
-library(ggplot2)
-
-# Panel A: PC top contributing genes heatmap
-# Create individual heatmaps with titles
-individual_heatmaps <- DimHeatmap(libs_combined_filt, 
-                                 dims = 1:15, 
-                                 balanced = TRUE,
-                                 cells = 500, # show randomly sampled 500 cells
-                                 fast = FALSE,
-                                 nfeatures = 20, # show only top 20 genes instead of 30
-                                 combine = FALSE)
-
-# Add PC titles to each heatmap
-for(i in 1:length(individual_heatmaps)) {
-  individual_heatmaps[[i]] <- individual_heatmaps[[i]] + 
-    ggtitle(paste0("PC", i)) +
-    theme(plot.title = element_text(size = 11, face = "bold", hjust = 0.5))
-}
-
-# Combine heatmaps
-dim_heatmap <- wrap_plots(individual_heatmaps, ncol = 3, guides = "collect") &
-  theme(
-    axis.text.y = element_text(size = 9, hjust = 1.0, vjust = 0.5),
-    axis.text = element_text(size = 8),
-    axis.title.x = element_text(size = 11),
-    axis.title.y = element_text(size = 11),
+    axis.text.y = element_text(size = 8, hjust = 1.0, vjust = 0.5),
+    # axis.text = element_text(size = 12),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    legend.text = element_text(size = 14),
     panel.spacing = unit(0.2, "cm")
   ) &
   labs(x = "Cell", y = "Gene")
@@ -1346,14 +1275,14 @@ elbow_plot <- ElbowPlot(libs_combined_filt, ndims = 30) +
        y = "Standard deviation") +
   theme_minimal() +
   theme(
-    axis.title.x = element_text(size = 12),
-    axis.title.y = element_text(size = 12),
-    axis.text.x = element_text(size = 10),
-    axis.text.y = element_text(size = 10)
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14),
+    axis.text.x = element_text(size = 13),
+    axis.text.y = element_text(size = 13)
   ) +
-  annotate("text", x = 19, y = max(libs_combined_filt[["pca"]]@stdev[1:30]) * 0.8, 
+  annotate("text", x = 20, y = max(libs_combined_filt[["pca"]]@stdev[1:30]) * 0.8, 
            label = "15 PCs selected", 
-           color = "red", size = 4, fontface = "bold")
+           color = "red", size = 6, fontface = "bold")
 
 # Panel C: Variance explained
 # Calculate variance explained
@@ -1372,22 +1301,22 @@ variance_plot <- ggplot(variance_df, aes(x = factor(PC, levels = PC))) +
  geom_line(aes(y = Cumulative, group = 1), color = "red", size = 1.2) +
  geom_point(aes(y = Cumulative), color = "red", size = 2) +
  geom_text(aes(y = Variance, label = paste0(round(Variance, 1), "%")), 
-           vjust = -0.3, size = 3) +
+           vjust = -0.4, size = 3) +
  geom_text(aes(y = Cumulative, label = paste0(round(Cumulative, 1), "%")), 
-           vjust = -2.0, hjust = 0.75, color = "red", size = 3) +
+           vjust = -2.0, hjust = 0.75, color = "red", size = 4) +
  labs(x = "Principal component", 
       y = "Variance explained (%)") +
  theme_minimal() +
  theme(
-   axis.title.x = element_text(size = 12),
-   axis.title.y = element_text(size = 12),
-   axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
-   axis.text.y = element_text(size = 10)
+   axis.title.x = element_text(size = 14),
+   axis.title.y = element_text(size = 14),
+   axis.text.x = element_text(angle = 45, hjust = 1, size = 13),
+   axis.text.y = element_text(size = 13)
  ) +
  coord_cartesian(ylim = c(0, 95)) +
  annotate("text", x = 12, y = 75, 
           label = paste0("Cumulative: ", round(cumulative_variance[15], 1), "%"), 
-          color = "red", size = 4, fontface = "bold")
+          color = "red", size = 6, fontface = "bold")
 
 # Combine panels with proper layout
 panel_A <- wrap_elements(dim_heatmap) + labs(tag = "A")
@@ -1397,7 +1326,7 @@ panel_C <- variance_plot + labs(tag = "C")
 # Create layout: Panel A on top, Panels B and C side by side below
 combined_pca_figure <- panel_A / (panel_B | panel_C) + 
   plot_layout(heights = c(4, 2)) &
-  theme(plot.tag = element_text(size = 18, face = "plain"))
+  theme(plot.tag = element_text(size = 22, face = "plain"))
 
 # Save the combined figure
 if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
@@ -1412,7 +1341,7 @@ combined_pca_figure
 ```
 
 
-
+Old individual plots:
 
 ```{r fig.width=14, fig.height=12}
 
@@ -1507,10 +1436,10 @@ sample_plot <- DimPlot(libs_combined_filt, reduction = "umap", group.by = "sampl
   labs(title = NULL) +
   theme_minimal() +
   theme(
-    axis.text = element_text(size = 10),
-    axis.title = element_text(size = 11),
-    legend.title = element_text(size = 10, face = "bold"),
-    legend.text = element_text(size = 9),
+    axis.text = element_text(size = 13),
+    axis.title = element_text(size = 13),
+    legend.title = element_text(size = 14, face = "bold"),
+    legend.text = element_text(size = 13),
     panel.border = element_rect(color = "black", fill = NA, size = 0.5)
   )
 
@@ -1520,10 +1449,10 @@ mito_plot <- FeaturePlot(object = libs_combined_filt, reduction = "umap", featur
   labs(title = NULL) +
   theme_minimal() +
   theme(
-    axis.text = element_text(size = 10),
-    axis.title = element_text(size = 11),
-    legend.title = element_text(size = 10, face = "bold"),
-    legend.text = element_text(size = 9),
+    axis.text = element_text(size = 13),
+    axis.title = element_text(size = 13),
+    legend.title = element_text(size = 13, face = "bold"),
+    legend.text = element_text(size = 13),
     panel.border = element_rect(color = "black", fill = NA, size = 0.5)
   )
 
@@ -1536,12 +1465,11 @@ split_plot <- DimPlot(libs_combined_filt,
   labs(title = NULL) +
   theme_minimal() +
   theme(
-    axis.text = element_text(size = 10),
-    axis.title = element_text(size = 11),
-    legend.title = element_text(size = 10, face = "bold"),
-    legend.text = element_text(size = 9),
+    axis.text = element_text(size = 13),
+    axis.title = element_text(size = 13),
+    legend.text = element_text(size = 13),
     panel.border = element_rect(color = "black", fill = NA, size = 0.5),
-    strip.text = element_text(size = 10, face = "bold")
+    strip.text = element_text(size = 14, face = "bold")
   )
 
 # Combine all plots with panel labels
@@ -1551,7 +1479,7 @@ combined_plot <- (mito_plot | sample_plot) / split_plot
 final_plot <- combined_plot + plot_annotation(
   tag_levels = 'A'
 ) & 
-theme(plot.tag = element_text(size = 16, face = "plain"))
+theme(plot.tag = element_text(size = 22, face = "plain"))
 
 # Save as PDF
 pdf("results/humanPVATsn/final_figs/umap_qc_overview.pdf", width = 14, height = 10)
@@ -1653,7 +1581,8 @@ markers_to_plot <- c(
           "BCL11B", "LCK"
         )
 
-dot_plot <- DotPlot(anno_combined2, features = markers_to_plot, dot.scale = 7, cols = "PiYG") +
+dot_plot <- DotPlot(anno_combined2, features = markers_to_plot, dot.scale = 7) +
+  scale_colour_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0, limits = c(-1, 2.5)) +
   labs(title = NULL, x = "Marker gene", y = "Cell type") +
   theme_minimal() +
   theme(
@@ -1728,9 +1657,11 @@ We plot feature plots of marker genes to show the expression specific to some cl
 
 ```{r fig.height=15, fig.width=15}
 
+load("data/analysis/anno_combined.RData")
+
 DefaultAssay(anno_combined) <- "RNA"
 
-feature_plot <- FeaturePlot(anno_combined,
+feature_plots <- FeaturePlot(anno_combined,
                             features = c(
                               # Preadipocyte
                               "ABCA10","PDGFRA", "EBF2", 
@@ -1743,10 +1674,16 @@ feature_plot <- FeaturePlot(anno_combined,
                               # Macrophages
                               "MRC1"
                               ),
-                            min.cutoff = 1)
+                            min.cutoff = 1,
+                            combine = FALSE)
 
-final_feature <- feature_plot + plot_annotation(title = "Feature plot of marker genes of PVAT cell populations (snRNA-seq)",
-                  theme = theme(plot.title = element_text(face="bold", size=20)))
+feature_plots <- lapply(feature_plots, function(p) {
+  p + theme(plot.title = element_text(size = 18, face = "bold"))
+})
+
+final_feature <- wrap_plots(feature_plots) + 
+  plot_annotation(title = "Feature plot of marker genes of PVAT cell populations (snRNA-seq)",
+                  theme = theme(plot.title = element_text(face = "bold", size = 20)))
 
 # Save the figure
 if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
@@ -1756,7 +1693,7 @@ print(final_feature)
 invisible(dev.off())
 
 # Display the plot
-final_feature
+final_feature 
 
 ```
 
@@ -1808,7 +1745,9 @@ heat_map <- DoHeatmap(subset_obj,
                       angle = 45,
                       group.colors = cluster_colours
                       ) +
-  theme(axis.text.y = element_text(size = 10))
+  theme(axis.text.y = element_text(size = 12),
+        legend.text = element_text(size = 12)
+  )
 
 
 # Save to PDF
@@ -2089,12 +2028,6 @@ amyloid_heatmap
 
 ```
 
-
-
-
-
-
-
 ## Symposium violin plot for poster
 
 ```{r fig.width=15, fig.height=20}
@@ -2141,7 +2074,6 @@ invisible(dev.off())
 final_violin_plot
 
 ```
-
 
 # Session info
 

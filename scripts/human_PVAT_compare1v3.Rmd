@@ -614,7 +614,7 @@ for (condition in conditions) {
 
 ```
 
-### Joint 3-panel figures
+### Final 3-panel bar plot figures
 
 This function creates a figure with three panels: healthy only, obese only, and common.
 
@@ -679,8 +679,8 @@ create_pathway_plot <- function(df, category, title_label) {
       plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
       axis.title.x = element_text(size = 11),
       axis.title.y = element_text(size = 11),
-      axis.text.x = element_text(size = 9),
-      axis.text.y = element_text(size = 8),
+      axis.text.x = element_text(size = 11),
+      axis.text.y = element_text(size = 11),
       plot.margin = margin(10, 10, 10, 10),
       panel.grid.minor = element_blank()
     )
@@ -693,7 +693,7 @@ create_pathway_plot <- function(df, category, title_label) {
 ```
 
 
-```{r fig.width=12, fig.height=16}
+```{r fig.width=13, fig.height=16}
 
 # ====================  EARLY PREADIPOCYTES ====================
 # Create the three panels for early preadipocytes
@@ -709,14 +709,14 @@ panel_C <- create_pathway_plot(early_df, "common", "Enriched pathways in both he
 # Combine panels into a single figure
 combined_early_pathway_figure <- panel_A / panel_B / panel_C + 
   plot_layout(heights = c(1, 1, 1)) &
-  theme(plot.tag = element_text(size = 16))
+  theme(plot.tag = element_text(size = 22))
 
 # Save combined figure
 if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
 
 # Save as PDF
 pdf("results/humanPVATsn/final_figs/early_1v3_pathways.pdf", 
-    width = 12, height = 16)
+    width = 13, height = 16)
 print(combined_early_pathway_figure)
 invisible(dev.off())
 
@@ -735,12 +735,12 @@ panel_C_inter <- create_pathway_plot(intermediate_df, "common", "Enriched pathwa
 # Combine panels into a single figure
 combined_intermediate_pathway_figure <- panel_A_inter / panel_B_inter / panel_C_inter + 
   plot_layout(heights = c(1, 1, 1)) &
-  theme(plot.tag = element_text(size = 16))
+  theme(plot.tag = element_text(size = 22))
 
 # Save combined figure
 # Save as PDF
 pdf("results/humanPVATsn/final_figs/intermediate_1v3_pathways.pdf", 
-    width = 12, height = 16)
+    width = 13, height = 16)
 print(combined_intermediate_pathway_figure)
 invisible(dev.off())
 
@@ -759,12 +759,12 @@ panel_C_mature <- create_pathway_plot(mature_df, "common", "Enriched pathways in
 # Combine panels into a single figure
 combined_mature_pathway_figure <- panel_A_mature / panel_B_mature / panel_C_mature + 
   plot_layout(heights = c(1, 1, 1)) &
-  theme(plot.tag = element_text(size = 16))
+  theme(plot.tag = element_text(size = 22))
 
 # Save combined figure
 # Save as PDF
 pdf("results/humanPVATsn/final_figs/mature_1v3_pathways.pdf", 
-    width = 12, height = 16)
+    width = 13, height = 16)
 print(combined_mature_pathway_figure)
 invisible(dev.off())
 
