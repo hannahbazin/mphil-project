@@ -1239,7 +1239,7 @@ full_diff <- readRDS("results/humanPVATsn/pathfindR/full/full_diff.rds")
 
 ## Step 1
 
-```{r fig.width=9, fig.height=7}
+```{r fig.width=10, fig.height=9}
 
 # Filter pathfindR output
 step1_filtered <- step1_output %>%
@@ -1257,10 +1257,10 @@ step1_filtered <- step1_output %>%
 
 # Biological theme list
 theme_list <- c(
-  "Cellular & tissue \n remodelling",
+  "Cellular & tissue \nremodelling",
   "Cell signalling",
-  "Neurogenic \n priming",
-  "Metabolic priming \n & gene regulation"
+  "Neurogenic \npriming",
+  "Metabolic priming \n& gene regulation"
 )
 
 # Assign themes
@@ -1283,10 +1283,9 @@ step1_filtered$Theme <- c(
   theme_list[1],  # substrate adhesion-dependent cell spreading
   theme_list[4],  # P-body assembly
   theme_list[4],  # heterochromatin organization
-  theme_list[2],  # regulation of Cdc42 protein signal transduction
+  theme_list[1],  # regulation of Cdc42 protein signal transduction
   theme_list[1]   # positive regulation of stress fiber assembly
 )
-
 
 # Set Theme factor levels to control facet order
 step1_filtered$Theme <- factor(step1_filtered$Theme, levels = theme_list)
@@ -1302,19 +1301,31 @@ data_by_theme <- split(step1_filtered, step1_filtered$Theme)
 # Compute relative heights based on pathway counts
 relative_heights <- sapply(data_by_theme, nrow)
 
-# Generate plots for each theme with theme label as y-axis title
+# Max value for consistent x-axis
 max_value <- max(step1_filtered$Fold_Enrichment)
 
+# Generate dot plots for each theme with theme label as y-axis title
 plots_by_theme <- lapply(names(data_by_theme), function(theme) {
   df <- data_by_theme[[theme]]
   ggplot(df, aes(x = Fold_Enrichment, y = Term_Description)) +
-    geom_col(width = 1, fill = "#FDD866", color = "black") +
+    geom_point(aes(size = occurrence), colour = "#FDD866", stroke = 0.3, alpha = 0.8) +
+    scale_size_continuous(
+      name = "Occurrence",
+      range = c(3, 6),
+      breaks = c(6, 8, 10),
+      limits = c(6, 10),
+      labels = c("6", "8", "10"),
+      guide = guide_legend(override.aes = list(size = c(3, 4.5, 6)))) +
     xlim(0, max_value) +
     labs(x = NULL, y = theme) +
     theme_minimal() +
     theme(
-      axis.title.y = element_text(angle = 90, hjust = 0.5, face = "bold", size = 9),
-      axis.text.y = element_text(size = 8),
+      axis.title.y = element_text(angle = 90, hjust = 0.5, face = "bold", size = 13),
+      axis.text.y = element_text(size = 13),
+      legend.position = "right",
+      legend.title = element_text(size = 13),
+      legend.text = element_text(size = 12),
+      axis.text.x = element_text(size = 12),
       plot.margin = margin(5, 5, 5, 5)
     )
 })
@@ -1326,15 +1337,13 @@ combined_plot <- wrap_plots(plots_by_theme, ncol = 1, heights = relative_heights
 
 # Add global title and x-axis
 final_plot <- combined_plot + plot_annotation(
-  title = "Top pathways enriched in step 1 (early to intermediate preadipocytes)",
   caption = "Fold enrichment",
   theme = theme(
-    plot.title = element_text(hjust = 0.5, size = 13, face = "bold"),
-    plot.caption = element_text(hjust = 0.8, size = 9))
+    plot.caption = element_text(hjust = 0.8, size = 12))
 )
 
 # Save and display
-ggsave("results/humanPVATsn/pathfindR/full/step1_split.pdf", final_plot, width = 9, height = 7)
+ggsave("results/humanPVATsn/final_figs/step1.pdf", final_plot, width = 10, height = 9)
 print(final_plot)
 
 ```
@@ -1342,7 +1351,7 @@ print(final_plot)
 
 ## Step 2
 
-```{r fig.width=9, fig.height=7}
+```{r fig.width=10, fig.height=9}
 
 # Filter pathfindR output
 step2_filtered <- step2_output %>%
@@ -1360,10 +1369,10 @@ step2_filtered <- step2_output %>%
 
 # Biological theme list
 theme_list <- c(
-  "Metabolic \n priming",
-  "Cell signalling & \n tissue remodelling",
-  "Neurogenic \n priming",
-  "Developmental \n origins",
+  "Metabolic \npriming",
+  "Cell signalling & \ntissue remodelling",
+  "Neurogenic \npriming",
+  "Lineage \norigins",
   "Amyloid-\n beta \n processing"
 )
 
@@ -1412,13 +1421,28 @@ max_value <- max(step2_filtered$Fold_Enrichment)
 plots_by_theme <- lapply(names(data_by_theme), function(theme) {
   df <- data_by_theme[[theme]]
   ggplot(df, aes(x = Fold_Enrichment, y = Term_Description)) +
-    geom_col(width = 1, fill = "#F46D43", color = "black") +
+    geom_point(aes(size = occurrence), colour = "#F46D43", stroke = 0.3, alpha = 0.8) +
+    scale_size_continuous(
+      name = "Occurrence",
+      range = c(3, 6),
+      breaks = c(6, 8, 10),
+      limits = c(6, 10),
+      labels = c("6", "8", "10"),
+      guide = guide_legend(override.aes = list(size = c(3, 4.5, 6)))) +
     xlim(0, max_value) +
-    labs(x = NULL, y = theme) +
+    labs(
+      x = NULL,
+      y = if (theme == "Amyloid-\n beta \n processing") {
+        bquote(bold(atop("Amyloid-"*beta, "processing"))) } else { theme }
+      ) +
     theme_minimal() +
     theme(
-      axis.title.y = element_text(angle = 90, hjust = 0.5, face = "bold", size = 9),
-      axis.text.y = element_text(size = 8),
+      axis.title.y = element_text(angle = 90, hjust = 0.5, face = "bold", size = 13),
+      axis.text.y = element_text(size = 13),
+      legend.position = "right",
+      legend.title = element_text(size = 13),
+      legend.text = element_text(size = 12),
+      axis.text.x = element_text(size = 12),
       plot.margin = margin(5, 5, 5, 5)
     )
 })
@@ -1430,15 +1454,13 @@ combined_plot <- wrap_plots(plots_by_theme, ncol = 1, heights = relative_heights
 
 # Add global title and x-axis
 final_plot <- combined_plot + plot_annotation(
-  title = "Top pathways enriched in step 2 (intermediate preadipocytes to transitional adipocytes)",
   caption = "Fold enrichment",
   theme = theme(
-    plot.title = element_text(hjust = 0.5, size = 13, face = "bold"),
-    plot.caption = element_text(hjust = 0.8, size = 9))
+    plot.caption = element_text(hjust = 0.8, size = 12))
 )
 
 # Save and display
-ggsave("results/humanPVATsn/pathfindR/full/step2_split.pdf", final_plot, width = 9, height = 7)
+ggsave("results/humanPVATsn/final_figs/step2.pdf", final_plot, width = 10, height = 9)
 print(final_plot)
 
 
@@ -1465,11 +1487,11 @@ step3_filtered <- step3_output %>%
 
 # Biological theme list
 theme_list <- c(
-  "Metabolic \n maturation",
-  "Cell & tissue \n remodelling",
+  "Metabolic \nmaturation",
+  "Cell & tissue \nremodelling",
   "Cell signalling",
-  "Sympathetic \n interaction",
-  "Amyloid-beta \n processing"
+  "Sympathetic \ninteraction",
+  "Amyloid-beta \nprocessing"
 )
 
 # Assign themes
@@ -1516,13 +1538,28 @@ max_value <- max(step3_filtered$Fold_Enrichment)
 plots_by_theme <- lapply(names(data_by_theme), function(theme) {
   df <- data_by_theme[[theme]]
   ggplot(df, aes(x = Fold_Enrichment, y = Term_Description)) +
-    geom_col(width = 1, fill = "#D73027", color = "black") +
+    geom_point(aes(size = occurrence), colour = "#D73027", stroke = 0.3, alpha = 0.8) +
+    scale_size_continuous(
+      name = "Occurrence",
+      range = c(3, 6),
+      breaks = c(6, 8, 10),
+      limits = c(6, 10),
+      labels = c("6", "8", "10"),
+      guide = guide_legend(override.aes = list(size = c(3, 4.5, 6)))) +
     xlim(0, max_value) +
-    labs(x = NULL, y = theme) +
+    labs(
+      x = NULL,
+      y = if (theme == "Amyloid-beta \nprocessing") {
+        bquote(bold(atop("Amyloid-"*beta, "processing"))) } else { theme }
+    ) +
     theme_minimal() +
     theme(
-      axis.title.y = element_text(angle = 90, hjust = 0.5, face = "bold", size = 9),
-      axis.text.y = element_text(size = 8),
+      axis.title.y = element_text(angle = 90, hjust = 0.5, face = "bold", size = 13),
+      axis.text.y = element_text(size = 13),
+      legend.position = "right",
+      legend.title = element_text(size = 13),
+      legend.text = element_text(size = 12),
+      axis.text.x = element_text(size = 12),
       plot.margin = margin(5, 5, 5, 5)
     )
 })
@@ -1534,15 +1571,13 @@ combined_plot <- wrap_plots(plots_by_theme, ncol = 1, heights = relative_heights
 
 # Add global title and x-axis
 final_plot <- combined_plot + plot_annotation(
-  title = "Top pathways enriched in step 3 (transitional to mature adipocytes)",
   caption = "Fold enrichment",
   theme = theme(
-    plot.title = element_text(hjust = 0.5, size = 13, face = "bold"),
-    plot.caption = element_text(hjust = 0.8, size = 9))
+    plot.caption = element_text(hjust = 0.8, size = 12))
 )
 
 # Save and display
-ggsave("results/humanPVATsn/pathfindR/full/step3_split.pdf", final_plot, width = 9, height = 7)
+ggsave("results/humanPVATsn/final_figs/step3.pdf", final_plot, width = 10, height = 9)
 print(final_plot)
 
 ```
@@ -1569,9 +1604,9 @@ full_diff_filtered <- full_diff %>%
 # Biological theme list
 theme_list <- c(
   "Metabolic activation",
-  "Cellular restructuring \n & vesicle dynamics",
-  "Cell communication \n & signal transduction",
-  "Differentiation \n & tissue remodelling"
+  "Cellular restructuring \n& vesicle dynamics",
+  "Cell communication \n& signal transduction",
+  "Differentiation \n& tissue remodelling"
 )
 
 # Assign themes
@@ -1618,13 +1653,28 @@ max_value <- max(full_diff_filtered$Fold_Enrichment)
 plots_by_theme <- lapply(names(data_by_theme), function(theme) {
   df <- data_by_theme[[theme]]
   ggplot(df, aes(x = Fold_Enrichment, y = Term_Description)) +
-    geom_col(width = 1, fill = "#2166AC", color = "black") +
+    geom_point(aes(size = occurrence), colour = "#2166AC", stroke = 0.3, alpha = 0.8) +
+    scale_size_continuous(
+      name = "Occurrence",
+      range = c(3, 6),
+      breaks = c(6, 8, 10),
+      limits = c(6, 10),
+      labels = c("6", "8", "10"),
+      guide = guide_legend(override.aes = list(size = c(3, 4.5, 6)))) +
     xlim(0, max_value) +
-    labs(x = NULL, y = theme) +
+    labs(
+      x = NULL,
+      y = if (theme == "Amyloid-beta \nprocessing") {
+        bquote(bold(atop("Amyloid-"*beta, "processing"))) } else { theme }
+    ) +
     theme_minimal() +
     theme(
-      axis.title.y = element_text(angle = 90, hjust = 0.5, face = "bold", size = 9),
-      axis.text.y = element_text(size = 8),
+      axis.title.y = element_text(angle = 90, hjust = 0.5, face = "bold", size = 13),
+      axis.text.y = element_text(size = 13),
+      legend.position = "right",
+      legend.title = element_text(size = 13),
+      legend.text = element_text(size = 12),
+      axis.text.x = element_text(size = 12),
       plot.margin = margin(5, 5, 5, 5)
     )
 })
@@ -1636,15 +1686,13 @@ combined_plot <- wrap_plots(plots_by_theme, ncol = 1, heights = relative_heights
 
 # Add global title and x-axis
 final_plot <- combined_plot + plot_annotation(
-  title = "Top pathways enriched in full differentiation (early preadipocytes to mature adipocytes)",
   caption = "Fold enrichment",
   theme = theme(
-    plot.title = element_text(hjust = 0.5, size = 13, face = "bold"),
-    plot.caption = element_text(hjust = 0.8, size = 9))
+    plot.caption = element_text(hjust = 0.8, size = 12))
 )
 
 # Save and display
-ggsave("results/humanPVATsn/pathfindR/full/full_diff_split.pdf", final_plot, width = 9, height = 7)
+ggsave("results/humanPVATsn/final_figs/full_diff.pdf", final_plot, width = 10, height = 9)
 print(final_plot)
 
 ```

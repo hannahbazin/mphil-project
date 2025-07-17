@@ -1682,8 +1682,7 @@ feature_plots <- lapply(feature_plots, function(p) {
 })
 
 final_feature <- wrap_plots(feature_plots) + 
-  plot_annotation(title = "Feature plot of marker genes of PVAT cell populations (snRNA-seq)",
-                  theme = theme(plot.title = element_text(face = "bold", size = 20)))
+  plot_annotation(theme = theme(plot.title = element_text(face = "bold", size = 20)))
 
 # Save the figure
 if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
@@ -1746,7 +1745,8 @@ heat_map <- DoHeatmap(subset_obj,
                       group.colors = cluster_colours
                       ) +
   theme(axis.text.y = element_text(size = 12),
-        legend.text = element_text(size = 12)
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 13, face = "bold")
   )
 
 
@@ -1849,11 +1849,11 @@ heat_map <- pheatmap(expr_matrix,
          cluster_rows = FALSE,
          cluster_cols = FALSE,
          color = colorRampPalette(c("white", "firebrick3"))(100),
-         main = "Log-normalised expression of LRP1, MME, and CD36 across adipocyte differentiation",
          display_numbers = TRUE,
-         fontsize_row = 12,
-         fontsize_col = 12,
-         fontsize_number = 10,
+         fontsize_row = 14,
+         fontsize_col = 14,
+         fontsize = 13,
+         fontsize_number = 13,
          angle_col = 45)
 
 # Save to PDF
@@ -1960,11 +1960,11 @@ neuro_heatmap <- pheatmap(neuro_pathways,
          cluster_rows = FALSE,
          cluster_cols = FALSE,
          color = colorRampPalette(c("white", "steelblue"))(100),
-         main = "Progressive enrichment of neurogenic pathways during adipocyte differentiation",
          display_numbers = display_vals,
-         fontsize_row = 12,
-         fontsize_col = 12,
-         fontsize_number = 10,
+         fontsize_row = 14,
+         fontsize_col = 14,
+         fontsize = 13,
+         fontsize_number = 13,
          angle_col = 45)
 
 
@@ -2009,11 +2009,11 @@ amyloid_heatmap <- pheatmap(amyloid_pathways,
          cluster_rows = FALSE,
          cluster_cols = FALSE,
          color = colorRampPalette(c("white", "steelblue"))(100),
-         main = "Progressive enrichment of amyloid-related pathways during adipocyte differentiation",
          display_numbers = display_vals,
-         fontsize_row = 12,
-         fontsize_col = 12,
-         fontsize_number = 10,
+         fontsize_row = 14,
+         fontsize_col = 14,
+         fontsize_number = 13,
+         fontsize = 13,
          angle_col = 45)
 
 
@@ -2024,7 +2024,6 @@ invisible(dev.off())
 
 # Display plot
 amyloid_heatmap
-
 
 ```
 

@@ -614,7 +614,7 @@ for (condition in conditions) {
 
 ```
 
-### Final 3-panel bar plot figures
+### Final 3-panel dot plot figures
 
 This function creates a figure with three panels: healthy only, obese only, and common.
 
@@ -642,8 +642,9 @@ create_pathway_plot <- function(df, category, title_label) {
       # Keep top 20 pathways for visualisation
       slice_head(n = 20) %>%
       # Ensure factor levels are correctly ordered for plotting
-      mutate(Term_Description = factor(Term_Description, levels = Term_Description))
-    
+      mutate(Term_Description = factor(Term_Description, levels = Term_Description),
+             size_var = (occurrence_A + occurrence_B) / 2) # Add as a column for dot size
+
     # Adjust x-axis for "common" category to ensure longest bars at the top
     x_var <- -log10(df_filtered[[sorting_col]])  # Convert p-values for better visualisation
     x_label <- "-log10(combined P value)"
@@ -662,25 +663,36 @@ create_pathway_plot <- function(df, category, title_label) {
       # Keep top 20 pathways for visualisation
       slice_head(n = 20) %>%
       # Ensure factor levels are correctly ordered for plotting
-      mutate(Term_Description = factor(Term_Description, levels = rev(Term_Description)))
+      mutate(Term_Description = factor(Term_Description, levels = rev(Term_Description)),
+             size_var = .data[[occurrence_col]])
     
     x_var <- df_filtered[[sorting_col]]
     x_label <- "Fold enrichment"
     
     }
   
-  # Create bar plot
+  # Create dot plot
   plot <- ggplot(df_filtered, aes(x = x_var, y = Term_Description)) +
-    geom_bar(stat = "identity", color = "black", fill = fill_col, alpha = 0.8) +
+    geom_point(aes(size = size_var), color = fill_col, alpha = 0.8) +
+    scale_size_continuous(
+      name = "Occurrence",
+      range = c(3, 8),
+      breaks = c(6, 8, 10),
+      limits = c(6, 10),
+      labels = c("6", "8", "10"),
+      guide = guide_legend(override.aes = list(size = c(3, 6, 8)))
+    ) +
     labs(title = title_label, x = x_label, y = "Pathway") +
     theme_minimal() +
     theme(
-      legend.position = "none",
-      plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
-      axis.title.x = element_text(size = 11),
-      axis.title.y = element_text(size = 11),
-      axis.text.x = element_text(size = 11),
-      axis.text.y = element_text(size = 11),
+      plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+      axis.title.x = element_text(size = 15),
+      axis.title.y = element_text(size = 15),
+      axis.text.x = element_text(size = 14),
+      axis.text.y = element_text(size = 14),
+      legend.title = element_text(size = 13),
+      legend.text = element_text(size = 13),
+      legend.position = "right",
       plot.margin = margin(10, 10, 10, 10),
       panel.grid.minor = element_blank()
     )
@@ -693,18 +705,25 @@ create_pathway_plot <- function(df, category, title_label) {
 ```
 
 
-```{r fig.width=13, fig.height=16}
+```{r fig.width=13, fig.height=26}
+
+tag_healthy <- "A"
+tag_obese <- "B"
+tag_common <- "C"
+
+fig_width <- 11
+fig_height <- 16
 
 # ====================  EARLY PREADIPOCYTES ====================
 # Create the three panels for early preadipocytes
-panel_A <- create_pathway_plot(early_df, "A only", "Enriched pathways in healthy sample only") + 
-  labs(tag = "A")
+panel_A <- create_pathway_plot(early_df, "A only", "Enriched pathways in healthy only") + 
+  labs(tag = tag_healthy)
 
-panel_B <- create_pathway_plot(early_df, "B only", "Enriched pathways in obese sample only") + 
-  labs(tag = "B")
+panel_B <- create_pathway_plot(early_df, "B only", "Enriched pathways in obese only") + 
+  labs(tag = tag_obese)
 
-panel_C <- create_pathway_plot(early_df, "common", "Enriched pathways in both healthy and obese samples") + 
-  labs(tag = "C")
+panel_C <- create_pathway_plot(early_df, "common", "Enriched pathways in healthy & obese") + 
+  labs(tag = tag_common)
 
 # Combine panels into a single figure
 combined_early_pathway_figure <- panel_A / panel_B / panel_C + 
@@ -716,7 +735,7 @@ if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVAT
 
 # Save as PDF
 pdf("results/humanPVATsn/final_figs/early_1v3_pathways.pdf", 
-    width = 13, height = 16)
+    width = fig_width, height = fig_height)
 print(combined_early_pathway_figure)
 invisible(dev.off())
 
@@ -725,12 +744,12 @@ combined_early_pathway_figure
 
 # ====================  INTERMEDIATE PREADIPOCYTES ====================
 # Create the three panels for intermediate preadipocytes
-panel_A_inter <- create_pathway_plot(intermediate_df, "A only", "Enriched pathways in healthy sample only") + 
-  labs(tag = "A")
-panel_B_inter <- create_pathway_plot(intermediate_df, "B only", "Enriched pathways in obese sample only") + 
-  labs(tag = "B")
-panel_C_inter <- create_pathway_plot(intermediate_df, "common", "Enriched pathways in both healthy and obese samples") + 
-  labs(tag = "C")
+panel_A_inter <- create_pathway_plot(intermediate_df, "A only", "Enriched pathways in healthy only") + 
+  labs(tag = tag_healthy)
+panel_B_inter <- create_pathway_plot(intermediate_df, "B only", "Enriched pathways in obese only") + 
+  labs(tag = tag_obese)
+panel_C_inter <- create_pathway_plot(intermediate_df, "common", "Enriched pathways in healthy & obese") + 
+  labs(tag = tag_common)
 
 # Combine panels into a single figure
 combined_intermediate_pathway_figure <- panel_A_inter / panel_B_inter / panel_C_inter + 
@@ -740,7 +759,7 @@ combined_intermediate_pathway_figure <- panel_A_inter / panel_B_inter / panel_C_
 # Save combined figure
 # Save as PDF
 pdf("results/humanPVATsn/final_figs/intermediate_1v3_pathways.pdf", 
-    width = 13, height = 16)
+    width = 13, height = fig_height)
 print(combined_intermediate_pathway_figure)
 invisible(dev.off())
 
@@ -749,12 +768,12 @@ combined_intermediate_pathway_figure
 
 # ====================  MATURE ADIPOCYTES ====================
 # Create the three panels for mature adipocytes
-panel_A_mature <- create_pathway_plot(mature_df, "A only", "Enriched pathways in healthy sample only") + 
-  labs(tag = "A")
-panel_B_mature <- create_pathway_plot(mature_df, "B only", "Enriched pathways in obese sample only") + 
-  labs(tag = "B")
-panel_C_mature <- create_pathway_plot(mature_df, "common", "Enriched pathways in both healthy and obese samples") + 
-  labs(tag = "C")
+panel_A_mature <- create_pathway_plot(mature_df, "A only", "Enriched pathways in healthy only") + 
+  labs(tag = tag_healthy)
+panel_B_mature <- create_pathway_plot(mature_df, "B only", "Enriched pathways in obese only") + 
+  labs(tag = tag_obese)
+panel_C_mature <- create_pathway_plot(mature_df, "common", "Enriched pathways in healthy & obese") + 
+  labs(tag = tag_common)
 
 # Combine panels into a single figure
 combined_mature_pathway_figure <- panel_A_mature / panel_B_mature / panel_C_mature + 
@@ -764,7 +783,7 @@ combined_mature_pathway_figure <- panel_A_mature / panel_B_mature / panel_C_matu
 # Save combined figure
 # Save as PDF
 pdf("results/humanPVATsn/final_figs/mature_1v3_pathways.pdf", 
-    width = 13, height = 16)
+    width = 13, height = fig_height)
 print(combined_mature_pathway_figure)
 invisible(dev.off())
 
