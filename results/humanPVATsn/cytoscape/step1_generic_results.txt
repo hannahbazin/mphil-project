@@ -1,0 +1,79 @@
+Pathway	Description	pvalue	qvalue	NES	Genes
+Notch signaling pathway	Notch signaling pathway	0.001	0.01	1.5	ADAM10,JAG1,MAML3,MAML2
+Notch signaling pathway	Notch signaling pathway	0.001	0.01	1.5	ADAM10,JAG1,MAML3,MAML2
+Notch signaling pathway	Notch signaling pathway	0.001	0.01	1.5	ADAM10,JAG1,MAML3,MAML2
+Notch signaling pathway	Notch signaling pathway	0.001	0.01	1.5	ADAM10,JAG1,MAML3,MAML2
+cytoskeleton organization	cytoskeleton organization	0.001	0.01	1.5	DST,CAPZB,DIAPH1,TPM1,LIMD1,CDC42BPB,SIPA1L3,FGD5
+cytoskeleton organization	cytoskeleton organization	0.001	0.01	1.5	DST,CAPZB,DIAPH1,TPM1,LIMD1,CDC42BPB,SIPA1L3,FGD5
+cytoskeleton organization	cytoskeleton organization	0.001	0.01	1.5	DST,CAPZB,DIAPH1,TPM1,LIMD1,CDC42BPB,SIPA1L3,FGD5
+cytoskeleton organization	cytoskeleton organization	0.001	0.01	1.5	DST,CAPZB,DIAPH1,TPM1,LIMD1,CDC42BPB,SIPA1L3,FGD5
+cytoskeleton organization	cytoskeleton organization	0.001	0.01	1.5	DST,CAPZB,DIAPH1,TPM1,LIMD1,CDC42BPB,SIPA1L3,FGD5
+cytoskeleton organization	cytoskeleton organization	0.001	0.01	1.5	DST,CAPZB,DIAPH1,TPM1,LIMD1,CDC42BPB,SIPA1L3,FGD5
+cytoskeleton organization	cytoskeleton organization	0.001	0.01	1.5	DST,CAPZB,DIAPH1,TPM1,LIMD1,CDC42BPB,SIPA1L3,FGD5
+cytoskeleton organization	cytoskeleton organization	0.001	0.01	1.5	DST,CAPZB,DIAPH1,TPM1,LIMD1,CDC42BPB,SIPA1L3,FGD5
+insulin-like growth factor receptor signaling pathway	insulin-like growth factor receptor signaling pathway	0.001	0.01	1.5	PLCB1,GHR,IGF1
+insulin-like growth factor receptor signaling pathway	insulin-like growth factor receptor signaling pathway	0.001	0.01	1.5	PLCB1,GHR,IGF1
+insulin-like growth factor receptor signaling pathway	insulin-like growth factor receptor signaling pathway	0.001	0.01	1.5	PLCB1,GHR,IGF1
+negative regulation of canonical Wnt signaling pathway	negative regulation of canonical Wnt signaling pathway	0.001	0.01	1.5	GLI3,IGFBP6,STK3,LIMD1,SOX13,KREMEN1,SHISA6,IGFBP4,BICC1,PRICKLE1
+negative regulation of canonical Wnt signaling pathway	negative regulation of canonical Wnt signaling pathway	0.001	0.01	1.5	GLI3,IGFBP6,STK3,LIMD1,SOX13,KREMEN1,SHISA6,IGFBP4,BICC1,PRICKLE1
+negative regulation of canonical Wnt signaling pathway	negative regulation of canonical Wnt signaling pathway	0.001	0.01	1.5	GLI3,IGFBP6,STK3,LIMD1,SOX13,KREMEN1,SHISA6,IGFBP4,BICC1,PRICKLE1
+negative regulation of canonical Wnt signaling pathway	negative regulation of canonical Wnt signaling pathway	0.001	0.01	1.5	GLI3,IGFBP6,STK3,LIMD1,SOX13,KREMEN1,SHISA6,IGFBP4,BICC1,PRICKLE1
+negative regulation of canonical Wnt signaling pathway	negative regulation of canonical Wnt signaling pathway	0.001	0.01	1.5	GLI3,IGFBP6,STK3,LIMD1,SOX13,KREMEN1,SHISA6,IGFBP4,BICC1,PRICKLE1
+negative regulation of canonical Wnt signaling pathway	negative regulation of canonical Wnt signaling pathway	0.001	0.01	1.5	GLI3,IGFBP6,STK3,LIMD1,SOX13,KREMEN1,SHISA6,IGFBP4,BICC1,PRICKLE1
+negative regulation of canonical Wnt signaling pathway	negative regulation of canonical Wnt signaling pathway	0.001	0.01	1.5	GLI3,IGFBP6,STK3,LIMD1,SOX13,KREMEN1,SHISA6,IGFBP4,BICC1,PRICKLE1
+negative regulation of canonical Wnt signaling pathway	negative regulation of canonical Wnt signaling pathway	0.001	0.01	1.5	GLI3,IGFBP6,STK3,LIMD1,SOX13,KREMEN1,SHISA6,IGFBP4,BICC1,PRICKLE1
+negative regulation of canonical Wnt signaling pathway	negative regulation of canonical Wnt signaling pathway	0.001	0.01	1.5	GLI3,IGFBP6,STK3,LIMD1,SOX13,KREMEN1,SHISA6,IGFBP4,BICC1,PRICKLE1
+negative regulation of canonical Wnt signaling pathway	negative regulation of canonical Wnt signaling pathway	0.001	0.01	1.5	GLI3,IGFBP6,STK3,LIMD1,SOX13,KREMEN1,SHISA6,IGFBP4,BICC1,PRICKLE1
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+negative regulation of cell migration	negative regulation of cell migration	0.001	0.01	1.5	JAG1,DPYSL3,NEDD9,PTPRJ,ROBO1,TGFBR1,TGFBR3,TPM1,VCL,RECK,LIMCH1,KANK1,SULF1,EMILIN2,CDH11,FOXO3,MITF,PTEN,PTPRK,SLIT2,DLC1,NAV3,PODN
+positive regulation of ERK1 and ERK2 cascade	positive regulation of ERK1 and ERK2 cascade	0.001	0.01	1.5	APP,CD44,FERMT2,ACKR3,GLIPR2,ANGPT1,IGF1,NRP1,BMPER
+positive regulation of ERK1 and ERK2 cascade	positive regulation of ERK1 and ERK2 cascade	0.001	0.01	1.5	APP,CD44,FERMT2,ACKR3,GLIPR2,ANGPT1,IGF1,NRP1,BMPER
+positive regulation of ERK1 and ERK2 cascade	positive regulation of ERK1 and ERK2 cascade	0.001	0.01	1.5	APP,CD44,FERMT2,ACKR3,GLIPR2,ANGPT1,IGF1,NRP1,BMPER
+positive regulation of ERK1 and ERK2 cascade	positive regulation of ERK1 and ERK2 cascade	0.001	0.01	1.5	APP,CD44,FERMT2,ACKR3,GLIPR2,ANGPT1,IGF1,NRP1,BMPER
+positive regulation of ERK1 and ERK2 cascade	positive regulation of ERK1 and ERK2 cascade	0.001	0.01	1.5	APP,CD44,FERMT2,ACKR3,GLIPR2,ANGPT1,IGF1,NRP1,BMPER
+positive regulation of ERK1 and ERK2 cascade	positive regulation of ERK1 and ERK2 cascade	0.001	0.01	1.5	APP,CD44,FERMT2,ACKR3,GLIPR2,ANGPT1,IGF1,NRP1,BMPER
+positive regulation of ERK1 and ERK2 cascade	positive regulation of ERK1 and ERK2 cascade	0.001	0.01	1.5	APP,CD44,FERMT2,ACKR3,GLIPR2,ANGPT1,IGF1,NRP1,BMPER
+positive regulation of ERK1 and ERK2 cascade	positive regulation of ERK1 and ERK2 cascade	0.001	0.01	1.5	APP,CD44,FERMT2,ACKR3,GLIPR2,ANGPT1,IGF1,NRP1,BMPER
+positive regulation of ERK1 and ERK2 cascade	positive regulation of ERK1 and ERK2 cascade	0.001	0.01	1.5	APP,CD44,FERMT2,ACKR3,GLIPR2,ANGPT1,IGF1,NRP1,BMPER
+regulation of transcription by RNA polymerase II	regulation of transcription by RNA polymerase II	0.001	0.01	1.5	ANXA4,ATP2B4,TRAK1,CAMK2D,FOXO3,FOS,JUN,PPARG
+regulation of transcription by RNA polymerase II	regulation of transcription by RNA polymerase II	0.001	0.01	1.5	ANXA4,ATP2B4,TRAK1,CAMK2D,FOXO3,FOS,JUN,PPARG
+regulation of transcription by RNA polymerase II	regulation of transcription by RNA polymerase II	0.001	0.01	1.5	ANXA4,ATP2B4,TRAK1,CAMK2D,FOXO3,FOS,JUN,PPARG
+regulation of transcription by RNA polymerase II	regulation of transcription by RNA polymerase II	0.001	0.01	1.5	ANXA4,ATP2B4,TRAK1,CAMK2D,FOXO3,FOS,JUN,PPARG
+regulation of transcription by RNA polymerase II	regulation of transcription by RNA polymerase II	0.001	0.01	1.5	ANXA4,ATP2B4,TRAK1,CAMK2D,FOXO3,FOS,JUN,PPARG
+regulation of transcription by RNA polymerase II	regulation of transcription by RNA polymerase II	0.001	0.01	1.5	ANXA4,ATP2B4,TRAK1,CAMK2D,FOXO3,FOS,JUN,PPARG
+regulation of transcription by RNA polymerase II	regulation of transcription by RNA polymerase II	0.001	0.01	1.5	ANXA4,ATP2B4,TRAK1,CAMK2D,FOXO3,FOS,JUN,PPARG
+regulation of transcription by RNA polymerase II	regulation of transcription by RNA polymerase II	0.001	0.01	1.5	ANXA4,ATP2B4,TRAK1,CAMK2D,FOXO3,FOS,JUN,PPARG
+semaphorin-plexin signaling pathway	semaphorin-plexin signaling pathway	0.001	0.01	1.5	RHOA,PLXNA2,SEMA3C,NRP1,SEMA3A
+semaphorin-plexin signaling pathway	semaphorin-plexin signaling pathway	0.001	0.01	1.5	RHOA,PLXNA2,SEMA3C,NRP1,SEMA3A
+semaphorin-plexin signaling pathway	semaphorin-plexin signaling pathway	0.001	0.01	1.5	RHOA,PLXNA2,SEMA3C,NRP1,SEMA3A
+semaphorin-plexin signaling pathway	semaphorin-plexin signaling pathway	0.001	0.01	1.5	RHOA,PLXNA2,SEMA3C,NRP1,SEMA3A
+semaphorin-plexin signaling pathway	semaphorin-plexin signaling pathway	0.001	0.01	1.5	RHOA,PLXNA2,SEMA3C,NRP1,SEMA3A
+substrate adhesion-dependent cell spreading	substrate adhesion-dependent cell spreading	0.001	0.01	1.5	RHOA,FN1,FERMT2,SRGAP2,RADIL,ANTXR1,LAMB1,LAMC1
+substrate adhesion-dependent cell spreading	substrate adhesion-dependent cell spreading	0.001	0.01	1.5	RHOA,FN1,FERMT2,SRGAP2,RADIL,ANTXR1,LAMB1,LAMC1
+substrate adhesion-dependent cell spreading	substrate adhesion-dependent cell spreading	0.001	0.01	1.5	RHOA,FN1,FERMT2,SRGAP2,RADIL,ANTXR1,LAMB1,LAMC1
+substrate adhesion-dependent cell spreading	substrate adhesion-dependent cell spreading	0.001	0.01	1.5	RHOA,FN1,FERMT2,SRGAP2,RADIL,ANTXR1,LAMB1,LAMC1
+substrate adhesion-dependent cell spreading	substrate adhesion-dependent cell spreading	0.001	0.01	1.5	RHOA,FN1,FERMT2,SRGAP2,RADIL,ANTXR1,LAMB1,LAMC1
+substrate adhesion-dependent cell spreading	substrate adhesion-dependent cell spreading	0.001	0.01	1.5	RHOA,FN1,FERMT2,SRGAP2,RADIL,ANTXR1,LAMB1,LAMC1
+substrate adhesion-dependent cell spreading	substrate adhesion-dependent cell spreading	0.001	0.01	1.5	RHOA,FN1,FERMT2,SRGAP2,RADIL,ANTXR1,LAMB1,LAMC1
+substrate adhesion-dependent cell spreading	substrate adhesion-dependent cell spreading	0.001	0.01	1.5	RHOA,FN1,FERMT2,SRGAP2,RADIL,ANTXR1,LAMB1,LAMC1

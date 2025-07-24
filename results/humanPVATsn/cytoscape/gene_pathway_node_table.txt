@@ -1,0 +1,79 @@
+Pathway	Gene
+Notch signaling pathway	ADAM10
+Notch signaling pathway	JAG1
+Notch signaling pathway	MAML3
+Notch signaling pathway	MAML2
+substrate adhesion-dependent cell spreading	RHOA
+substrate adhesion-dependent cell spreading	FN1
+substrate adhesion-dependent cell spreading	FERMT2
+substrate adhesion-dependent cell spreading	SRGAP2
+substrate adhesion-dependent cell spreading	RADIL
+substrate adhesion-dependent cell spreading	ANTXR1
+substrate adhesion-dependent cell spreading	LAMB1
+substrate adhesion-dependent cell spreading	LAMC1
+negative regulation of cell migration	JAG1
+negative regulation of cell migration	DPYSL3
+negative regulation of cell migration	NEDD9
+negative regulation of cell migration	PTPRJ
+negative regulation of cell migration	ROBO1
+negative regulation of cell migration	TGFBR1
+negative regulation of cell migration	TGFBR3
+negative regulation of cell migration	TPM1
+negative regulation of cell migration	VCL
+negative regulation of cell migration	RECK
+negative regulation of cell migration	LIMCH1
+negative regulation of cell migration	KANK1
+negative regulation of cell migration	SULF1
+negative regulation of cell migration	EMILIN2
+negative regulation of cell migration	CDH11
+negative regulation of cell migration	FOXO3
+negative regulation of cell migration	MITF
+negative regulation of cell migration	PTEN
+negative regulation of cell migration	PTPRK
+negative regulation of cell migration	SLIT2
+negative regulation of cell migration	DLC1
+negative regulation of cell migration	NAV3
+negative regulation of cell migration	PODN
+insulin-like growth factor receptor signaling pathway	PLCB1
+insulin-like growth factor receptor signaling pathway	GHR
+insulin-like growth factor receptor signaling pathway	IGF1
+cytoskeleton organization	DST
+cytoskeleton organization	CAPZB
+cytoskeleton organization	DIAPH1
+cytoskeleton organization	TPM1
+cytoskeleton organization	LIMD1
+cytoskeleton organization	CDC42BPB
+cytoskeleton organization	SIPA1L3
+cytoskeleton organization	FGD5
+negative regulation of canonical Wnt signaling pathway	GLI3
+negative regulation of canonical Wnt signaling pathway	IGFBP6
+negative regulation of canonical Wnt signaling pathway	STK3
+negative regulation of canonical Wnt signaling pathway	LIMD1
+negative regulation of canonical Wnt signaling pathway	SOX13
+negative regulation of canonical Wnt signaling pathway	KREMEN1
+negative regulation of canonical Wnt signaling pathway	SHISA6
+negative regulation of canonical Wnt signaling pathway	IGFBP4
+negative regulation of canonical Wnt signaling pathway	BICC1
+negative regulation of canonical Wnt signaling pathway	PRICKLE1
+semaphorin-plexin signaling pathway	RHOA
+semaphorin-plexin signaling pathway	PLXNA2
+semaphorin-plexin signaling pathway	SEMA3C
+semaphorin-plexin signaling pathway	NRP1
+semaphorin-plexin signaling pathway	SEMA3A
+regulation of transcription by RNA polymerase II	ANXA4
+regulation of transcription by RNA polymerase II	ATP2B4
+regulation of transcription by RNA polymerase II	TRAK1
+regulation of transcription by RNA polymerase II	CAMK2D
+regulation of transcription by RNA polymerase II	FOXO3
+regulation of transcription by RNA polymerase II	FOS
+regulation of transcription by RNA polymerase II	JUN
+regulation of transcription by RNA polymerase II	PPARG
+positive regulation of ERK1 and ERK2 cascade	APP
+positive regulation of ERK1 and ERK2 cascade	CD44
+positive regulation of ERK1 and ERK2 cascade	FERMT2
+positive regulation of ERK1 and ERK2 cascade	ACKR3
+positive regulation of ERK1 and ERK2 cascade	GLIPR2
+positive regulation of ERK1 and ERK2 cascade	ANGPT1
+positive regulation of ERK1 and ERK2 cascade	IGF1
+positive regulation of ERK1 and ERK2 cascade	NRP1
+positive regulation of ERK1 and ERK2 cascade	BMPER

@@ -184,9 +184,9 @@ print(cell_counts)
 
 # Normalise data and find variable features
 
-We normalise the data using a global-scaling method called "LogNormalize". This process normalises the feature expression levels for each cell by dividing by the total expression, multiplies this by a scale factor (10'000 by default), and applies a log transformation to the result. Normalised values are stored in `human1_filtered[["RNA"]]@data` for each of the three samples.
+We normalise the data using a global-scaling method called "LogNormalize". This process normalises the feature expression levels for each cell by dividing by the total expression, multiplies this by a scale factor (10,000 by default), and applies a log transformation to the result. Normalised values are stored in `human1_filtered[["RNA"]]@data` for each of the three samples.
 
-We also identify features that have high cell-to-cell variation, these are likely to have the most biological significance. The function returns 2'000 features per dataset by default.
+We also identify features that have high cell-to-cell variation, these are likely to have the most biological significance. The function returns 2,000 features per dataset by default.
 
 ```{r}
 
@@ -1174,11 +1174,12 @@ save(libs_combined_filt, file = "data/analysis/libs_combined_filt.RData")
 
 # Final plots
 
-## Load object
+## Load objects
 
 ```{r}
 
 load("data/analysis/libs_combined_filt.RData")
+load("data/analysis/anno_combined.RData")
 
 ```
 
@@ -1531,7 +1532,7 @@ unnannot_umap <- DimPlot(libs_combined_filt, reduction = "umap", label = TRUE) +
     axis.text = element_text(size = 12),
     axis.title = element_text(size = 15, face = "bold"),
     legend.title = element_text(size = 15, face = "bold"),
-    legend.text = element_text(size = 12),
+    legend.text = element_text(size = 14),
     panel.border = element_rect(color = "black", fill = NA, size = 0.5)
   )
 
@@ -1543,7 +1544,7 @@ annot_umap <- DimPlot(anno_combined, cols = namedclusterColours) +
     axis.text = element_text(size = 12),
     axis.title.x = element_text(size = 15, face = "bold"),
     axis.title.y = element_text(size = 15, face = "bold"),
-    legend.text = element_text(size = 12),
+    legend.text = element_text(size = 14),
     panel.border = element_rect(color = "black", fill = NA, size = 0.5)
   )
 
@@ -1586,12 +1587,12 @@ dot_plot <- DotPlot(anno_combined2, features = markers_to_plot, dot.scale = 7) +
   labs(title = NULL, x = "Marker gene", y = "Cell type") +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 90, size = 12, hjust = 1, vjust = 0.5),
-    axis.text.y = element_text(size = 10),
+    axis.text.x = element_text(angle = 90, size = 14, hjust = 1, vjust = 0.5),
+    axis.text.y = element_text(size = 14),
     axis.title.x = element_text(size = 15, face = "bold"),
     axis.title.y = element_text(size = 15, face = "bold"),
-    legend.title = element_text(size = 15, face = "bold"),
-    legend.text = element_text(size = 12),
+    legend.title = element_text(size = 16, face = "bold"),
+    legend.text = element_text(size = 14),
     panel.border = element_rect(color = "black", fill = NA, size = 0.5),
     panel.grid.major = element_line(linetype = "dotted", colour = "grey90"),
     panel.grid.minor = element_blank()
@@ -1614,7 +1615,7 @@ violin_plots <- lapply(features_to_plot, function(gene) {
       axis.title.y = element_text(size = 15, face = "bold"),
       plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
       legend.position = "right",
-      legend.text = element_text(size = 12),
+      legend.text = element_text(size = 14),
       panel.border = element_rect(color = "black", fill = NA, size = 0.5),
     )
 })
@@ -1642,7 +1643,7 @@ final_figure <- complete_figure +
 # Save the complete figure
 if (!dir.exists("results/humanPVATsn/final_figs")) dir.create("results/humanPVATsn/final_figs")
 
-pdf("results/humanPVATsn/final_figs/complete_PVAT_analysis.pdf", width = 13, height = 16)
+pdf("results/humanPVATsn/final_figs/complete_PVAT_analysis.pdf", width = 14, height = 16)
 print(final_figure)
 invisible(dev.off())
 
@@ -1824,8 +1825,17 @@ anno_combined_heatmap <- anno_combined
 # Set default assay to RNA
 DefaultAssay(anno_combined_heatmap) <- "RNA"
 
+# Define the 4 clusters of interest
+adipocyte_clusters <- c("Early preadipocytes", 
+                        "Intermediate preadipocytes", 
+                        "Transitional adipocytes", 
+                        "Mature adipocytes")
+
+# Subset the object
+subset_obj <- subset(anno_combined_heatmap, idents = adipocyte_clusters)
+
 # Set cluster order manually
-Idents(anno_combined_heatmap) <- factor(Idents(anno_combined_heatmap),
+Idents(subset_obj) <- factor(Idents(subset_obj),
                                         levels = c("Early preadipocytes", 
                                                    "Intermediate preadipocytes", 
                                                    "Transitional adipocytes", 
@@ -1834,11 +1844,8 @@ Idents(anno_combined_heatmap) <- factor(Idents(anno_combined_heatmap),
 # Genes of interest
 genes_to_plot <- c("LRP1", "MME", "CD36")
 
-# Scale the specific genes in the RNA assay so that we compare expression among only these clusters and not all of them
-subset_obj <- ScaleData(subset_obj, features = genes_to_plot, assay = "RNA")
-
 # Get average expression per cluster
-avg_exp <- AverageExpression(anno_combined_heatmap, features = genes_to_plot, 
+avg_exp <- AverageExpression(subset_obj, features = genes_to_plot, 
                              return.seurat = TRUE)$RNA
 
 # Convert to matrix
@@ -1854,11 +1861,15 @@ heat_map <- pheatmap(expr_matrix,
          fontsize_col = 14,
          fontsize = 13,
          fontsize_number = 13,
-         angle_col = 45)
+         angle_col = 45,
+         main = ""
+         )
 
 # Save to PDF
-pdf("results/humanPVATsn/final_figs/amyloid_gene_heatmap.pdf", width = 10, height = 7)
+pdf("results/humanPVATsn/final_figs/amyloid_gene_heatmap.pdf", width = 11, height = 7)
 print(heat_map)
+# Add legend title manually
+grid::grid.text("Average expression", x = 0.915, y = 0.98, rot = 0, gp = grid::gpar(fontsize = 12))
 invisible(dev.off())
 
 # Display plot
@@ -1965,12 +1976,14 @@ neuro_heatmap <- pheatmap(neuro_pathways,
          fontsize_col = 14,
          fontsize = 13,
          fontsize_number = 13,
-         angle_col = 45)
-
+         angle_col = 45,
+         main = "")
 
 # Save to PDF
 pdf("results/humanPVATsn/final_figs/neurogenic_heatmap.pdf", width = 11, height = 5)
 print(neuro_heatmap)
+# Add legend title manually
+grid::grid.text("Fold enrichment", x = 0.935, y = 0.97, rot = 0, gp = grid::gpar(fontsize = 12))
 invisible(dev.off())
 
 # Display plot
@@ -2014,12 +2027,15 @@ amyloid_heatmap <- pheatmap(amyloid_pathways,
          fontsize_col = 14,
          fontsize_number = 13,
          fontsize = 13,
-         angle_col = 45)
+         angle_col = 45,
+         main = "")
 
 
 # Save to PDF
 pdf("results/humanPVATsn/final_figs/amyloid_heatmap.pdf", width = 10, height = 4)
 print(amyloid_heatmap)
+# Add legend title manually
+grid::grid.text("Fold enrichment", x = 0.935, y = 0.97, rot = 0, gp = grid::gpar(fontsize = 12))
 invisible(dev.off())
 
 # Display plot
