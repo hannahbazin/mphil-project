@@ -1207,15 +1207,25 @@ features <- c("nFeature_RNA", "nCount_RNA", "percent.mt")
 ylims <- list(
   nFeature_RNA = c(0, 15000),
   nCount_RNA = c(0, 60000),
-  percent.mt = c(0, 17)
+  percent.mt = c(0, 4)
 )
 
+# Define labels
+y_labels <- c("nFeature_RNA (genes)", "nCount_RNA (molecules)", "percent.mt (%)")
+
 # Create one violin plot per feature
-plots <- lapply(features, function(f) {
-  VlnPlot(combined, features = f, group.by = "sample") +
-    ggtitle(f) +
-    coord_cartesian(ylim = ylims[[f]])
+plots <- lapply(seq_along(features), function(i) {
+  f <- features[i]
+  VlnPlot(combined, features = f, group.by = "sample", pt.size = 0.000000000001) +
+    ggtitle(titles[i]) +
+    ylab(y_labels[i]) +
+    coord_cartesian(ylim = ylims[[f]]) +
+    theme(
+      plot.title = element_blank(),
+      axis.title.y = element_text(size = 11, face = "bold")
+    )
 })
+
 
 # Combine plots: one row per feature
 final_QC_violin_plot <- wrap_plots(plots, ncol = 1)
