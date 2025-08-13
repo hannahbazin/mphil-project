@@ -12,3 +12,6 @@ data/
 .venv/
 bat_proximity_analysis/
 .vscode/
+bioinformagician_learning/
+omnipath_learning/
+seurat_learning/
