@@ -5,7 +5,7 @@ This repository contains analysis scripts, processed data outputs, and supportin
 **_Single-cell transcriptomic- and network-based identification of stage-specific modulators of brown adipocyte differentiation for anti-obesity drug repurposing_**.
 
 ## Overview
-The project integrates **single-nucleus RNA-sequencing** analysis of human perivascular adipose tissue with **network-based drug prioritisation** to identify existing compounds that could promote brown adipocyte differentiation — a potential therapeutic strategy for obesity.
+The project integrates **single-nucleus RNA-sequencing** analysis of human perivascular adipose tissue with **network-based drug prioritisation** to identify existing compounds that could promote brown adipocyte differentiation, a potential therapeutic strategy for obesity.
 
 ## Repository structure
 - **`scripts/`** – R and Python scripts for snRNAseq data processing, pathway enrichment analysis, and network analysis.  
