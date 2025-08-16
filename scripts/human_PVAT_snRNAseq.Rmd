@@ -1217,7 +1217,6 @@ y_labels <- c("nFeature_RNA (genes)", "nCount_RNA (molecules)", "percent.mt (%)"
 plots <- lapply(seq_along(features), function(i) {
   f <- features[i]
   VlnPlot(combined, features = f, group.by = "sample", pt.size = 0.000000000001) +
-    ggtitle(titles[i]) +
     ylab(y_labels[i]) +
     coord_cartesian(ylim = ylims[[f]]) +
     theme(
