@@ -1,8 +1,8 @@
 # MPhil Project
 
-This repository contains analysis scripts, processed data outputs, and supporting files for the MPhil thesis:  
+This repository contains analysis scripts, processed data outputs, and supporting files for the manuscript :  
 
-**_Single-cell transcriptomic- and network-based identification of stage-specific modulators of brown adipocyte differentiation for anti-obesity drug repurposing_**.
+**_Drug repurposing for human brown adipocyte differentiation using integrated snRNA-seq and network analysis_**.
 
 ## Overview
 The project integrates **single-nucleus RNA-sequencing** analysis of human perivascular adipose tissue with **network-based drug prioritisation** to identify existing compounds that could promote brown adipocyte differentiation, a potential therapeutic strategy for obesity.
@@ -19,5 +19,5 @@ Raw snRNA-seq data are publicly available from NCBI GEO:
 - All analyses were run in **R (v4.4.1)** and **Python (v3.9.12)**; see **`requirements.txt`** for required Python packages and versions.
 - To reproduce results:
   1. Download raw data from GEO (link above).
-  2. Follow the workflow in `scripts/` as described in thesis *Methods*.
+  2. Follow the workflow in `scripts/` as described in *Methods*.
   3. Output files will be saved in `results/`.
