@@ -1,8 +1,6 @@
-# MPhil Project
+# Drug repurposing for human brown adipocyte differentiation using integrated snRNA-seq and network analysis
 
-This repository contains analysis scripts, processed data outputs, and supporting files for the manuscript :  
-
-**_Drug repurposing for human brown adipocyte differentiation using integrated snRNA-seq and network analysis_**.
+This repository contains analysis scripts, processed data outputs, and supporting files for the manuscript.
 
 ## Overview
 The project integrates **single-nucleus RNA-sequencing** analysis of human perivascular adipose tissue with **network-based drug prioritisation** to identify existing compounds that could promote brown adipocyte differentiation, a potential therapeutic strategy for obesity.
